@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<gfx-xform version="1">
+    <input file="tiles.png" type="png" tile-width="8" tile-height="8" width="168" height="40" />
+    <output file="../src/data/tiles_tmp.inc">
+        <tiles var-name="tiles_data"/>
+        <maps pointers-size="8">
+            <!-- Title tiles -->
+            <map var-name="map_splash" left="0" top="1" width="21" height="4"/>
+            
+            <!-- Structural tiles -->
+            <map var-name="map_brick" left="1" top="0" width="1" height="1"/>
+            <map var-name="map_metal" left="5" top="0" width="1" height="1"/>
+
+            <!-- Item tiles -->
+            <map var-name="map_speed_itm" left="2" top="0" width="1" height="1"/>
+            <map var-name="map_explode_itm" left="3" top="0" width="1" height="1"/>
+            <map var-name="map_rocket_itm" left="4" top="0" width="1" height="1"/>
+            
+            <!-- Brick explosion -->
+            <map var-name="map_tile_exp_0" left="6" top="0" width="1" height="1"/>
+            <map var-name="map_tile_exp_1" left="7" top="0" width="1" height="1"/>
+            <map var-name="map_tile_exp_2" left="8" top="0" width="1" height="1"/>
+            
+            <!-- Metal bumbers -->
+            <map var-name="map_metal_tl" left="9" top="0" width="1" height="1"/>
+            <map var-name="map_metal_br" left="10" top="0" width="1" height="1"/>
+            <map var-name="map_metal_tr" left="11" top="0" width="1" height="1"/>
+            <map var-name="map_metal_bl" left="9" top="0" width="1" height="1"/>
+        </maps>
+    </output>
+</gfx-xform>
