@@ -5,6 +5,12 @@
  * Tile height: 8px
  * Output format: (null)
  */
+#define MAP_NONE_WIDTH 1
+#define MAP_NONE_HEIGHT 1
+const char map_none[] PROGMEM ={
+1,1
+,0x27};
+
 #define MAP_TANK1_UP_0_WIDTH 2
 #define MAP_TANK1_UP_0_HEIGHT 2
 const char map_tank1_up_0[] PROGMEM ={
@@ -33,25 +39,25 @@ const char map_tank1_right_1[] PROGMEM ={
 #define MAP_TANK2_UP_0_HEIGHT 2
 const char map_tank2_up_0[] PROGMEM ={
 2,2
-,0xe,0xf,0x1a,0x1b};
+,0x1a,0x1b,0x28,0x29};
 
 #define MAP_TANK2_UP_1_WIDTH 2
 #define MAP_TANK2_UP_1_HEIGHT 2
 const char map_tank2_up_1[] PROGMEM ={
 2,2
-,0x10,0x11,0x1c,0x1d};
+,0x1c,0x1d,0x2a,0x2b};
 
 #define MAP_TANK2_RIGHT_0_WIDTH 2
 #define MAP_TANK2_RIGHT_0_HEIGHT 2
 const char map_tank2_right_0[] PROGMEM ={
 2,2
-,0x12,0x13,0x1e,0x1f};
+,0x1e,0x1f,0x2c,0x2d};
 
 #define MAP_TANK2_RIGHT_1_WIDTH 2
 #define MAP_TANK2_RIGHT_1_HEIGHT 2
 const char map_tank2_right_1[] PROGMEM ={
 2,2
-,0x14,0x15,0x20,0x21};
+,0x20,0x21,0x2e,0x2f};
 
 #define MAP_EXPLOSION_0_WIDTH 2
 #define MAP_EXPLOSION_0_HEIGHT 2

@@ -4,6 +4,28 @@
 #ifndef LB_UTILS_H
 #define LB_UTILS_H
 
-#include "types.h"
+typedef struct sJoyPadState {
+	unsigned int pressed;
+	unsigned int released;
+	unsigned int held;
+} JoyPadState;
+
+void getJoyPadState(JoyPadState* p1, JoyPadState* p2)
+/*
+ * Get the current joy pad button state for p1 and p2
+ */
+{
+	static unsigned int p1_prev = 0;
+	static unsigned int p2_prev = 0;
+
+	p1->held = ReadJoypad(0);
+	p1->pressed = p1->held & (p1->held ^ p1_prev);
+	p1->released = p1_prev & (p1->held ^ p1_prev);
+	p1_prev = p1->held;
+	p2->held = ReadJoypad(1);
+	p2->pressed = p2->held & (p2->held ^ p2_prev);
+	p2->released = p2_prev & (p2->held ^ p2_prev);
+	p2_prev = p2->held;
+}
 
 #endif

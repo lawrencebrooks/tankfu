@@ -9,8 +9,7 @@ typedef struct sGameState {
 	unsigned char current_screen;
 	unsigned char current_level;
 	unsigned char level_count;
-	unsigned char play_mode;
-
+	char selection;
 } Game;
 
 typedef struct sLevelState {
@@ -48,6 +47,13 @@ typedef struct sPlayer {
 	Shot shot[2];
 	Animation animation;
 } Player;
+
+typedef struct sHandleSelectState {
+	unsigned char handle_id;
+	unsigned char handle[3];
+	unsigned char char_index;
+	unsigned char select_state;
+} HandleSelectState;
 
 /*
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
