@@ -37,6 +37,7 @@
 // Handle select states
 #define SELECTING 0
 #define EDITING 1
+#define CONFIRMED 2
 
 // General macros
 #define MAX_SPRITES 13
@@ -57,15 +58,20 @@ struct EepromBlockStruct handles = {
 	// 5. CCC
 	// 6. DDD
 	// 7. EEE
+	// 8. FFF
+	// 9. GGG
+	// 10. HHH
 	.data = {
-		1, 0x55, 0x5a, 0x45,
-		2, 0x4c, 0x4a, 0x42,
-		3, 0x41, 0x41, 0x41,
-		4, 0x42, 0x42, 0x42,
-		5, 0x43, 0x43, 0x43,
-		6, 0x44, 0x44, 0x44,
-		7, 0x45, 0x45, 0x45,
-		0, 0
+		0x55, 0x5a, 0x45,
+		0x4c, 0x4a, 0x42,
+		0x41, 0x41, 0x41,
+		0x42, 0x42, 0x42,
+		0x43, 0x43, 0x43,
+		0x44, 0x44, 0x44,
+		0x45, 0x45, 0x45,
+		0x46, 0x46, 0x46,
+		0x47, 0x47, 0x47,
+		0x48, 0x48, 0x48,
 	}
 };
 struct EepromBlockStruct scores = {
@@ -78,15 +84,25 @@ struct EepromBlockStruct scores = {
 	// 6. owns 7. by 20 - 15
 	// 7. owns 1. by 20 - 16
 	.data = {
-		1, 2, 20, 10,
-		2, 3, 20, 11,
-		3, 4, 20, 12,
-		4, 5, 20, 13,
-		5, 6, 20, 14,
-		6, 7, 20, 15,
-		7, 1, 20, 16,
+		0, 1, 20, 10,
+		1, 2, 20, 11,
+		2, 3, 20, 12,
+		3, 4, 20, 13,
+		4, 5, 20, 14,
+		5, 6, 20, 15,
+		6, 0, 20, 16,
 		0, 0
 	}
+};
+HandleSelectState p1s = {
+	.handle_id = 0,
+	.char_index = 0,
+	.select_state = SELECTING,
+};
+HandleSelectState p2s = {
+	.handle_id = 0,
+	.char_index = 0,
+	.select_state = SELECTING,
 };
 
 void load_eeprom(struct EepromBlockStruct* block)
@@ -121,21 +137,6 @@ void clear_sprites()
 	{
 		MapSprite(i, map_none);
 	}
-}
-
-unsigned char* locate_handle(unsigned char handle_id)
-/*
- * Find the start of the handle data referenced by handle_id
- */
-{
-	for (int i = 0; i < 28; i += 4)
-	{
-		if (handles.data[i] == handle_id)
-		{
-			return &handles.data[i+1];
-		}
-	}
-	return 0;
 }
 
 void save_eeprom(struct EepromBlockStruct* block)
@@ -180,10 +181,10 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
  */
 {
 	clear_sprites();
-	Print(8, 13, str1Player);
-	Print(8, 14, str2Player);
-	Print(8, 15, strHighscores);
-	Print(3, 26, strCopyright);
+	Print(7, 13, str1Player);
+	Print(7, 14, str2Player);
+	Print(7, 15, strHighscores);
+	Print(4, 26, strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite(0, map_ball);
 
@@ -198,8 +199,10 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.selection++;
 		if (game.selection > TR) game.selection = TR;
 	}
-	else if ((p1->pressed & BTN_START) && ((game.selection == PVCPU) || (game.selection == PVP)))
+	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
+		p1s.select_state = SELECTING;
+		p2s.select_state = SELECTING;
 		fade_through();
 		load_eeprom(&handles);
 		game.current_screen = HANDLE_SELECT;
@@ -210,13 +213,13 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	switch (game.selection)
 	{
 		case PVCPU:
-			MoveSprite(0, 7*8, 13*8, 1, 1);
+			MoveSprite(0, 6*8, 13*8, 1, 1);
 			break;
 		case PVP:
-			MoveSprite(0, 7*8, 14*8, 1, 1);
+			MoveSprite(0, 6*8, 14*8, 1, 1);
 			break;
 		case TR:
-			MoveSprite(0, 7*8, 15*8, 1, 1);
+			MoveSprite(0, 6*8, 15*8, 1, 1);
 			break;
 	}
 }
@@ -227,27 +230,60 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 }
 
 
-unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p)
+unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player)
 {
 	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING))
 	{
 		ps->handle_id--;
-		if (ps->handle_id < 1) ps->handle_id = 1;
+		if (ps->handle_id < 0) ps->handle_id = 0;
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
 	{
 		ps->handle_id++;
-		if (ps->handle_id > 7) ps->handle_id = 7;
+		if (ps->handle_id > 9) ps->handle_id = 9;
 	}
 	else if ((p->pressed & BTN_A) && (ps->select_state == SELECTING))
 	{
 		ps->select_state = EDITING;
+		copyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
+	}
+	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
+	{
+		ps->char_index++;
+		if (ps->char_index > 2) ps->char_index = 2;
+	}
+	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING))
+	{
+		ps->char_index--;
+		if (ps->char_index < 0) ps->char_index = 0;
+	}
+	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
+	{
+		ps->handle[(unsigned char) ps->char_index]--;
+		if (ps->handle[(unsigned char) ps->char_index] < 'A') ps->handle[(unsigned char) ps->char_index] = 'A';
+	}
+	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
+	{
+		ps->handle[(unsigned char) ps->char_index]++;
+		if (ps->handle[(unsigned char) ps->char_index] > 'Z') ps->handle[(unsigned char) ps->char_index] = 'Z';
+	}
+	else if ((p->pressed & BTN_A) && (ps->select_state == EDITING))
+	{
+		player->handle_id = ps->handle_id;
+		copyChars(player->handle, ps->handle, 3);
+		copyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
+		save_eeprom(&handles);
+		ps->select_state = CONFIRMED;
 	}
 	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING))
 	{
 		ps->select_state = SELECTING;
 	}
-	else if ((p->pressed & BTN_SELECT))
+	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED))
+		{
+			ps->select_state = EDITING;
+		}
+	else if ((p->pressed & BTN_X))
 	{
 		fade_through();
 		game.current_screen = SPLASH;
@@ -258,39 +294,45 @@ unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p)
 
 void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigned char x_offset, unsigned char idx)
 {
+	unsigned char tmp[3] = {' ', ' ', ' '};
 	if (ps->select_state == SELECTING)
 	{
 		MapSprite(idx, map_ball);
-		MoveSprite(idx, x_offset*8, (6 + ps->handle_id)*8, 1, 1);
+		MoveSprite(idx, x_offset*8, (7 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
 	{
 		MapSprite(idx, map_ball);
 		MapSprite(idx+1, map_ball);
-		MoveSprite(idx, (x_offset+4)*8, (6 + ps->handle_id - 1)*8, 1, 1);
-		MoveSprite(idx+1, (x_offset+4)*8, (6 + ps->handle_id + 1)*8, 1, 1);
+		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id - 1)*8, 1, 1);
+		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id + 1)*8, 1, 1);
+		copyChars(tmp, ps->handle, 3);
 	}
+	else if (ps->select_state == CONFIRMED)
+	{
+		PrintChar(x_offset+6, 4, '(');
+		PrintChar(x_offset+7, 4, ps->handle[0]);
+		PrintChar(x_offset+8, 4, ps->handle[1]);
+		PrintChar(x_offset+9, 4, ps->handle[2]);
+		PrintChar(x_offset+10, 4, ')');
+	}
+	PrintChar((x_offset+5), (7 + ps->handle_id), tmp[0]);
+	PrintChar((x_offset+6), (7 + ps->handle_id), tmp[1]);
+	PrintChar((x_offset+7), (7 + ps->handle_id), tmp[2]);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 {
 	unsigned char do_render = 0;
-	static HandleSelectState p1s = {
-		.handle_id = 1,
-		.char_index = 0,
-		.select_state = SELECTING,
-	};
-	static HandleSelectState p2s = {
-		.handle_id = 1,
-		.char_index = 0,
-		.select_state = SELECTING,
-	};
+	unsigned char start_game = 0;
 
 	// Update
-	do_render = _handle_select_helper(&p1s, p1);
-	if (game.selection == PVP)
+	do_render = _handle_select_helper(&p1s, p1, &player1);
+	if (p1s.select_state == CONFIRMED) start_game = 1;
+	if ((game.selection == PVP) && (do_render))
 	{
-		do_render = _handle_select_helper(&p2s, p2);
+		do_render = _handle_select_helper(&p2s, p2, &player2);
+		if (p2s.select_state != CONFIRMED) start_game = 0;
 	}
 
 	// Render
@@ -315,18 +357,23 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		Print(21, 4, strPlayer2);
 		Print(1, 5, strUnderline);
 		Print(18, 5, strUnderline);
-		for (int i = 0; i < 28; i += 1)
+		for (int i = 0; i < 30; i += 1)
 		{
-			if ((i % 4) == 0) continue;
-			PrintChar((i % 4) + 1, 7 + (i / 4), handles.data[i]);
-			PrintChar(18 + (i % 4), 7 + (i / 4), handles.data[i]);
+			PrintChar((i % 3) + 2, 7 + (i / 3), handles.data[i]);
+			PrintChar(19 + (i % 3), 7 + (i / 3), handles.data[i]);
 		}
 
 		// Instructions
-		Print(8, 20, strSelectHandle);
-		Print(8, 21, strConfirmHandle);
-		Print(8, 22, strCancelHandle);
-		Print(8, 23, strChangeHandle);
+		Print(7, 20, strSelectHandle);
+		Print(7, 21, strConfirmHandle);
+		Print(7, 22, strCancelHandle);
+		Print(7, 23, strChangeHandle);
+	}
+
+	// Start Game
+	if (start_game)
+	{
+
 	}
 }
 

@@ -36,7 +36,8 @@ typedef struct sShot {
 } Shot;
 
 typedef struct sPlayer {
-	char handle[3];
+	char handle_id;
+	unsigned char handle[3];
 	unsigned char score;
 	unsigned char level_score;
 	unsigned char active_shots;
@@ -49,9 +50,9 @@ typedef struct sPlayer {
 } Player;
 
 typedef struct sHandleSelectState {
-	unsigned char handle_id;
+	char handle_id;
 	unsigned char handle[3];
-	unsigned char char_index;
+	char char_index;
 	unsigned char select_state;
 } HandleSelectState;
 

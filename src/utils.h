@@ -28,4 +28,15 @@ void getJoyPadState(JoyPadState* p1, JoyPadState* p2)
 	p2_prev = p2->held;
 }
 
+void copyChars(unsigned char* dst, unsigned char *src, unsigned char count)
+/*
+ * Custom string copy
+ */
+{
+	for (unsigned char i = 0; i < count; i++)
+	{
+		dst[i] = src[i];
+	}
+}
+
 #endif
