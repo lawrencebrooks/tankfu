@@ -10,7 +10,7 @@ typedef struct sJoyPadState {
 	unsigned int held;
 } JoyPadState;
 
-void getJoyPadState(JoyPadState* p1, JoyPadState* p2)
+void LBGetJoyPadState(JoyPadState* p1, JoyPadState* p2)
 /*
  * Get the current joy pad button state for p1 and p2
  */
@@ -28,7 +28,7 @@ void getJoyPadState(JoyPadState* p1, JoyPadState* p2)
 	p2_prev = p2->held;
 }
 
-void copyChars(unsigned char* dst, unsigned char *src, unsigned char count)
+void LBCopyChars(unsigned char* dst, unsigned char *src, unsigned char count)
 /*
  * Custom string copy
  */
@@ -36,6 +36,14 @@ void copyChars(unsigned char* dst, unsigned char *src, unsigned char count)
 	for (unsigned char i = 0; i < count; i++)
 	{
 		dst[i] = src[i];
+	}
+}
+
+void LBPrintStr(unsigned char x, unsigned char y, unsigned char* txt, unsigned char count)
+{
+	for (unsigned char i = 0; i < count; i++)
+	{
+		PrintChar(x+i, y, txt[i]);
 	}
 }
 

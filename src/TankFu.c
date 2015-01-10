@@ -208,6 +208,12 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.current_screen = HANDLE_SELECT;
 		return;
 	}
+	else if ((p1->pressed & BTN_A) && (game.selection == TR))
+	{
+		fade_through();
+		load_eeprom(&scores);
+		game.current_screen = TANK_RANK;
+	}
 
 	// Render
 	switch (game.selection)
@@ -226,7 +232,37 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 {
+	unsigned char y = 7;
+	unsigned char rank = 1;
 
+	// Update
+	if (p1->pressed & BTN_X)
+	{
+		fade_through();
+		game.current_screen = SPLASH;
+		return;
+	}
+	// Render
+	clear_sprites();
+	MapSprite(0, map_tank1_up_0);
+	MapSprite(4, map_tank2_up_0);
+	MoveSprite(0, 7*8, 1*8, 2, 2);
+	MoveSprite(4, 20*8, 1*8, 2, 2);
+	Print(10, 2, strHighscores);
+	for (unsigned char i = 0; i < 20; i += 4)
+	{
+		PrintByte(2, y, rank, false);
+		PrintChar(3, y, '.');
+		LBPrintStr(5, y, &handles.data[scores.data[i]*3], 3);
+		Print(9, y, strOwns);
+		LBPrintStr(14, y, &handles.data[scores.data[i+1]*3], 3);
+		Print(18, y, strBy);
+		PrintByte(23, y, scores.data[i+2] ,true);
+		PrintChar(24, y, '-');
+		PrintByte(27, y, scores.data[i+3] ,true);
+		y += 3;
+		rank += 1;
+	}
 }
 
 
@@ -245,7 +281,7 @@ unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Playe
 	else if ((p->pressed & BTN_A) && (ps->select_state == SELECTING))
 	{
 		ps->select_state = EDITING;
-		copyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
+		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
 	}
 	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
 	{
@@ -270,8 +306,8 @@ unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Playe
 	else if ((p->pressed & BTN_A) && (ps->select_state == EDITING))
 	{
 		player->handle_id = ps->handle_id;
-		copyChars(player->handle, ps->handle, 3);
-		copyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
+		LBCopyChars(player->handle, ps->handle, 3);
+		LBCopyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
 	}
@@ -306,19 +342,15 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigne
 		MapSprite(idx+1, map_ball);
 		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id - 1)*8, 1, 1);
 		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id + 1)*8, 1, 1);
-		copyChars(tmp, ps->handle, 3);
+		LBCopyChars(tmp, ps->handle, 3);
 	}
 	else if (ps->select_state == CONFIRMED)
 	{
 		PrintChar(x_offset+6, 4, '(');
-		PrintChar(x_offset+7, 4, ps->handle[0]);
-		PrintChar(x_offset+8, 4, ps->handle[1]);
-		PrintChar(x_offset+9, 4, ps->handle[2]);
+		LBPrintStr(x_offset+7, 4, ps->handle, 3);
 		PrintChar(x_offset+10, 4, ')');
 	}
-	PrintChar((x_offset+5), (7 + ps->handle_id), tmp[0]);
-	PrintChar((x_offset+6), (7 + ps->handle_id), tmp[1]);
-	PrintChar((x_offset+7), (7 + ps->handle_id), tmp[2]);
+	LBPrintStr(x_offset+5, (7 + ps->handle_id), tmp, 3);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -343,24 +375,24 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		MapSprite(4, map_tank2_up_0);
 
 		// Position sprites
-		MoveSprite(0, 1*8, 3*8, 2, 2);
-		MoveSprite(4, 18*8, 3*8, 2, 2);
-		_handle_select_render_helper(&p1s, p1, 1, 8);
+		MoveSprite(0, 3*8, 3*8, 2, 2);
+		MoveSprite(4, 20*8, 3*8, 2, 2);
+		_handle_select_render_helper(&p1s, p1, 2, 8);
 		if (game.selection == PVP)
 		{
-			_handle_select_render_helper(&p2s, p2, 18, 10);
+			_handle_select_render_helper(&p2s, p2, 19, 10);
 		}
 
 		// Print
 		Print(4, 1, strHandlesTitle);
-		Print(4, 4, strPlayer1);
-		Print(21, 4, strPlayer2);
-		Print(1, 5, strUnderline);
-		Print(18, 5, strUnderline);
+		Print(6, 4, strPlayer1);
+		Print(23, 4, strPlayer2);
+		//Print(1, 5, strUnderline);
+		//Print(18, 5, strUnderline);
 		for (int i = 0; i < 30; i += 1)
 		{
-			PrintChar((i % 3) + 2, 7 + (i / 3), handles.data[i]);
-			PrintChar(19 + (i % 3), 7 + (i / 3), handles.data[i]);
+			PrintChar((i % 3) + 3, 7 + (i / 3), handles.data[i]);
+			PrintChar(20 + (i % 3), 7 + (i / 3), handles.data[i]);
 		}
 
 		// Instructions
@@ -394,7 +426,7 @@ int main()
 	while (1)
 	{
 		WaitVsync(1);
-		getJoyPadState(&p1, &p2);
+		LBGetJoyPadState(&p1, &p2);
 		switch (game.current_screen)
 		{
 			case SPLASH:
