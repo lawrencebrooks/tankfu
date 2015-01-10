@@ -334,23 +334,23 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigne
 	if (ps->select_state == SELECTING)
 	{
 		MapSprite(idx, map_ball);
-		MoveSprite(idx, x_offset*8, (7 + ps->handle_id)*8, 1, 1);
+		MoveSprite(idx, x_offset*8, (8 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
 	{
 		MapSprite(idx, map_ball);
 		MapSprite(idx+1, map_ball);
-		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id - 1)*8, 1, 1);
-		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (7 + ps->handle_id + 1)*8, 1, 1);
+		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id - 1)*8, 1, 1);
+		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id + 1)*8, 1, 1);
 		LBCopyChars(tmp, ps->handle, 3);
 	}
 	else if (ps->select_state == CONFIRMED)
 	{
-		PrintChar(x_offset+6, 4, '(');
-		LBPrintStr(x_offset+7, 4, ps->handle, 3);
-		PrintChar(x_offset+10, 4, ')');
+		PrintChar(x_offset+6, 5, '(');
+		LBPrintStr(x_offset+7, 5, ps->handle, 3);
+		PrintChar(x_offset+10, 5, ')');
 	}
-	LBPrintStr(x_offset+5, (7 + ps->handle_id), tmp, 3);
+	LBPrintStr(x_offset+5, (8 + ps->handle_id), tmp, 3);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -375,8 +375,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		MapSprite(4, map_tank2_up_0);
 
 		// Position sprites
-		MoveSprite(0, 3*8, 3*8, 2, 2);
-		MoveSprite(4, 20*8, 3*8, 2, 2);
+		MoveSprite(0, 3*8, 4*8, 2, 2);
+		MoveSprite(4, 20*8, 4*8, 2, 2);
 		_handle_select_render_helper(&p1s, p1, 2, 8);
 		if (game.selection == PVP)
 		{
@@ -384,22 +384,22 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		}
 
 		// Print
-		Print(4, 1, strHandlesTitle);
-		Print(6, 4, strPlayer1);
-		Print(23, 4, strPlayer2);
+		Print(9, 1, strHandlesTitle);
+		Print(6, 5, strPlayer1);
+		Print(23, 5, strPlayer2);
 		//Print(1, 5, strUnderline);
 		//Print(18, 5, strUnderline);
 		for (int i = 0; i < 30; i += 1)
 		{
-			PrintChar((i % 3) + 3, 7 + (i / 3), handles.data[i]);
-			PrintChar(20 + (i % 3), 7 + (i / 3), handles.data[i]);
+			PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
+			PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 		}
 
 		// Instructions
-		Print(7, 20, strSelectHandle);
-		Print(7, 21, strConfirmHandle);
-		Print(7, 22, strCancelHandle);
-		Print(7, 23, strChangeHandle);
+		Print(8, 21, strSelectHandle);
+		Print(8, 22, strConfirmHandle);
+		Print(8, 23, strCancelHandle);
+		Print(8, 24, strChangeHandle);
 	}
 
 	// Start Game
