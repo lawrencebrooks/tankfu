@@ -43,6 +43,8 @@ typedef struct sPlayer {
 	unsigned char active_shots;
 	unsigned char x;
 	unsigned char y;
+	unsigned char spawn_x;
+	unsigned char spawn_y;
 	unsigned char moving_direction;
 	unsigned char player_state;
 	Shot shot[2];

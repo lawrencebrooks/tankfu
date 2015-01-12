@@ -23,9 +23,6 @@
 #define HANDLE_SELECT 2
 #define LEVEL 3
 
-// Level macros
-#define LEVEL_COUNT 1
-
 // Selections
 #define PVCPU 0
 #define PVP 1
@@ -147,7 +144,7 @@ void save_eeprom(struct EepromBlockStruct* block)
 	EepromWriteBlock(block);
 }
 
-void resetGameState(Game* s)
+void reset_game_state(Game* s)
 {
 	s->current_screen = SPLASH;
 	s->current_level = 0;
@@ -155,22 +152,22 @@ void resetGameState(Game* s)
 	s->selection = PVCPU;
 }
 
-void resetPlayerState(Player* s)
+void reset_player_state(Player* s)
 {
 
 }
 
-void resetLevelSate(Level* s)
+void reset_level_state(Level* s)
 {
 
 }
 
-void resetShotState(Shot* s)
+void reset_shot_state(Shot* s)
 {
 
 }
 
-void resetAnimState(Animation* s)
+void reset_anim_state(Animation* s)
 {
 
 }
@@ -387,8 +384,6 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		Print(9, 1, strHandlesTitle);
 		Print(6, 5, strPlayer1);
 		Print(23, 5, strPlayer2);
-		//Print(1, 5, strUnderline);
-		//Print(18, 5, strUnderline);
 		for (int i = 0; i < 30; i += 1)
 		{
 			PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
@@ -405,13 +400,28 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	// Start Game
 	if (start_game)
 	{
+		load_level(0);
+	}
+}
 
+void load_level(unsigned char level_number)
+{
+	unsigned int level_start = level_number*30*25;
+
+	fade_through();
+	game.current_screen = LEVEL;
+	game.current_level = 0;
+	game.level_count = LEVEL_COUNT;
+	for (unsigned int i = 0; i < 30*25; i++)
+	{
+		level.level_map[i] = levels[level_start+i];
 	}
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
-
+	// Update
+	// Render
 }
 
 int main()
@@ -421,7 +431,7 @@ int main()
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
-	resetGameState(&game);
+	reset_game_state(&game);
 
 	while (1)
 	{
