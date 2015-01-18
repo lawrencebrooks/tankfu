@@ -9,6 +9,7 @@ typedef struct sGameState {
 	unsigned char current_screen;
 	unsigned char current_level;
 	unsigned char level_count;
+	unsigned char paused;
 	char selection;
 } Game;
 
@@ -47,6 +48,8 @@ typedef struct sPlayer {
 	unsigned char spawn_y;
 	unsigned char moving_direction;
 	unsigned char player_state;
+	unsigned char banter_frame;
+	unsigned char banter_index;
 	Shot shot[2];
 	Animation animation;
 } Player;

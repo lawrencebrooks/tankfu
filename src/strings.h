@@ -14,10 +14,10 @@ const char strUnderline[] PROGMEM="___________";
 const char strVertSep[] PROGMEM="|";
 const char strPlayer1 [] PROGMEM="P1";
 const char strPlayer2 [] PROGMEM="P2";
-const char strSelectHandle [] PROGMEM= "Select  - A";
+const char strSelectHandle [] PROGMEM= "Select - A";
 const char strConfirmHandle [] PROGMEM="Confirm - A";
-const char strCancelHandle [] PROGMEM= "Cancel  - X";
-const char strChangeHandle [] PROGMEM= "Edit  - UP/DOWN";
+const char strCancelHandle [] PROGMEM= "Cancel - X";
+const char strChangeHandle [] PROGMEM= "Edit - UP/DOWN";
 const char strOwns [] PROGMEM = "Pwns";
 const char strBy [] PROGMEM = "By";
 
@@ -31,11 +31,14 @@ const char strB6[] PROGMEM="*YAWN*";
 const char strB7[] PROGMEM="A turkey shoot";
 const char strB8[] PROGMEM="That's it?";
 const char strB9[] PROGMEM="Need help?";
-const char strB10[] PROGMEM="Read the manual";
+const char strB10[] PROGMEM="RTFM!";
+const char strBanterClear[] PROGMEM="              ";
 
 // In-Game
 const char strScore [] PROGMEM = "Score:";
 const char strTotal [] PROGMEM = "Total:";
+const char strExit [] PROGMEM = "Bail - X";
+const char strPaused [] PROGMEM = "Paused";
 const char* banter_map[] = {
 		strB1,
 		strB2,

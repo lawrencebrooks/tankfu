@@ -28,8 +28,9 @@
 #define PVP 1
 #define TR 2
 
-// Fade
+// Frame counts
 #define FRAMES_PER_FADE 3
+#define FRAMES_PER_BANTER 30
 
 // Handle select states
 #define SELECTING 0
@@ -40,11 +41,23 @@
 #define MAX_SPRITES 13
 
 // Globals
-Game game;
+Game game = {
+	.paused = 0
+};
 JoyPadState p1;
 JoyPadState p2;
-Player player1;
-Player player2;
+Player player1 = {
+	.banter_frame = FRAMES_PER_BANTER,
+	.banter_index = 0,
+	.score = 0,
+	.level_score = 0
+};
+Player player2 = {
+	.banter_frame = FRAMES_PER_BANTER,
+	.banter_index = 0,
+	.score = 0,
+	.level_score = 0
+};
 Level level;
 struct EepromBlockStruct handles = {
 	.id = EEPROM_HANDLES_ID,
@@ -101,6 +114,22 @@ HandleSelectState p2s = {
 	.char_index = 0,
 	.select_state = SELECTING,
 };
+int random_seed;
+
+int random(int from, int to)
+/*
+ * Return a random number between 'from' and 'to'.
+ */
+{
+	static unsigned char shift_count = 0;
+	int shifted = random_seed >> shift_count;
+	int delta = to - from;
+
+	shift_count++;
+	if (shift_count >= 16) shift_count = 0;
+
+	return from + ((delta + shifted) % delta);
+}
 
 void load_eeprom(struct EepromBlockStruct* block)
 /*
@@ -144,22 +173,12 @@ void save_eeprom(struct EepromBlockStruct* block)
 	EepromWriteBlock(block);
 }
 
-void reset_game_state(Game* s)
-{
-	s->current_screen = SPLASH;
-	s->current_level = 0;
-	s->level_count = LEVEL_COUNT;
-	s->selection = PVCPU;
-}
-
 void reset_player_state(Player* s)
 {
-
-}
-
-void reset_level_state(Level* s)
-{
-
+	s->banter_frame = FRAMES_PER_BANTER;
+	s->banter_index = 0;
+	s->score = 0;
+	s->level_score = 0;
 }
 
 void reset_shot_state(Shot* s)
@@ -170,6 +189,17 @@ void reset_shot_state(Shot* s)
 void reset_anim_state(Animation* s)
 {
 
+}
+
+void reset_game_state()
+{
+	game.current_screen = SPLASH;
+	game.current_level = 0;
+	game.level_count = LEVEL_COUNT;
+	game.selection = PVCPU;
+	game.paused = 0;
+	reset_player_state(&player1);
+	reset_player_state(&player2);
 }
 
 void load_level(int level_number)
@@ -184,37 +214,147 @@ void load_level(int level_number)
 	{
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
 	}
+	player1.level_score = 0;
+	player2.level_score = 0;
 	clear_sprites();
+}
+
+void save_score()
+{
+	unsigned char cur_delta = 0;
+	unsigned char tmp_score[4];
+	unsigned char save_score[4];
+	unsigned char save_delta = 0;
+	unsigned char saved = 0;
+	Player* p_win = &player1;
+	Player* p_lose = &player2;
+
+	if (player1.score < player2.score)
+	{
+		p_win = &player2;
+		p_lose = &player1;
+	}
+	save_score[0] = p_win->handle_id;
+	save_score[1] = p_lose->handle_id;
+	save_score[2] = p_win->score;
+	save_score[3] = p_lose->score;
+	save_delta = p_win->score - p_lose->score;
+
+	for (unsigned char i = 0; i < 28; i += 4)
+	{
+		if (saved)
+		{
+			LBCopyChars(tmp_score, &scores.data[i], 4);
+			LBCopyChars(&scores.data[i], save_score, 4);
+			LBCopyChars(save_score, tmp_score, 4);
+		}
+		else
+		{
+			cur_delta = scores.data[i+2] - scores.data[i+3];
+			if (save_delta > cur_delta)
+			{
+				LBCopyChars(tmp_score, &scores.data[i], 4);
+				LBCopyChars(&scores.data[i], save_score, 4);
+				LBCopyChars(save_score, tmp_score, 4);
+				saved = 1;
+			}
+		}
+	}
+	save_eeprom(&scores);
+}
+
+unsigned char update_level_helper(JoyPadState* p, Player* player)
+{
+	if ((p->pressed & BTN_START))
+	{
+		game.paused = game.paused ^ 1;
+	}
+	if (!game.paused)
+	{
+		if ((p->pressed & BTN_SR) && (player->banter_frame == FRAMES_PER_BANTER))
+		{
+			player->banter_frame = 0;
+			player->banter_index = (unsigned char) random(0, 9);
+		}
+	}
+	else
+	{
+		if (p->pressed & BTN_X)
+		{
+			save_score();
+			fade_through();
+			reset_game_state();
+			game.current_screen = TANK_RANK;
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void render_score(Player* player, unsigned char x, unsigned char banter_x)
+{
+	LBPrintStr(x+10, 0, player->handle, 3);
+	Print(x, 0, strScore);
+	PrintByte(x+8, 0, player->level_score, false);
+	Print(x, 1, strTotal);
+	PrintByte(x+8, 1, player->score, false);
+
+	// Banter
+	if (player->banter_frame != FRAMES_PER_BANTER)
+	{
+		Print(banter_x, 2, banter_map[player->banter_index]);
+		player->banter_frame++;
+	}
+	else
+	{
+		Print(banter_x, 2, strBanterClear);
+	}
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
+	unsigned char do_render = 0;
+
 	// Update
-	// Render
-	LBPrintStr(9, 0, player1.handle, 3);
-	LBPrintStr(24, 0, player2.handle, 3);
-	Print(14, 0, strVertSep);
-	Print(14, 1, strVertSep);
-	Print(14, 2, strVertSep);
-	Print(0, 0, strScore);
-	Print(0, 1, strTotal);
-	Print(15, 0, strScore);
-	Print(15, 1, strTotal);
-	for(unsigned int i = 0; i < 30*25; i++)
+	do_render = update_level_helper(p1, &player1);
+	if (do_render)
 	{
-		// DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick);
-		switch (level.level_map[i])
+		do_render = update_level_helper(p2, &player2);
+	}
+
+	// Render
+	if (do_render)
+	{
+		render_score(&player1, 0, 15);
+		render_score(&player2, 15, 0);
+		Print(14, 0, strVertSep);
+		Print(14, 1, strVertSep);
+		Print(14, 2, strVertSep);
+
+		if (game.paused)
 		{
-			case L_BRICK: DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick); break;
-			case L_METAL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal); break;
-			case L_TL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tl); break;
-			case L_TR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tr); break;
-			case L_BL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_bl); break;
-			case L_BR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_br); break;
-			case L_SPEED: DrawMap2(i % 30, 3 + i / 30, (const char*) map_speed_itm); break;
-			case L_EXPLODE: DrawMap2(i % 30, 3 + i / 30, (const char*) map_explode_itm); break;
-			case L_ROCKET: DrawMap2(i % 30, 3 + i / 30, (const char*) map_rocket_itm); break;
-			default : break;
+			DrawMap2(8, 12, (const char*) map_pause);
+			Print(12, 13, strPaused);
+			Print(11, 14, strExit);
+		}
+		else
+		{
+			for(unsigned int i = 0; i < 30*25; i++)
+			{
+				switch (level.level_map[i])
+				{
+					case L_BRICK: DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick); break;
+					case L_METAL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal); break;
+					case L_TL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tl); break;
+					case L_TR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tr); break;
+					case L_BL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_bl); break;
+					case L_BR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_br); break;
+					case L_SPEED: DrawMap2(i % 30, 3 + i / 30, (const char*) map_speed_itm); break;
+					case L_EXPLODE: DrawMap2(i % 30, 3 + i / 30, (const char*) map_explode_itm); break;
+					case L_ROCKET: DrawMap2(i % 30, 3 + i / 30, (const char*) map_rocket_itm); break;
+					default : SetTile(i % 30, 3 + i / 30, 0); break;
+				}
+			}
 		}
 	}
 }
@@ -257,6 +397,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		fade_through();
 		load_eeprom(&scores);
 		game.current_screen = TANK_RANK;
+		return;
 	}
 
 	// Render
@@ -272,6 +413,9 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			MoveSprite(0, 6*8, 15*8, 1, 1);
 			break;
 	}
+
+	// Instructions
+	Print(9, 21, strSelectHandle);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
@@ -307,6 +451,9 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 		y += 3;
 		rank += 1;
 	}
+
+	// Instructions
+	Print(10, 23, strCancelHandle);
 }
 
 
@@ -456,14 +603,21 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
+int get_random_seed()
+{
+	// Needs replacing with actual random seed.
+	return 32767;
+}
+
 int main()
 {
 	// Initialize
+	random_seed = get_random_seed();
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
-	reset_game_state(&game);
+	reset_game_state();
 
 	while (1)
 	{
@@ -481,6 +635,7 @@ int main()
 				update_handle_select(&p1, &p2);
 				break;
 			case LEVEL:
+				/* p2 should be replaced by AI input for Player v CPU */
 				update_level(&p1, &p2);
 				break;
 			default:
