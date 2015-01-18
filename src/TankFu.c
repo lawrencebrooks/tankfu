@@ -57,7 +57,7 @@ struct EepromBlockStruct handles = {
 	// 7. EEE
 	// 8. FFF
 	// 9. GGG
-	// 10. HHH
+	// 10. CPU
 	.data = {
 		0x55, 0x5a, 0x45,
 		0x4c, 0x4a, 0x42,
@@ -68,7 +68,7 @@ struct EepromBlockStruct handles = {
 		0x45, 0x45, 0x45,
 		0x46, 0x46, 0x46,
 		0x47, 0x47, 0x47,
-		0x48, 0x48, 0x48,
+		0x43, 0x50, 0x55,
 	}
 };
 struct EepromBlockStruct scores = {
@@ -172,6 +172,53 @@ void reset_anim_state(Animation* s)
 
 }
 
+void load_level(int level_number)
+{
+    int level_start = level_number*30*25;
+
+	fade_through();
+	game.current_screen = LEVEL;
+	game.current_level = 0;
+	game.level_count = LEVEL_COUNT;
+	for (int i = 0; i < 30*25; i++)
+	{
+		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
+	}
+	clear_sprites();
+}
+
+void update_level(JoyPadState* p1, JoyPadState* p2)
+{
+	// Update
+	// Render
+	LBPrintStr(9, 0, player1.handle, 3);
+	LBPrintStr(24, 0, player2.handle, 3);
+	Print(14, 0, strVertSep);
+	Print(14, 1, strVertSep);
+	Print(14, 2, strVertSep);
+	Print(0, 0, strScore);
+	Print(0, 1, strTotal);
+	Print(15, 0, strScore);
+	Print(15, 1, strTotal);
+	for(unsigned int i = 0; i < 30*25; i++)
+	{
+		// DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick);
+		switch (level.level_map[i])
+		{
+			case L_BRICK: DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick); break;
+			case L_METAL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal); break;
+			case L_TL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tl); break;
+			case L_TR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tr); break;
+			case L_BL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_bl); break;
+			case L_BR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_br); break;
+			case L_SPEED: DrawMap2(i % 30, 3 + i / 30, (const char*) map_speed_itm); break;
+			case L_EXPLODE: DrawMap2(i % 30, 3 + i / 30, (const char*) map_explode_itm); break;
+			case L_ROCKET: DrawMap2(i % 30, 3 + i / 30, (const char*) map_rocket_itm); break;
+			default : break;
+		}
+	}
+}
+
 void update_splash(JoyPadState* p1, JoyPadState* p2)
 /*
  * Splash or title screen
@@ -273,7 +320,7 @@ unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Playe
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
 	{
 		ps->handle_id++;
-		if (ps->handle_id > 9) ps->handle_id = 9;
+		if (ps->handle_id > 8) ps->handle_id = 8;
 	}
 	else if ((p->pressed & BTN_A) && (ps->select_state == SELECTING))
 	{
@@ -384,7 +431,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		Print(9, 1, strHandlesTitle);
 		Print(6, 5, strPlayer1);
 		Print(23, 5, strPlayer2);
-		for (int i = 0; i < 30; i += 1)
+		for (int i = 0; i < 27; i += 1)
 		{
 			PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 			PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
@@ -400,28 +447,13 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	// Start Game
 	if (start_game)
 	{
+		if (game.selection == PVCPU)
+		{
+			player2.handle_id = 9;
+			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+		}
 		load_level(0);
 	}
-}
-
-void load_level(unsigned char level_number)
-{
-	unsigned int level_start = level_number*30*25;
-
-	fade_through();
-	game.current_screen = LEVEL;
-	game.current_level = 0;
-	game.level_count = LEVEL_COUNT;
-	for (unsigned int i = 0; i < 30*25; i++)
-	{
-		level.level_map[i] = levels[level_start+i];
-	}
-}
-
-void update_level(JoyPadState* p1, JoyPadState* p2)
-{
-	// Update
-	// Render
 }
 
 int main()

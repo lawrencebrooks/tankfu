@@ -11,6 +11,7 @@ const char str2Player [] PROGMEM="Player vs Player";
 const char strHighscores [] PROGMEM="Tank Rank";
 const char strHandlesTitle [] PROGMEM="Edit Handle";
 const char strUnderline[] PROGMEM="___________";
+const char strVertSep[] PROGMEM="|";
 const char strPlayer1 [] PROGMEM="P1";
 const char strPlayer2 [] PROGMEM="P2";
 const char strSelectHandle [] PROGMEM= "Select  - A";
@@ -32,6 +33,9 @@ const char strB8[] PROGMEM="That's it?";
 const char strB9[] PROGMEM="Need help?";
 const char strB10[] PROGMEM="Read the manual";
 
+// In-Game
+const char strScore [] PROGMEM = "Score:";
+const char strTotal [] PROGMEM = "Total:";
 const char* banter_map[] = {
 		strB1,
 		strB2,

@@ -85,7 +85,7 @@ const char map_metal_tr[] PROGMEM ={
 #define MAP_METAL_BL_HEIGHT 1
 const char map_metal_bl[] PROGMEM ={
 1,1
-,0x9};
+,0xc};
 
 #define TILES_DATA_SIZE 47
 const char tiles_data[] PROGMEM={
