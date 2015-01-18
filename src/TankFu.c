@@ -215,6 +215,16 @@ void reset_game_state()
 	reset_player_state(&player2);
 }
 
+void player_level_init(Player* player)
+{
+	player->level_score = 0;
+	player->grace_frame = 0;
+	player->x = player->spawn_x;
+	player->y = player->spawn_y;
+	player->direction = D_UP;
+	player->speed = 0;
+}
+
 void load_level(int level_number)
 {
     int level_start = level_number*30*25;
@@ -240,16 +250,6 @@ void load_level(int level_number)
 		}
 	}
 	clear_sprites();
-}
-
-void player_level_init(Player* player, unsigned char x, unsigned char y)
-{
-	player->level_score = 0;
-	player->grace_frame = 0;
-	player->x = player->spawn_x;
-	player->y = player->spawn_y;
-	player->direction = D_UP;
-	player->speed = 0;
 }
 
 void save_score()
@@ -357,8 +357,8 @@ void get_tank_maps(unsigned char** t1_map, unsigned char** t2_map)
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	unsigned char do_render = 0;
-	unsigned char* tank1_map;
-	unsigned char* tank2_map;
+	unsigned char* tank1_map = 0;
+	unsigned char* tank2_map = 0;
 
 	// Update
 	do_render = update_level_helper(p1, &player1);
@@ -379,8 +379,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		else
 		{
 			get_tank_maps(&tank1_map, &tank2_map);
-			MapSprite(0, tank1_map);
-			MapSprite(1, tank2_map);
+			MapSprite(0, (const char*) tank1_map);
+			MapSprite(1, (const char*) tank2_map);
 			render_player(&player1, 0);
 			render_player(&player2, 1);
 			render_score(&player1, 0, 15);

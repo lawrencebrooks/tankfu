@@ -17,7 +17,7 @@
 #define L_EXPLODE 8
 #define L_ROCKET 9
 #define L_P1_SPAWN 88
-#define L_P2_SPAN 99
+#define L_P2_SPAWN 99
 
 const unsigned char level_data [] PROGMEM={
 
