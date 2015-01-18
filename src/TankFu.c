@@ -31,11 +31,18 @@
 // Frame counts
 #define FRAMES_PER_FADE 3
 #define FRAMES_PER_BANTER 30
+#define FRAMES_PER_GRACE 10
 
 // Handle select states
 #define SELECTING 0
 #define EDITING 1
 #define CONFIRMED 2
+
+// Direction
+#define D_UP 0
+#define D_RIGHT 1
+#define D_DOWN 2
+#define D_LEFT 3
 
 // General macros
 #define MAX_SPRITES 13
@@ -48,15 +55,21 @@ JoyPadState p1;
 JoyPadState p2;
 Player player1 = {
 	.banter_frame = FRAMES_PER_BANTER,
+	.grace_frame = FRAMES_PER_GRACE,
 	.banter_index = 0,
 	.score = 0,
-	.level_score = 0
+	.level_score = 0,
+	.direction = D_UP,
+	.speed = 0
 };
 Player player2 = {
 	.banter_frame = FRAMES_PER_BANTER,
+	.grace_frame = FRAMES_PER_GRACE,
 	.banter_index = 0,
 	.score = 0,
-	.level_score = 0
+	.level_score = 0,
+	.direction = D_UP,
+	.speed = 0
 };
 Level level;
 struct EepromBlockStruct handles = {
@@ -213,10 +226,30 @@ void load_level(int level_number)
 	for (int i = 0; i < 30*25; i++)
 	{
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
+		if (level.level_map[i] == L_P1_SPAWN)
+		{
+			player1.spawn_x = (i % 30) * 8;
+			player1.spawn_y = (i / 30) * 8;
+			player_level_init(&player1);
+		}
+		if (level.level_map[i] == L_P2_SPAWN)
+		{
+			player2.spawn_x = (i % 30) * 8;
+			player2.spawn_y = (i / 30) * 8;
+			player_level_init(&player2);
+		}
 	}
-	player1.level_score = 0;
-	player2.level_score = 0;
 	clear_sprites();
+}
+
+void player_level_init(Player* player, unsigned char x, unsigned char y)
+{
+	player->level_score = 0;
+	player->grace_frame = 0;
+	player->x = player->spawn_x;
+	player->y = player->spawn_y;
+	player->direction = D_UP;
+	player->speed = 0;
 }
 
 void save_score()
@@ -311,9 +344,21 @@ void render_score(Player* player, unsigned char x, unsigned char banter_x)
 	}
 }
 
+void render_player(Player* player, unsigned char sprite_index)
+{
+	MoveSprite(sprite_index, player->x, player->y, 2, 2);
+}
+
+void get_tank_maps(unsigned char** t1_map, unsigned char** t2_map)
+{
+
+}
+
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	unsigned char do_render = 0;
+	unsigned char* tank1_map;
+	unsigned char* tank2_map;
 
 	// Update
 	do_render = update_level_helper(p1, &player1);
@@ -325,12 +370,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	// Render
 	if (do_render)
 	{
-		render_score(&player1, 0, 15);
-		render_score(&player2, 15, 0);
-		Print(14, 0, strVertSep);
-		Print(14, 1, strVertSep);
-		Print(14, 2, strVertSep);
-
 		if (game.paused)
 		{
 			DrawMap2(8, 12, (const char*) map_pause);
@@ -339,6 +378,17 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		}
 		else
 		{
+			get_tank_maps(&tank1_map, &tank2_map);
+			MapSprite(0, tank1_map);
+			MapSprite(1, tank2_map);
+			render_player(&player1, 0);
+			render_player(&player2, 1);
+			render_score(&player1, 0, 15);
+			render_score(&player2, 15, 0);
+			Print(14, 0, strVertSep);
+			Print(14, 1, strVertSep);
+			Print(14, 2, strVertSep);
+
 			for(unsigned int i = 0; i < 30*25; i++)
 			{
 				switch (level.level_map[i])

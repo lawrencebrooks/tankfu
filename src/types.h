@@ -46,10 +46,12 @@ typedef struct sPlayer {
 	unsigned char y;
 	unsigned char spawn_x;
 	unsigned char spawn_y;
-	unsigned char moving_direction;
+	unsigned char direction;
 	unsigned char player_state;
 	unsigned char banter_frame;
 	unsigned char banter_index;
+	unsigned char grace_frame;
+	unsigned char speed;
 	Shot shot[2];
 	Animation animation;
 } Player;
