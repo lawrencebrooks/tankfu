@@ -5,6 +5,12 @@
  * Tile height: 8px
  * Output format: (null)
  */
+#define MAP_TANK_BLANK_WIDTH 2
+#define MAP_TANK_BLANK_HEIGHT 2
+const char map_tank_blank[] PROGMEM ={
+2,2
+,0x27,0x27,0x27,0x27}; 
+ 
 #define MAP_NONE_WIDTH 1
 #define MAP_NONE_HEIGHT 1
 const char map_none[] PROGMEM ={

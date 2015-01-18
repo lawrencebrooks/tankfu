@@ -30,7 +30,7 @@
 
 // Frame counts
 #define FRAMES_PER_FADE 3
-#define FRAMES_PER_BANTER 30
+#define FRAMES_PER_BANTER 10
 #define FRAMES_PER_GRACE 10
 
 // Handle select states
@@ -239,13 +239,13 @@ void load_level(int level_number)
 		if (level.level_map[i] == L_P1_SPAWN)
 		{
 			player1.spawn_x = (i % 30) * 8;
-			player1.spawn_y = (i / 30) * 8;
+			player1.spawn_y = (i / 30) * 8 + 3*8;
 			player_level_init(&player1);
 		}
 		if (level.level_map[i] == L_P2_SPAWN)
 		{
 			player2.spawn_x = (i % 30) * 8;
-			player2.spawn_y = (i / 30) * 8;
+			player2.spawn_y = (i / 30) * 8 + 3*8;
 			player_level_init(&player2);
 		}
 	}
@@ -349,16 +349,32 @@ void render_player(Player* player, unsigned char sprite_index)
 	MoveSprite(sprite_index, player->x, player->y, 2, 2);
 }
 
-void get_tank_maps(unsigned char** t1_map, unsigned char** t2_map)
+void get_tank_map(Player* player, char** t_map,
+		          const char* t_up_map0, const char* t_up_map1,
+		          const char* t_right_map0, const char* t_right_map1,
+		          u8* t_flags)
 {
-
+	if (player->grace_frame != FRAMES_PER_GRACE)
+	{
+		player->grace_frame++;
+	}
+	if (player->direction == D_UP)
+	{
+		*t_map = (char*) t_up_map1;
+	}
+	if ((player->grace_frame % 2 == 0) && (player->grace_frame != FRAMES_PER_GRACE))
+	{
+		*t_map = (char*) map_tank_blank;
+	}
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	unsigned char do_render = 0;
-	unsigned char* tank1_map = 0;
-	unsigned char* tank2_map = 0;
+	char* tank1_map = 0;
+	char* tank2_map = 0;
+	u8 tank1_flags = 0;
+	u8 tank2_flags = 1;
 
 	// Update
 	do_render = update_level_helper(p1, &player1);
@@ -378,11 +394,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		}
 		else
 		{
-			get_tank_maps(&tank1_map, &tank2_map);
-			MapSprite(0, (const char*) tank1_map);
-			MapSprite(1, (const char*) tank2_map);
+			get_tank_map(&player1, &tank1_map, map_tank1_up_0, map_tank1_up_1, map_tank1_right_0, map_tank1_right_1, &tank1_flags);
+			get_tank_map(&player2, &tank2_map, map_tank2_up_0, map_tank2_up_1, map_tank2_right_0, map_tank2_right_1, &tank2_flags);
+			MapSprite2(0, (const char*) tank1_map, tank1_flags);
+			MapSprite2(4, (const char*) tank2_map, tank2_flags);
 			render_player(&player1, 0);
-			render_player(&player2, 1);
+			render_player(&player2, 4);
 			render_score(&player1, 0, 15);
 			render_score(&player2, 15, 0);
 			Print(14, 0, strVertSep);
