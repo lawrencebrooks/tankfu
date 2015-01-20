@@ -31,7 +31,7 @@
 // Frame counts
 #define FRAMES_PER_FADE 3
 #define FRAMES_PER_BANTER 10
-#define FRAMES_PER_GRACE 10
+#define FRAMES_PER_GRACE 15
 
 // Handle select states
 #define SELECTING 0
@@ -296,7 +296,7 @@ void save_score()
 	save_eeprom(&scores);
 }
 
-unsigned char update_level_helper(JoyPadState* p, Player* player)
+void update_level_helper(JoyPadState* p, Player* player)
 {
 	if ((p->pressed & BTN_START))
 	{
@@ -318,10 +318,8 @@ unsigned char update_level_helper(JoyPadState* p, Player* player)
 			fade_through();
 			reset_game_state();
 			game.current_screen = TANK_RANK;
-			return 0;
 		}
 	}
-	return 1;
 }
 
 void render_score(Player* player, unsigned char x, unsigned char banter_x)
@@ -370,60 +368,58 @@ void get_tank_map(Player* player, char** t_map,
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
-	unsigned char do_render = 0;
 	char* tank1_map = 0;
 	char* tank2_map = 0;
 	u8 tank1_flags = 0;
 	u8 tank2_flags = 1;
-
-	// Update
-	do_render = update_level_helper(p1, &player1);
-	if (do_render)
-	{
-		do_render = update_level_helper(p2, &player2);
-	}
+	unsigned char x;
+	unsigned char y;
+	int limit = 30*25;
 
 	// Render
-	if (do_render)
+	if (game.paused)
 	{
-		if (game.paused)
-		{
-			DrawMap2(8, 12, (const char*) map_pause);
-			Print(12, 13, strPaused);
-			Print(11, 14, strExit);
-		}
-		else
-		{
-			get_tank_map(&player1, &tank1_map, map_tank1_up_0, map_tank1_up_1, map_tank1_right_0, map_tank1_right_1, &tank1_flags);
-			get_tank_map(&player2, &tank2_map, map_tank2_up_0, map_tank2_up_1, map_tank2_right_0, map_tank2_right_1, &tank2_flags);
-			MapSprite2(0, (const char*) tank1_map, tank1_flags);
-			MapSprite2(4, (const char*) tank2_map, tank2_flags);
-			render_player(&player1, 0);
-			render_player(&player2, 4);
-			render_score(&player1, 0, 15);
-			render_score(&player2, 15, 0);
-			Print(14, 0, strVertSep);
-			Print(14, 1, strVertSep);
-			Print(14, 2, strVertSep);
+		DrawMap2(8, 12, (const char*) map_pause);
+		Print(12, 13, strPaused);
+		Print(11, 14, strExit);
+	}
+	else
+	{
+		get_tank_map(&player1, &tank1_map, map_tank1_up_0, map_tank1_up_1, map_tank1_right_0, map_tank1_right_1, &tank1_flags);
+		get_tank_map(&player2, &tank2_map, map_tank2_up_0, map_tank2_up_1, map_tank2_right_0, map_tank2_right_1, &tank2_flags);
+		MapSprite2(0, (const char*) tank1_map, tank1_flags);
+		MapSprite2(4, (const char*) tank2_map, tank2_flags);
+		render_player(&player1, 0);
+		render_player(&player2, 4);
+		render_score(&player1, 0, 15);
+		render_score(&player2, 15, 0);
+		Print(14, 0, strVertSep);
+		Print(14, 1, strVertSep);
+		Print(14, 2, strVertSep);
 
-			for(unsigned int i = 0; i < 30*25; i++)
+		for(int i = 0; i < limit; i++)
+		{
+			x = i % 30;
+			y = 3 + i / 30;
+			switch (level.level_map[i])
 			{
-				switch (level.level_map[i])
-				{
-					case L_BRICK: DrawMap2(i % 30, 3 + i / 30, (const char*) map_brick); break;
-					case L_METAL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal); break;
-					case L_TL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tl); break;
-					case L_TR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_tr); break;
-					case L_BL: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_bl); break;
-					case L_BR: DrawMap2(i % 30, 3 + i / 30, (const char*) map_metal_br); break;
-					case L_SPEED: DrawMap2(i % 30, 3 + i / 30, (const char*) map_speed_itm); break;
-					case L_EXPLODE: DrawMap2(i % 30, 3 + i / 30, (const char*) map_explode_itm); break;
-					case L_ROCKET: DrawMap2(i % 30, 3 + i / 30, (const char*) map_rocket_itm); break;
-					default : SetTile(i % 30, 3 + i / 30, 0); break;
-				}
+				case L_BRICK: DrawMap2(x, y, map_brick); break;
+				case L_METAL: DrawMap2(x, y, map_metal); break;
+				case L_TL: DrawMap2(x, y, map_metal_tl); break;
+				case L_TR: DrawMap2(x, y, map_metal_tr); break;
+				case L_BL: DrawMap2(x, y, map_metal_bl); break;
+				case L_BR: DrawMap2(x, y, map_metal_br); break;
+				case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
+				case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
+				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
+				default : SetTile(x, y, 0); break;
 			}
 		}
 	}
+
+	// Update
+	update_level_helper(p1, &player1);
+	update_level_helper(p2, &player2);
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)
@@ -438,6 +434,21 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	Print(4, 26, strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite(0, map_ball);
+
+	// Render
+	switch (game.selection)
+	{
+		case PVCPU:
+			MoveSprite(0, 6*8, 13*8, 1, 1);
+			break;
+		case PVP:
+			MoveSprite(0, 6*8, 14*8, 1, 1);
+			break;
+		case TR:
+			MoveSprite(0, 6*8, 15*8, 1, 1);
+			break;
+	}
+	Print(9, 21, strSelectHandle);
 
 	// Update
 	if (p1->pressed & BTN_UP)
@@ -466,23 +477,6 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.current_screen = TANK_RANK;
 		return;
 	}
-
-	// Render
-	switch (game.selection)
-	{
-		case PVCPU:
-			MoveSprite(0, 6*8, 13*8, 1, 1);
-			break;
-		case PVP:
-			MoveSprite(0, 6*8, 14*8, 1, 1);
-			break;
-		case TR:
-			MoveSprite(0, 6*8, 15*8, 1, 1);
-			break;
-	}
-
-	// Instructions
-	Print(9, 21, strSelectHandle);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
@@ -490,13 +484,6 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	unsigned char y = 7;
 	unsigned char rank = 1;
 
-	// Update
-	if (p1->pressed & BTN_X)
-	{
-		fade_through();
-		game.current_screen = SPLASH;
-		return;
-	}
 	// Render
 	clear_sprites();
 	MapSprite(0, map_tank1_up_0);
@@ -518,13 +505,18 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 		y += 3;
 		rank += 1;
 	}
-
-	// Instructions
 	Print(10, 23, strCancelHandle);
+
+	// Update
+	if (p1->pressed & BTN_X)
+	{
+		fade_through();
+		game.current_screen = SPLASH;
+	}
 }
 
 
-unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player)
+void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player)
 {
 	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING))
 	{
@@ -581,9 +573,7 @@ unsigned char _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Playe
 	{
 		fade_through();
 		game.current_screen = SPLASH;
-		return 0;
 	}
-	return 1;
 }
 
 void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigned char x_offset, unsigned char idx)
@@ -613,52 +603,40 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigne
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 {
-	unsigned char do_render = 0;
 	unsigned char start_game = 0;
 
-	// Update
-	do_render = _handle_select_helper(&p1s, p1, &player1);
-	if (p1s.select_state == CONFIRMED) start_game = 1;
-	if ((game.selection == PVP) && (do_render))
+	// Render
+	clear_sprites();
+	MapSprite(0, map_tank1_up_0);
+	MapSprite(4, map_tank2_up_0);
+	MoveSprite(0, 3*8, 4*8, 2, 2);
+	MoveSprite(4, 20*8, 4*8, 2, 2);
+	_handle_select_render_helper(&p1s, p1, 2, 8);
+	if (game.selection == PVP)
 	{
-		do_render = _handle_select_helper(&p2s, p2, &player2);
+		_handle_select_render_helper(&p2s, p2, 19, 10);
+	}
+	Print(9, 1, strHandlesTitle);
+	Print(6, 5, strPlayer1);
+	Print(23, 5, strPlayer2);
+	for (int i = 0; i < 27; i += 1)
+	{
+		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
+		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
+	}
+	Print(8, 21, strSelectHandle);
+	Print(8, 22, strConfirmHandle);
+	Print(8, 23, strCancelHandle);
+	Print(8, 24, strChangeHandle);
+
+	// Update
+	_handle_select_helper(&p1s, p1, &player1);
+	if (p1s.select_state == CONFIRMED) start_game = 1;
+	if (game.selection == PVP)
+	{
+		_handle_select_helper(&p2s, p2, &player2);
 		if (p2s.select_state != CONFIRMED) start_game = 0;
 	}
-
-	// Render
-	if (do_render)
-	{
-		clear_sprites();
-		MapSprite(0, map_tank1_up_0);
-		MapSprite(4, map_tank2_up_0);
-
-		// Position sprites
-		MoveSprite(0, 3*8, 4*8, 2, 2);
-		MoveSprite(4, 20*8, 4*8, 2, 2);
-		_handle_select_render_helper(&p1s, p1, 2, 8);
-		if (game.selection == PVP)
-		{
-			_handle_select_render_helper(&p2s, p2, 19, 10);
-		}
-
-		// Print
-		Print(9, 1, strHandlesTitle);
-		Print(6, 5, strPlayer1);
-		Print(23, 5, strPlayer2);
-		for (int i = 0; i < 27; i += 1)
-		{
-			PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
-			PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
-		}
-
-		// Instructions
-		Print(8, 21, strSelectHandle);
-		Print(8, 22, strConfirmHandle);
-		Print(8, 23, strCancelHandle);
-		Print(8, 24, strChangeHandle);
-	}
-
-	// Start Game
 	if (start_game)
 	{
 		if (game.selection == PVCPU)
