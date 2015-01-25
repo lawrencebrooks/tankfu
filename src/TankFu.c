@@ -460,9 +460,25 @@ int inc_index(int* i)
 unsigned char solid_tile(int tile_index, Player* player)
 {
 	unsigned char tile = level.level_map[tile_index];
+	unsigned char tile_x = (tile_index % 30) * 8;
+	unsigned char tile_y = (tile_index / 30 + 3) * 8;
 
 	if (tile == L_BRICK) return 1;
 	if (tile == L_METAL) return 1;
+	if ((tile == L_TL) || (tile == L_BR))
+	{
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y, player->x, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y, player->x+14, player->y)) return 1;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x+14, player->y, player->x+14, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y+14, player->x+14, player->y+14)) return 1;
+	}
+	if ((tile == L_TR) || (tile == L_BL))
+	{
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y, player->x, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y, player->x+14, player->y)) return 1;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x+14, player->y, player->x+14, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y+14, player->x+14, player->y+14)) return 1;
+	}
 
 	return 0;
 }

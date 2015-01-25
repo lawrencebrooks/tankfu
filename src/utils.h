@@ -57,4 +57,23 @@ unsigned char LBCollides(unsigned char x1, unsigned char y1, unsigned char width
 	return 1;
 }
 
+unsigned char LBLineIntersect(unsigned char line1x1, unsigned char line1y1, unsigned char line1x2, unsigned char line1y2,
+							  unsigned char line2x1, unsigned char line2y1, unsigned char line2x2, unsigned char line2y2)
+{
+	float ua, ub;
+	float denom;
+
+	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
+			 ((line2x2 - line2x1) * (line1y2 - line1y1));
+	if (denom == 0) return 0;
+
+	ua = (((line2x2 - line2x1) * (line1y1 - line2y1)) -
+		 ((line2y2 - line2y1) * (line1x1 - line2x1))) / denom;
+	ub = (((line1x2 - line1x1) * (line1y1 - line2y1)) -
+		 ((line1y2 - line1y1) * (line1x1 - line2x1))) / denom;
+	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
+
+	return 1;
+}
+
 #endif
