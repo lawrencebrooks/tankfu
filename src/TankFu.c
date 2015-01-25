@@ -30,22 +30,27 @@
 
 // Frame counts
 #define FRAMES_PER_FADE 3
-#define FRAMES_PER_BANTER 10
-#define FRAMES_PER_GRACE 15
+#define FRAMES_PER_BANTER 90
+#define FRAMES_PER_GRACE 120
+#define FRAMES_PER_BLANK 20
 
 // Handle select states
 #define SELECTING 0
 #define EDITING 1
 #define CONFIRMED 2
 
-// Direction
+// Movement
 #define D_UP 0
 #define D_RIGHT 1
 #define D_DOWN 2
 #define D_LEFT 3
+#define MAX_SPEED 50
+#define OVER_SPEED = 80
 
 // General macros
 #define MAX_SPRITES 13
+#define FRAME_TIME 0.0166666
+#define EDGE_TOLERANCE 1
 
 // Globals
 Game game = {
@@ -60,7 +65,8 @@ Player player1 = {
 	.score = 0,
 	.level_score = 0,
 	.direction = D_UP,
-	.speed = 0
+	.speed = 0,
+	.max_speed = MAX_SPEED
 };
 Player player2 = {
 	.banter_frame = FRAMES_PER_BANTER,
@@ -69,9 +75,14 @@ Player player2 = {
 	.score = 0,
 	.level_score = 0,
 	.direction = D_UP,
-	.speed = 0
+	.speed = 0,
+	.max_speed = MAX_SPEED
 };
-Level level;
+Level level = {
+	.buffer_size = 0,
+	.render_all = 1,
+	.render_index = 0
+};
 struct EepromBlockStruct handles = {
 	.id = EEPROM_HANDLES_ID,
 	// 1. UZE
@@ -233,6 +244,8 @@ void load_level(int level_number)
 	game.current_screen = LEVEL;
 	game.current_level = 0;
 	game.level_count = LEVEL_COUNT;
+	level.render_all = 1;
+	level.render_index = 0;
 	for (int i = 0; i < 30*25; i++)
 	{
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
@@ -309,6 +322,31 @@ void update_level_helper(JoyPadState* p, Player* player)
 			player->banter_frame = 0;
 			player->banter_index = (unsigned char) random(0, 9);
 		}
+		player->speed = player->max_speed;
+		if ((p->held & BTN_UP))
+		{
+			player->direction = D_UP;
+			player->y -= FRAME_TIME * player->speed;
+		}
+		else if ((p->held & BTN_RIGHT))
+		{
+			player->direction = D_RIGHT;
+			player->x += FRAME_TIME * player->speed;
+		}
+		else if ((p->held & BTN_DOWN))
+		{
+			player->direction = D_DOWN;
+			player->y += FRAME_TIME * player->speed;
+		}
+		else if ((p->held & BTN_LEFT))
+		{
+			player->direction = D_LEFT;
+			player->x -= FRAME_TIME * player->speed;
+		}
+		else
+		{
+			player->speed = 0;
+		}
 	}
 	else
 	{
@@ -319,6 +357,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 			reset_game_state();
 			game.current_screen = TANK_RANK;
 		}
+		level.render_all = 1;
 	}
 }
 
@@ -352,17 +391,141 @@ void get_tank_map(Player* player, char** t_map,
 		          const char* t_right_map0, const char* t_right_map1,
 		          u8* t_flags)
 {
+	static unsigned char toggle_counter = FRAMES_PER_BLANK;
+	static unsigned char toggle_blank = 0;
+
 	if (player->grace_frame != FRAMES_PER_GRACE)
 	{
 		player->grace_frame++;
 	}
-	if (player->direction == D_UP)
+	switch (player->direction)
 	{
-		*t_map = (char*) t_up_map1;
+		case D_UP: *t_map = (char*) t_up_map0; *t_flags = 0; break;
+		case D_RIGHT: *t_map = (char*) t_right_map0; *t_flags = 0; break;
+		case D_DOWN: *t_map = (char*) t_up_map0; *t_flags = SPRITE_FLIP_Y; break;
+		case D_LEFT: *t_map = (char*) t_right_map0; *t_flags = SPRITE_FLIP_X; break;
+		default: *t_map = (char*) t_up_map0; *t_flags = 0; break;
 	}
-	if ((player->grace_frame % 2 == 0) && (player->grace_frame != FRAMES_PER_GRACE))
+	if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
 	{
 		*t_map = (char*) map_tank_blank;
+	}
+	toggle_counter--;
+	if (toggle_counter == 0)
+	{
+		toggle_counter = FRAMES_PER_BLANK;
+		toggle_blank = toggle_blank ^ 1;
+	}
+}
+
+int first_index()
+{
+	int result = 0;
+
+	if (level.render_all)
+	{
+		result = 0;
+	}
+	else
+	{
+		result = level.render_buffer[level.render_index];
+		if (level.buffer_size == 0) result = 30*25;
+	}
+	return result;
+}
+
+int inc_index(int* i)
+{
+	int result;
+	if (level.render_all)
+	{
+		result = *i;
+		*i = *i + 1;
+	}
+	else
+	{
+		result = level.render_buffer[level.render_index];
+		level.render_index++;
+		if (level.render_index == level.buffer_size)
+		{
+			*i = 30*25;
+		}
+		else
+		{
+			*i = level.render_buffer[level.render_index];
+		}
+	}
+	return result;
+}
+
+unsigned char solid_tile(int tile_index, Player* player)
+{
+	unsigned char tile = level.level_map[tile_index];
+	//unsigned char graph_origin_x = tile_index % 30;
+	//unsigned char graph_origin_y = tile_index / 30 + 4;
+	//unsigned char x = player->x - graph_origin_x;
+	//unsigned char y = graph_origin_y - player->y;
+	//unsigned char delta;
+
+	if (tile == L_BRICK) return 1;
+	if (tile == L_METAL) return 1;
+
+	/*
+	if (tile == L_TL || tile == L_BR)
+	{
+		delta = y - x;
+		if (delta < EDGE_TOLERANCE && delta > -EDGE_TOLERANCE) return 1;
+	}
+	if (tile == L_TR || tile == L_BL)
+	{
+		delta = y - (8 - x);
+		if (delta < EDGE_TOLERANCE && delta > -EDGE_TOLERANCE) return 1;
+	}
+	*/
+	return 0;
+}
+
+void collision_detect_tiles(Player* player)
+{
+	int tl = 0;
+	int tr = 0;
+	int bl = 0;
+	int br = 0;
+	int tm = 0;
+	int rm = 0;
+	int bm = 0;
+	int lm = 0;
+	unsigned char x = player->x / 8;
+	unsigned char y = player->y / 8 - 3;
+
+	tl = (y * 30) + x;
+	tr = tl+2;
+	bl = tl + 60;
+	br = tr + 60;
+	tm = tl+1;
+	rm = tr+30;
+	bm = bl+1;
+	lm = tl+30;
+
+	if ((player->direction == D_UP) && (solid_tile(tl, player) || solid_tile(tr, player) || solid_tile(tm, player)))
+	{
+		player->y += FRAME_TIME * player->speed;
+		player->speed = 0;
+	}
+	if ((player->direction == D_RIGHT) && (solid_tile(tr, player) || solid_tile(br, player) || solid_tile(rm, player)))
+	{
+		player->x -= FRAME_TIME * player->speed;
+		player->speed = 0;
+	}
+	if ((player->direction == D_DOWN) && (solid_tile(bl, player) || solid_tile(br, player) || solid_tile(bm, player)))
+	{
+		player->y -= FRAME_TIME * player->speed;
+		player->speed = 0;
+	}
+	if ((player->direction == D_LEFT) && (solid_tile(tl, player) || solid_tile(bl, player) || solid_tile(lm, player)))
+	{
+		player->x += FRAME_TIME * player->speed;
+		player->speed = 0;
 	}
 }
 
@@ -374,7 +537,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	u8 tank2_flags = 1;
 	unsigned char x;
 	unsigned char y;
-	int limit = 30*25;
 
 	// Render
 	if (game.paused)
@@ -397,7 +559,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		Print(14, 1, strVertSep);
 		Print(14, 2, strVertSep);
 
-		for(int i = 0; i < limit; i++)
+		for(int i = first_index(); i < 30*25; inc_index(&i))
 		{
 			x = i % 30;
 			y = 3 + i / 30;
@@ -415,11 +577,14 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 				default : SetTile(x, y, 0); break;
 			}
 		}
+		level.render_all = 0;
 	}
 
 	// Update
 	update_level_helper(p1, &player1);
 	update_level_helper(p2, &player2);
+	collision_detect_tiles(&player1);
+	collision_detect_tiles(&player2);
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)

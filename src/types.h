@@ -16,6 +16,10 @@ typedef struct sGameState {
 typedef struct sLevelState {
 	unsigned char level_state;
 	unsigned char level_map[30*25];
+	unsigned char render_buffer[12];
+	unsigned char buffer_size;
+	unsigned char render_index;
+	unsigned char render_all;
 } Level;
 
 typedef struct sAnimation {
@@ -42,8 +46,8 @@ typedef struct sPlayer {
 	unsigned char score;
 	unsigned char level_score;
 	unsigned char active_shots;
-	unsigned char x;
-	unsigned char y;
+	float x;
+	float y;
 	unsigned char spawn_x;
 	unsigned char spawn_y;
 	unsigned char direction;
@@ -51,7 +55,8 @@ typedef struct sPlayer {
 	unsigned char banter_frame;
 	unsigned char banter_index;
 	unsigned char grace_frame;
-	unsigned char speed;
+	float speed;
+	unsigned char max_speed;
 	Shot shot[2];
 	Animation animation;
 } Player;
