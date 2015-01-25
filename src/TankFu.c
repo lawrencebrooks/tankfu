@@ -50,7 +50,6 @@
 // General macros
 #define MAX_SPRITES 13
 #define FRAME_TIME 0.0166666
-#define EDGE_TOLERANCE 1
 
 // Globals
 Game game = {
@@ -461,71 +460,50 @@ int inc_index(int* i)
 unsigned char solid_tile(int tile_index, Player* player)
 {
 	unsigned char tile = level.level_map[tile_index];
-	//unsigned char graph_origin_x = tile_index % 30;
-	//unsigned char graph_origin_y = tile_index / 30 + 4;
-	//unsigned char x = player->x - graph_origin_x;
-	//unsigned char y = graph_origin_y - player->y;
-	//unsigned char delta;
 
 	if (tile == L_BRICK) return 1;
 	if (tile == L_METAL) return 1;
 
-	/*
-	if (tile == L_TL || tile == L_BR)
-	{
-		delta = y - x;
-		if (delta < EDGE_TOLERANCE && delta > -EDGE_TOLERANCE) return 1;
-	}
-	if (tile == L_TR || tile == L_BL)
-	{
-		delta = y - (8 - x);
-		if (delta < EDGE_TOLERANCE && delta > -EDGE_TOLERANCE) return 1;
-	}
-	*/
 	return 0;
 }
 
 void collision_detect_tiles(Player* player)
 {
-	int tl = 0;
-	int tr = 0;
-	int bl = 0;
-	int br = 0;
-	int tm = 0;
-	int rm = 0;
-	int bm = 0;
-	int lm = 0;
+	int tiles[8] = {0,0,0,0,0,0,0,0};
 	unsigned char x = player->x / 8;
 	unsigned char y = player->y / 8 - 3;
 
-	tl = (y * 30) + x;
-	tr = tl+2;
-	bl = tl + 60;
-	br = tr + 60;
-	tm = tl+1;
-	rm = tr+30;
-	bm = bl+1;
-	lm = tl+30;
+	tiles[0] = (y * 30) + x;
+	tiles[1] = tiles[0]+2;
+	tiles[2] = tiles[0] + 60;
+	tiles[3] = tiles[1] + 60;
+	tiles[4] = tiles[0]+1;
+    tiles[5] = tiles[1]+30;
+	tiles[6] = tiles[2]+1;
+	tiles[7] = tiles[0]+30;
 
-	if ((player->direction == D_UP) && (solid_tile(tl, player) || solid_tile(tr, player) || solid_tile(tm, player)))
+	for (unsigned char i = 0; i < 8; i++)
 	{
-		player->y += FRAME_TIME * player->speed;
-		player->speed = 0;
-	}
-	if ((player->direction == D_RIGHT) && (solid_tile(tr, player) || solid_tile(br, player) || solid_tile(rm, player)))
-	{
-		player->x -= FRAME_TIME * player->speed;
-		player->speed = 0;
-	}
-	if ((player->direction == D_DOWN) && (solid_tile(bl, player) || solid_tile(br, player) || solid_tile(bm, player)))
-	{
-		player->y -= FRAME_TIME * player->speed;
-		player->speed = 0;
-	}
-	if ((player->direction == D_LEFT) && (solid_tile(tl, player) || solid_tile(bl, player) || solid_tile(lm, player)))
-	{
-		player->x += FRAME_TIME * player->speed;
-		player->speed = 0;
+		if (solid_tile(tiles[i], player))
+		{
+			if (player->direction == D_UP)
+			{
+				player->y += FRAME_TIME * player->speed;
+			}
+			if (player->direction == D_RIGHT)
+			{
+				player->x -= FRAME_TIME * player->speed;
+			}
+			if (player->direction == D_DOWN)
+			{
+				player->y -= FRAME_TIME * player->speed;
+			}
+			if (player->direction == D_LEFT)
+			{
+				player->x += FRAME_TIME * player->speed;
+			}
+			player->speed = 0;
+		}
 	}
 }
 

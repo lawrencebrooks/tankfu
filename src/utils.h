@@ -47,4 +47,14 @@ void LBPrintStr(unsigned char x, unsigned char y, unsigned char* txt, unsigned c
 	}
 }
 
+unsigned char LBCollides(unsigned char x1, unsigned char y1, unsigned char width1, unsigned char height1,
+						 unsigned char x2, unsigned char y2, unsigned char width2, unsigned char height2)
+{
+	if (y1 + height1 < y2) return 0;
+	if (y1 > y2 + height2) return 0;
+	if (x1 + width1 < x2) return 0;
+	if (x1 > x2 + width2) return 0;
+	return 1;
+}
+
 #endif
