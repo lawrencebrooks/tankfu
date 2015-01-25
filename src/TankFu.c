@@ -184,7 +184,7 @@ void clear_sprites()
 {
 	for(char i = 0; i < MAX_SPRITES; i++)
 	{
-		MapSprite(i, map_none);
+		MapSprite2(i, map_none, 0);
 	}
 }
 
@@ -592,7 +592,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	Print(7, 15, strHighscores);
 	Print(4, 26, strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
-	MapSprite(0, map_ball);
+	MapSprite2(0, map_ball, 0);
 
 	// Render
 	switch (game.selection)
@@ -645,8 +645,8 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 
 	// Render
 	clear_sprites();
-	MapSprite(0, map_tank1_up_0);
-	MapSprite(4, map_tank2_up_0);
+	MapSprite2(0, map_tank1_up_0, 0);
+	MapSprite2(4, map_tank2_up_0, 0);
 	MoveSprite(0, 7*8, 1*8, 2, 2);
 	MoveSprite(4, 20*8, 1*8, 2, 2);
 	Print(10, 2, strHighscores);
@@ -740,13 +740,13 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigne
 	unsigned char tmp[3] = {' ', ' ', ' '};
 	if (ps->select_state == SELECTING)
 	{
-		MapSprite(idx, map_ball);
+		MapSprite2(idx, map_ball, 0);
 		MoveSprite(idx, x_offset*8, (8 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
 	{
-		MapSprite(idx, map_ball);
-		MapSprite(idx+1, map_ball);
+		MapSprite2(idx, map_ball, 0);
+		MapSprite2(idx+1, map_ball, 0);
 		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id - 1)*8, 1, 1);
 		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id + 1)*8, 1, 1);
 		LBCopyChars(tmp, ps->handle, 3);
@@ -766,8 +766,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 
 	// Render
 	clear_sprites();
-	MapSprite(0, map_tank1_up_0);
-	MapSprite(4, map_tank2_up_0);
+	MapSprite2(0, map_tank1_up_0, 0);
+	MapSprite2(4, map_tank2_up_0, 0);
 	MoveSprite(0, 3*8, 4*8, 2, 2);
 	MoveSprite(4, 20*8, 4*8, 2, 2);
 	_handle_select_render_helper(&p1s, p1, 2, 8);
