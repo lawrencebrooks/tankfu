@@ -10,6 +10,26 @@ typedef struct sJoyPadState {
 	unsigned int held;
 } JoyPadState;
 
+typedef struct sAnimation {
+	unsigned char current_anim;			// Current animation
+	unsigned char anim_count;			// Total animation count
+	unsigned char frames_per_anim;		// Animation lifetime in amount of render frames
+	unsigned char frame_count;			// Render frame counter
+	char* anims[3];
+} Animation;
+
+char* LBGetNextFrame(Animation* anim)
+{
+	anim->frame_count += 1;
+	if (anim->frame_count < anim->frames_per_anim)
+	{
+		return anim->anims[anim->current_anim];
+	}
+	anim->frame_count = 0;
+	anim->current_anim = (anim->current_anim + 1) % anim->anim_count;
+	return anim->anims[anim->current_anim];
+}
+
 void LBGetJoyPadState(JoyPadState* p1, JoyPadState* p2)
 /*
  * Get the current joy pad button state for p1 and p2

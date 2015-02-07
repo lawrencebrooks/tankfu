@@ -5,6 +5,8 @@
 #ifndef LB_TYPES_H
 #define LB_TYPES_H
 
+#include "utils.h"
+
 typedef struct sGameState {
 	unsigned char current_screen;
 	unsigned char current_level;
@@ -22,21 +24,14 @@ typedef struct sLevelState {
 	unsigned char render_all;
 } Level;
 
-typedef struct sAnimation {
-	unsigned char current_anim;
-	unsigned char anim_count;
-	unsigned char frames_per_anim;
-	unsigned char frame_count;
-	unsigned char* anims[3];
-} Animation;
-
 typedef struct sShot {
 	unsigned char shot_type;
 	unsigned char x;
 	unsigned char y;
 	unsigned char rebounds;
 	unsigned char active;
-	Animation animation;
+	Animation up_anim;
+	Animation right_anim;
 
 } Shot;
 
@@ -58,7 +53,9 @@ typedef struct sPlayer {
 	float speed;
 	unsigned char max_speed;
 	Shot shot[2];
-	Animation animation;
+	Animation up_anim;
+	Animation right_anim;
+	Animation exp_anim;
 } Player;
 
 typedef struct sHandleSelectState {

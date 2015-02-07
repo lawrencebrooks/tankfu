@@ -57,6 +57,16 @@ Game game = {
 };
 JoyPadState p1;
 JoyPadState p2;
+/*
+ * typedef struct sAnimation {
+	unsigned char current_anim;
+	unsigned char anim_count;
+	unsigned char frames_per_anim;
+	unsigned char frame_count;
+	unsigned char* anims[3];
+} Animation;
+ *
+ */
 Player player1 = {
 	.banter_frame = FRAMES_PER_BANTER,
 	.grace_frame = FRAMES_PER_GRACE,
@@ -65,7 +75,28 @@ Player player1 = {
 	.level_score = 0,
 	.direction = D_UP,
 	.speed = 0,
-	.max_speed = MAX_SPEED
+	.max_speed = MAX_SPEED,
+
+	/* Tracks animation (Up) */
+	.up_anim.current_anim = 0,
+	.up_anim.anim_count = 2,
+	.up_anim.frames_per_anim = 5,
+	.up_anim.frame_count = 0,
+	.up_anim.anims = {(char*)map_tank1_up_0, (char*)map_tank1_up_1},
+
+	/* Tracks animation (Down) */
+	.right_anim.current_anim = 0,
+	.right_anim.anim_count = 2,
+	.right_anim.frames_per_anim = 5,
+	.right_anim.frame_count = 0,
+	.right_anim.anims = {(char*)map_tank1_right_0, (char*)map_tank1_right_1},
+
+	/* Explosion Animation */
+	.exp_anim.current_anim = 0,
+	.exp_anim.anim_count = 3,
+	.exp_anim.frames_per_anim = 5,
+	.exp_anim.frame_count = 0,
+	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2}
 };
 Player player2 = {
 	.banter_frame = FRAMES_PER_BANTER,
@@ -75,7 +106,28 @@ Player player2 = {
 	.level_score = 0,
 	.direction = D_UP,
 	.speed = 0,
-	.max_speed = MAX_SPEED
+	.max_speed = MAX_SPEED,
+
+	/* Tracks animation (Up) */
+	.up_anim.current_anim = 0,
+	.up_anim.anim_count = 2,
+	.up_anim.frames_per_anim = 5,
+	.up_anim.frame_count = 0,
+	.up_anim.anims = {(char*)map_tank2_up_0, (char*)map_tank2_up_1},
+
+	/* Tracks animation (Down) */
+	.right_anim.current_anim = 0,
+	.right_anim.anim_count = 2,
+	.right_anim.frames_per_anim = 5,
+	.right_anim.frame_count = 0,
+	.right_anim.anims = {(char*)map_tank2_right_0, (char*)map_tank2_right_1},
+
+	/* Explosion Animation */
+	.exp_anim.current_anim = 0,
+	.exp_anim.anim_count = 3,
+	.exp_anim.frames_per_anim = 5,
+	.exp_anim.frame_count = 0,
+	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2}
 };
 Level level = {
 	.buffer_size = 0,
