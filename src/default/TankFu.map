@@ -429,7 +429,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0xa918
+.text           0x0000000000000000     0xaad8
  *(.vectors)
  .vectors       0x0000000000000000       0x70 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
                 0x0000000000000000                __vectors
@@ -814,138 +814,138 @@ END GROUP
                 0x0000000000009222       0xce TankFu.o
                 0x0000000000009222                save_score
  .text.update_level_helper
-                0x00000000000092f0      0x132 TankFu.o
+                0x00000000000092f0      0x2c2 TankFu.o
                 0x00000000000092f0                update_level_helper
  .text.render_score
-                0x0000000000009422       0xba TankFu.o
-                0x0000000000009422                render_score
+                0x00000000000095b2       0xba TankFu.o
+                0x00000000000095b2                render_score
  .text.render_player
-                0x00000000000094dc       0x52 TankFu.o
-                0x00000000000094dc                render_player
+                0x000000000000966c       0x52 TankFu.o
+                0x000000000000966c                render_player
  .text.render_shot
-                0x000000000000952e       0x46 TankFu.o
-                0x000000000000952e                render_shot
+                0x00000000000096be       0x72 TankFu.o
+                0x00000000000096be                render_shot
  .text.tank_map
-                0x0000000000009574       0xc8 TankFu.o
-                0x0000000000009574                tank_map
+                0x0000000000009730       0xc8 TankFu.o
+                0x0000000000009730                tank_map
  .text.shot_map
-                0x000000000000963c       0xb2 TankFu.o
-                0x000000000000963c                shot_map
+                0x00000000000097f8       0xb0 TankFu.o
+                0x00000000000097f8                shot_map
  .text.first_index
-                0x00000000000096ee       0x2c TankFu.o
-                0x00000000000096ee                first_index
+                0x00000000000098a8       0x2c TankFu.o
+                0x00000000000098a8                first_index
  .text.inc_index
-                0x000000000000971a       0x56 TankFu.o
-                0x000000000000971a                inc_index
+                0x00000000000098d4       0x56 TankFu.o
+                0x00000000000098d4                inc_index
  .text.solid_tile
-                0x0000000000009770      0x1fc TankFu.o
-                0x0000000000009770                solid_tile
+                0x000000000000992a      0x1fc TankFu.o
+                0x000000000000992a                solid_tile
  .text.collision_detect_tiles
-                0x000000000000996c      0x1cc TankFu.o
-                0x000000000000996c                collision_detect_tiles
+                0x0000000000009b26      0x1cc TankFu.o
+                0x0000000000009b26                collision_detect_tiles
  .text.update_level
-                0x0000000000009b38      0x1c4 TankFu.o
-                0x0000000000009b38                update_level
+                0x0000000000009cf2      0x1ca TankFu.o
+                0x0000000000009cf2                update_level
  .text.update_splash
-                0x0000000000009cfc      0x112 TankFu.o
-                0x0000000000009cfc                update_splash
+                0x0000000000009ebc      0x112 TankFu.o
+                0x0000000000009ebc                update_splash
  .text.update_tank_rank
-                0x0000000000009e0e      0x152 TankFu.o
-                0x0000000000009e0e                update_tank_rank
+                0x0000000000009fce      0x152 TankFu.o
+                0x0000000000009fce                update_tank_rank
  .text._handle_select_helper
-                0x0000000000009f60      0x156 TankFu.o
-                0x0000000000009f60                _handle_select_helper
+                0x000000000000a120      0x156 TankFu.o
+                0x000000000000a120                _handle_select_helper
  .text._handle_select_render_helper
-                0x000000000000a0b6      0x154 TankFu.o
-                0x000000000000a0b6                _handle_select_render_helper
+                0x000000000000a276      0x154 TankFu.o
+                0x000000000000a276                _handle_select_render_helper
  .text.update_handle_select
-                0x000000000000a20a      0x1d4 TankFu.o
-                0x000000000000a20a                update_handle_select
+                0x000000000000a3ca      0x1d4 TankFu.o
+                0x000000000000a3ca                update_handle_select
  .text.startup.main
-                0x000000000000a3de       0x96 TankFu.o
-                0x000000000000a3de                main
+                0x000000000000a59e       0x96 TankFu.o
+                0x000000000000a59e                main
  .text.libgcc.div
-                0x000000000000a474       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
-                0x000000000000a474                __udivmodqi4
+                0x000000000000a634       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
+                0x000000000000a634                __udivmodqi4
  .text.libgcc.div
-                0x000000000000a48c       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
-                0x000000000000a48c                __udivmodhi4
+                0x000000000000a64c       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
+                0x000000000000a64c                __udivmodhi4
  .text.libgcc.div
-                0x000000000000a4b4       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
-                0x000000000000a4b4                __divmodhi4
-                0x000000000000a4b4                _div
- .text.libgcc   0x000000000000a4dc        0xc /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_tablejump2.o)
-                0x000000000000a4dc                __tablejump2__
+                0x000000000000a674       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
+                0x000000000000a674                __divmodhi4
+                0x000000000000a674                _div
+ .text.libgcc   0x000000000000a69c        0xc /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_tablejump2.o)
+                0x000000000000a69c                __tablejump2__
  .text.avr-libc.fplib
-                0x000000000000a4e8        0xa /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3.o)
-                0x000000000000a4e8                __subsf3
-                0x000000000000a4ea                __addsf3
+                0x000000000000a6a8        0xa /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3.o)
+                0x000000000000a6a8                __subsf3
+                0x000000000000a6aa                __addsf3
  .text.avr-libc.fplib
-                0x000000000000a4f2       0xc0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3x.o)
-                0x000000000000a50c                __addsf3x
+                0x000000000000a6b2       0xc0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3x.o)
+                0x000000000000a6cc                __addsf3x
  .text.avr-libc.fplib
-                0x000000000000a5b2        0x8 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
-                0x000000000000a5b2                __lesf2
-                0x000000000000a5b2                __nesf2
-                0x000000000000a5b2                __eqsf2
-                0x000000000000a5b2                __cmpsf2
-                0x000000000000a5b2                __ltsf2
+                0x000000000000a772        0x8 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
+                0x000000000000a772                __lesf2
+                0x000000000000a772                __nesf2
+                0x000000000000a772                __eqsf2
+                0x000000000000a772                __cmpsf2
+                0x000000000000a772                __ltsf2
  .text.avr-libc.fplib
-                0x000000000000a5ba        0x4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3.o)
-                0x000000000000a5ba                __divsf3
+                0x000000000000a77a        0x4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3.o)
+                0x000000000000a77a                __divsf3
  .text.avr-libc.fplib
-                0x000000000000a5be       0xcc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3x.o)
-                0x000000000000a5d4                __divsf3x
-                0x000000000000a5d8                __divsf3_pse
+                0x000000000000a77e       0xcc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3x.o)
+                0x000000000000a794                __divsf3x
+                0x000000000000a798                __divsf3_pse
  .text.avr-libc.fplib
-                0x000000000000a68a       0x58 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fixunssfsi.o)
-                0x000000000000a68a                __fixunssfsi
+                0x000000000000a84a       0x58 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fixunssfsi.o)
+                0x000000000000a84a                __fixunssfsi
  .text.avr-libc.fplib
-                0x000000000000a6e2       0x7a /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(floatsisf.o)
-                0x000000000000a6e2                __floatunsisf
-                0x000000000000a6e6                __floatsisf
+                0x000000000000a8a2       0x7a /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(floatsisf.o)
+                0x000000000000a8a2                __floatunsisf
+                0x000000000000a8a6                __floatsisf
  .text.avr-libc.fplib
-                0x000000000000a75c       0x48 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
-                0x000000000000a75c                __fp_cmp
+                0x000000000000a91c       0x48 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
+                0x000000000000a91c                __fp_cmp
  .text.avr-libc.fplib
-                0x000000000000a7a4        0xc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_inf.o)
-                0x000000000000a7a4                __fp_inf
+                0x000000000000a964        0xc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_inf.o)
+                0x000000000000a964                __fp_inf
  .text.avr-libc.fplib
-                0x000000000000a7b0        0x6 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_nan.o)
-                0x000000000000a7b0                __fp_nan
+                0x000000000000a970        0x6 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_nan.o)
+                0x000000000000a970                __fp_nan
  .text.avr-libc.fplib
-                0x000000000000a7b6        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
-                0x000000000000a7b6                __fp_pscA
+                0x000000000000a976        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
+                0x000000000000a976                __fp_pscA
  .text.avr-libc.fplib
-                0x000000000000a7c4        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
-                0x000000000000a7c4                __fp_pscB
+                0x000000000000a984        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
+                0x000000000000a984                __fp_pscB
  .text.avr-libc.fplib
-                0x000000000000a7d2       0x22 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_round.o)
-                0x000000000000a7d2                __fp_round
+                0x000000000000a992       0x22 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_round.o)
+                0x000000000000a992                __fp_round
  .text.avr-libc.fplib
-                0x000000000000a7f4       0x44 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_split3.o)
-                0x000000000000a7f4                __fp_split3
-                0x000000000000a804                __fp_splitA
+                0x000000000000a9b4       0x44 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_split3.o)
+                0x000000000000a9b4                __fp_split3
+                0x000000000000a9c4                __fp_splitA
  .text.avr-libc.fplib
-                0x000000000000a838        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_zero.o)
-                0x000000000000a838                __fp_zero
-                0x000000000000a83a                __fp_szero
+                0x000000000000a9f8        0xe /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_zero.o)
+                0x000000000000a9f8                __fp_zero
+                0x000000000000a9fa                __fp_szero
  .text.avr-libc.fplib
-                0x000000000000a846        0x8 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(gesf2.o)
-                0x000000000000a846                __gtsf2
-                0x000000000000a846                __gesf2
+                0x000000000000aa06        0x8 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(gesf2.o)
+                0x000000000000aa06                __gtsf2
+                0x000000000000aa06                __gesf2
  .text.avr-libc.fplib
-                0x000000000000a84e        0x4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3.o)
-                0x000000000000a84e                __mulsf3
+                0x000000000000aa0e        0x4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3.o)
+                0x000000000000aa0e                __mulsf3
  .text.avr-libc.fplib
-                0x000000000000a852       0xc2 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3x.o)
-                0x000000000000a866                __mulsf3x
-                0x000000000000a86a                __mulsf3_pse
-                0x000000000000a914                . = ALIGN (0x2)
+                0x000000000000aa12       0xc2 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3x.o)
+                0x000000000000aa26                __mulsf3x
+                0x000000000000aa2a                __mulsf3_pse
+                0x000000000000aad4                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000000000000a914        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
-                0x000000000000a914                exit
-                0x000000000000a914                _exit
+ .fini9         0x000000000000aad4        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+                0x000000000000aad4                exit
+                0x000000000000aad4                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -964,11 +964,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000000000000a914        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x000000000000aad4        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x000000000000a918                _etext = .
+                0x000000000000aad8                _etext = .
 
-.data           0x0000000000800100      0x43e load address 0x000000000000a918
+.data           0x0000000000800100      0x456 load address 0x000000000000aad8
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800100        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
@@ -978,118 +978,118 @@ END GROUP
  .data          0x0000000000800100        0x0 uzeboxSoundEngineCore.o
  .data          0x0000000000800100        0x1 uzeboxVideoEngine.o
                 0x0000000000800100                spritesOn
- .data          0x0000000000800101      0x43d TankFu.o
+ .data          0x0000000000800101      0x455 TankFu.o
                 0x0000000000800102                scores
                 0x0000000000800122                handles
                 0x0000000000800142                level
                 0x0000000000800440                player2
-                0x00000000008004b5                player1
-                0x000000000080052a                banter_map
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodsi4.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_tablejump2.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_copy_data.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_clear_bss.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3x.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3x.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fixunssfsi.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(floatsisf.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_inf.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_nan.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_round.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_split3.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_zero.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(gesf2.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3.o)
- .data          0x000000000080053e        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3x.o)
+                0x00000000008004c1                player1
+                0x0000000000800542                banter_map
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodsi4.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_tablejump2.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_copy_data.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_clear_bss.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(addsf3x.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(divsf3x.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fixunssfsi.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(floatsisf.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_inf.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_nan.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_round.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_split3.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(fp_zero.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(gesf2.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3.o)
+ .data          0x0000000000800556        0x0 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libm.a(mulsf3x.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x000000000080053e                . = ALIGN (0x2)
-                0x000000000080053e                _edata = .
-                0x000000000080053e                PROVIDE (__data_end, .)
+                0x0000000000800556                . = ALIGN (0x2)
+                0x0000000000800556                _edata = .
+                0x0000000000800556                PROVIDE (__data_end, .)
 
-.bss            0x0000000000800540      0x9e2
-                0x0000000000800540                PROVIDE (__bss_start, .)
+.bss            0x0000000000800560      0x9e2
+                0x0000000000800560                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x0000000000800540      0x720 uzeboxVideoEngineCore.o
-                0x0000000000800540                vram
-                0x0000000000800888                sprites
-                0x0000000000800888                overlay_vram
-                0x00000000008008bc                ram_tiles
-                0x0000000000800bfc                ram_tiles_restore
-                0x0000000000800c23                sprites_tile_banks
-                0x0000000000800c2e                Screen
-                0x0000000000800c32                sync_phase
-                0x0000000000800c33                sync_pulse
-                0x0000000000800c34                sync_flags
-                0x0000000000800c39                first_render_line
-                0x0000000000800c3a                render_lines_count
-                0x0000000000800c3b                first_render_line_tmp
-                0x0000000000800c3c                render_lines_count_tmp
-                0x0000000000800c3d                joypad1_status_lo
-                0x0000000000800c3f                joypad1_status_hi
-                0x0000000000800c41                joypad2_status_lo
-                0x0000000000800c43                joypad2_status_hi
- .bss           0x0000000000800c60        0x1 uzeboxSoundEngine.o
-                0x0000000000800c60                playSong
- .bss           0x0000000000800c61      0x22d uzeboxSoundEngineCore.o
-                0x0000000000800c61                mix_buf
-                0x0000000000800e6d                mix_pos
-                0x0000000000800e6f                mix_bank
-                0x0000000000800e71                sound_enabled
-                0x0000000000800e72                mixer
- .bss           0x0000000000800e8e       0x17 TankFu.o
-                0x0000000000800e8e                p2s
-                0x0000000000800e94                p1s
-                0x0000000000800e9a                game
+ .bss           0x0000000000800560      0x720 uzeboxVideoEngineCore.o
+                0x0000000000800560                vram
+                0x00000000008008a8                sprites
+                0x00000000008008a8                overlay_vram
+                0x00000000008008dc                ram_tiles
+                0x0000000000800c1c                ram_tiles_restore
+                0x0000000000800c43                sprites_tile_banks
+                0x0000000000800c4e                Screen
+                0x0000000000800c52                sync_phase
+                0x0000000000800c53                sync_pulse
+                0x0000000000800c54                sync_flags
+                0x0000000000800c59                first_render_line
+                0x0000000000800c5a                render_lines_count
+                0x0000000000800c5b                first_render_line_tmp
+                0x0000000000800c5c                render_lines_count_tmp
+                0x0000000000800c5d                joypad1_status_lo
+                0x0000000000800c5f                joypad1_status_hi
+                0x0000000000800c61                joypad2_status_lo
+                0x0000000000800c63                joypad2_status_hi
+ .bss           0x0000000000800c80        0x1 uzeboxSoundEngine.o
+                0x0000000000800c80                playSong
+ .bss           0x0000000000800c81      0x22d uzeboxSoundEngineCore.o
+                0x0000000000800c81                mix_buf
+                0x0000000000800e8d                mix_pos
+                0x0000000000800e8f                mix_bank
+                0x0000000000800e91                sound_enabled
+                0x0000000000800e92                mixer
+ .bss           0x0000000000800eae       0x17 TankFu.o
+                0x0000000000800eae                p2s
+                0x0000000000800eb4                p1s
+                0x0000000000800eba                game
  *(.bss*)
  *(COMMON)
- COMMON         0x0000000000800ea5        0x1 uzeboxCore.o
-                0x0000000000800ea5                joypadsConnectionStatus
- COMMON         0x0000000000800ea6       0x68 uzeboxSoundEngine.o
-                0x0000000000800ea6                songStart
-                0x0000000000800ea8                tracks
-                0x0000000000800f00                currDeltaTime
-                0x0000000000800f02                patchPointers
-                0x0000000000800f04                lastStatus
-                0x0000000000800f05                masterVolume
-                0x0000000000800f06                nextDeltaTime
-                0x0000000000800f08                songSpeed
-                0x0000000000800f09                songPos
-                0x0000000000800f0b                loopStart
-                0x0000000000800f0d                step
- COMMON         0x0000000000800f0e        0x6 uzeboxVideoEngine.o
-                0x0000000000800f0e                fadeSpeed
-                0x0000000000800f0f                fadeDir
-                0x0000000000800f10                free_tile_index
-                0x0000000000800f11                fadeActive
-                0x0000000000800f12                currFadeFrame
-                0x0000000000800f13                fadeStep
- COMMON         0x0000000000800f14        0xe TankFu.o
-                0x0000000000800f14                p2
-                0x0000000000800f1a                p1
-                0x0000000000800f20                random_seed
-                0x0000000000800f22                PROVIDE (__bss_end, .)
-                0x000000000000a918                __data_load_start = LOADADDR (.data)
-                0x000000000000ad56                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x0000000000800ec5        0x1 uzeboxCore.o
+                0x0000000000800ec5                joypadsConnectionStatus
+ COMMON         0x0000000000800ec6       0x68 uzeboxSoundEngine.o
+                0x0000000000800ec6                songStart
+                0x0000000000800ec8                tracks
+                0x0000000000800f20                currDeltaTime
+                0x0000000000800f22                patchPointers
+                0x0000000000800f24                lastStatus
+                0x0000000000800f25                masterVolume
+                0x0000000000800f26                nextDeltaTime
+                0x0000000000800f28                songSpeed
+                0x0000000000800f29                songPos
+                0x0000000000800f2b                loopStart
+                0x0000000000800f2d                step
+ COMMON         0x0000000000800f2e        0x6 uzeboxVideoEngine.o
+                0x0000000000800f2e                fadeSpeed
+                0x0000000000800f2f                fadeDir
+                0x0000000000800f30                free_tile_index
+                0x0000000000800f31                fadeActive
+                0x0000000000800f32                currFadeFrame
+                0x0000000000800f33                fadeStep
+ COMMON         0x0000000000800f34        0xe TankFu.o
+                0x0000000000800f34                p2
+                0x0000000000800f3a                p1
+                0x0000000000800f40                random_seed
+                0x0000000000800f42                PROVIDE (__bss_end, .)
+                0x000000000000aad8                __data_load_start = LOADADDR (.data)
+                0x000000000000af2e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0000000000800f22        0x0
-                0x0000000000800f22                PROVIDE (__noinit_start, .)
+.noinit         0x0000000000800f42        0x0
+                0x0000000000800f42                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0000000000800f22                PROVIDE (__noinit_end, .)
-                0x0000000000800f22                _end = .
-                0x0000000000800f22                PROVIDE (__heap_start, .)
+                0x0000000000800f42                PROVIDE (__noinit_end, .)
+                0x0000000000800f42                _end = .
+                0x0000000000800f42                PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
  *(.eeprom*)
@@ -1182,7 +1182,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x6930
+.debug_info     0x0000000000000000     0x69c3
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7b uzeboxVideoEngineCore.o
@@ -1190,9 +1190,9 @@ END GROUP
  .debug_info    0x00000000000010a8     0x1223 uzeboxSoundEngine.o
  .debug_info    0x00000000000022cb       0x71 uzeboxSoundEngineCore.o
  .debug_info    0x000000000000233c     0x15bb uzeboxVideoEngine.o
- .debug_info    0x00000000000038f7     0x3039 TankFu.o
+ .debug_info    0x00000000000038f7     0x30cc TankFu.o
 
-.debug_abbrev   0x0000000000000000     0x14c5
+.debug_abbrev   0x0000000000000000     0x14fa
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x619 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_abbrev  0x0000000000000619       0x12 uzeboxVideoEngineCore.o
@@ -1200,9 +1200,9 @@ END GROUP
  .debug_abbrev  0x0000000000000916      0x307 uzeboxSoundEngine.o
  .debug_abbrev  0x0000000000000c1d       0x12 uzeboxSoundEngineCore.o
  .debug_abbrev  0x0000000000000c2f      0x3ab uzeboxVideoEngine.o
- .debug_abbrev  0x0000000000000fda      0x4eb TankFu.o
+ .debug_abbrev  0x0000000000000fda      0x520 TankFu.o
 
-.debug_line     0x0000000000000000     0x182e
+.debug_line     0x0000000000000000     0x1843
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x47a uzeboxVideoEngineCore.o
@@ -1210,16 +1210,16 @@ END GROUP
  .debug_line    0x000000000000072a      0x39e uzeboxSoundEngine.o
  .debug_line    0x0000000000000ac8      0x1cf uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000c97      0x4df uzeboxVideoEngine.o
- .debug_line    0x0000000000001176      0x6b8 TankFu.o
+ .debug_line    0x0000000000001176      0x6cd TankFu.o
 
-.debug_frame    0x0000000000000000      0xeac
+.debug_frame    0x0000000000000000      0xec0
  *(.debug_frame)
  .debug_frame   0x0000000000000000      0x174 uzeboxCore.o
  .debug_frame   0x0000000000000174      0x26c uzeboxSoundEngine.o
  .debug_frame   0x00000000000003e0      0x4c0 uzeboxVideoEngine.o
- .debug_frame   0x00000000000008a0      0x60c TankFu.o
+ .debug_frame   0x00000000000008a0      0x620 TankFu.o
 
-.debug_str      0x0000000000000000     0x15d8
+.debug_str      0x0000000000000000     0x1606
  *(.debug_str)
  .debug_str     0x0000000000000000      0x231 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_str     0x0000000000000231      0x450 uzeboxCore.o
@@ -1228,15 +1228,15 @@ END GROUP
                                         0x5cd (size before relaxing)
  .debug_str     0x0000000000000a51      0x2df uzeboxVideoEngine.o
                                         0x4b9 (size before relaxing)
- .debug_str     0x0000000000000d30      0x8a8 TankFu.o
-                                        0xb4e (size before relaxing)
+ .debug_str     0x0000000000000d30      0x8d6 TankFu.o
+                                        0xb7c (size before relaxing)
 
-.debug_loc      0x0000000000000000     0x59cd
+.debug_loc      0x0000000000000000     0x5b88
  *(.debug_loc)
  .debug_loc     0x0000000000000000      0x864 uzeboxCore.o
  .debug_loc     0x0000000000000864     0x1174 uzeboxSoundEngine.o
  .debug_loc     0x00000000000019d8     0x1d49 uzeboxVideoEngine.o
- .debug_loc     0x0000000000003721     0x22ac TankFu.o
+ .debug_loc     0x0000000000003721     0x2467 TankFu.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1256,14 +1256,14 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x0000000000000000      0x510
+.debug_ranges   0x0000000000000000      0x4f8
  *(.debug_ranges)
  .debug_ranges  0x0000000000000000       0xc8 uzeboxVideoEngineCore.o
  .debug_ranges  0x00000000000000c8       0x70 uzeboxCore.o
  .debug_ranges  0x0000000000000138      0x120 uzeboxSoundEngine.o
  .debug_ranges  0x0000000000000258       0x40 uzeboxSoundEngineCore.o
  .debug_ranges  0x0000000000000298      0x130 uzeboxVideoEngine.o
- .debug_ranges  0x00000000000003c8      0x148 TankFu.o
+ .debug_ranges  0x00000000000003c8      0x130 TankFu.o
 
 .debug_macro
  *(.debug_macro)

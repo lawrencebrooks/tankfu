@@ -48,7 +48,6 @@
 #define MAX_SHOTS 2
 
 // General macros
-#define MAX_SPRITES 13
 #define FRAME_TIME 0.0166666
 
 #endif

@@ -374,6 +374,8 @@ void save_score()
 
 void update_level_helper(JoyPadState* p, Player* player)
 {
+	Shot* shot;
+
 	if ((p->pressed & BTN_START))
 	{
 		game.paused = game.paused ^ 1;
@@ -406,9 +408,42 @@ void update_level_helper(JoyPadState* p, Player* player)
 			player->direction = D_LEFT;
 			player->x -= FRAME_TIME * player->speed;
 		}
+		else if ((p->pressed & BTN_A) && (player->active_shots < MAX_SHOTS))
+		{
+			for (u8 i = 0; i < MAX_SHOTS; i++)
+			{
+				shot = &player->shot[i];
+				if (!shot->active)
+				{
+					player->active_shots++;
+					shot->direction = player->direction;
+					shot->x = player->x + 4;
+					shot->y = player->y + 4;
+					shot->active = 1;
+					break;
+				}
+			}
+		}
 		else
 		{
 			player->speed = 0;
+		}
+
+		/* Update Shot */
+		for (u8 i = 0; i < MAX_SHOTS; i++)
+		{
+			shot = &player->shot[i];
+			if (shot->active)
+			{
+				switch (shot->direction)
+				{
+					case D_UP: shot->y -= FRAME_TIME * shot->speed; break;
+					case D_RIGHT: shot->x += FRAME_TIME * shot->speed; break;
+					case D_DOWN: shot->y += FRAME_TIME * shot->speed; break;
+					case D_LEFT: shot->x -= FRAME_TIME * shot->speed; break;
+					default: break;
+				}
+			}
 		}
 	}
 	else
@@ -451,9 +486,9 @@ void render_player(Player* player, u8 sprite_index)
 
 void render_shot(Player* player, u8 sprite_index)
 {
-	for (u8 i = 0; i < player->active_shots; i++)
+	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
-		MoveSprite(sprite_index, player->shot[i].x, player->shot[i].y, 1, 1);
+		MoveSprite(sprite_index++, player->shot[i].x, player->shot[i].y, 1, 1);
 	}
 }
 
@@ -497,21 +532,30 @@ char shot_map(Player* player, char sprite_index)
 	char looped = 0;
 	char* s_map = 0;
 	u8 s_flags = 0;
+	Shot* shot;
 
 	s_map = (char*) map_tank_blank;
-	for (u8 i = 0; i < player->active_shots; i++)
+	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
-		switch (player->shot[i].direction)
+		shot = &player->shot[i];
+		if (shot->active)
 		{
-			case D_UP: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
-			case D_RIGHT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = 0; break;
-			case D_DOWN: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = SPRITE_FLIP_Y; break;
-			case D_LEFT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = SPRITE_FLIP_X; break;
-			default: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
+			switch (shot->direction)
+			{
+				case D_UP: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
+				case D_RIGHT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = 0; break;
+				case D_DOWN: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = SPRITE_FLIP_Y; break;
+				case D_LEFT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = SPRITE_FLIP_X; break;
+				default: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
+			}
 		}
+		else
+		{
+			s_map = (char*) map_tank_blank;
+		}
+		MapSprite2(sprite_index++, (const char*) s_map, s_flags);
 	}
-	MapSprite2(sprite_index, (const char*) s_map, s_flags);
-	return ++sprite_index;
+	return sprite_index;
 }
 
 int first_index()
@@ -624,7 +668,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	u8 x;
 	u8 y;
-	char sprite_index = 0;
+	char p1_index = 0;
+	char p2_index = 0;
+	char p1_shot_index = 0;
+	char p2_shot_index = 0;
 
 	// Render
 	if (game.paused)
@@ -635,14 +682,14 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else
 	{
-		sprite_index = tank_map(&player1, sprite_index);
-		sprite_index = tank_map(&player2, sprite_index);
-		sprite_index = shot_map(&player1, sprite_index);
-		sprite_index = shot_map(&player2, sprite_index);
-		render_player(&player1, 0);
-		render_player(&player2, 4);
-		render_shot(&player1, 8);
-		render_shot(&player2, 9);
+		p2_index = tank_map(&player1, p1_index);
+		p1_shot_index = tank_map(&player2, p2_index);
+		p2_shot_index = shot_map(&player1, p1_shot_index);
+		shot_map(&player2, p2_shot_index);
+		render_player(&player1, p1_index);
+		render_player(&player2, p2_index);
+		render_shot(&player1, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
 		render_score(&player1, 0, 15);
 		render_score(&player2, 15, 0);
 		Print(14, 0, strVertSep);

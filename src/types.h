@@ -27,8 +27,8 @@ typedef struct sLevelState {
 
 typedef struct sShot {
 	u8 shot_type;
-	u8 x;
-	u8 y;
+	float x;
+	float y;
 	u8 rebounds;
 	u8 active;
 	u8 direction;
