@@ -457,8 +457,10 @@ void render_shot(Player* player, u8 sprite_index)
 	}
 }
 
-void get_tank_map(Player* player, char** t_map, u8* t_flags)
+char tank_map(Player* player, char sprite_index)
 {
+	char* t_map = 0;
+	u8 t_flags = 0;
 	static u8 toggle_counter = FRAMES_PER_BLANK;
 	static u8 toggle_blank = 0;
 	char looped;
@@ -469,15 +471,15 @@ void get_tank_map(Player* player, char** t_map, u8* t_flags)
 	}
 	switch (player->direction)
 	{
-		case D_UP: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = 0; break;
-		case D_RIGHT: *t_map = LBGetNextFrame(&player->right_anim, &looped); *t_flags = 0; break;
-		case D_DOWN: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = SPRITE_FLIP_Y; break;
-		case D_LEFT: *t_map = LBGetNextFrame(&player->right_anim, &looped); *t_flags = SPRITE_FLIP_X; break;
-		default: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = 0; break;
+		case D_UP: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
+		case D_RIGHT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = 0; break;
+		case D_DOWN: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = SPRITE_FLIP_Y; break;
+		case D_LEFT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = SPRITE_FLIP_X; break;
+		default: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
 	}
 	if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
 	{
-		*t_map = (char*) map_tank_blank;
+		t_map = (char*) map_tank_blank;
 	}
 	toggle_counter--;
 	if (toggle_counter == 0)
@@ -485,24 +487,31 @@ void get_tank_map(Player* player, char** t_map, u8* t_flags)
 		toggle_counter = FRAMES_PER_BLANK;
 		toggle_blank = toggle_blank ^ 1;
 	}
+	MapSprite2(sprite_index, (const char*) t_map, t_flags);
+	sprite_index += 4;
+	return sprite_index;
 }
 
-void get_shot_map(Player* player, char** s_map, u8* s_flags)
+char shot_map(Player* player, char sprite_index)
 {
 	char looped = 0;
+	char* s_map = 0;
+	u8 s_flags = 0;
 
-	*s_map = (char*) map_tank_blank;
+	s_map = (char*) map_tank_blank;
 	for (u8 i = 0; i < player->active_shots; i++)
 	{
 		switch (player->shot[i].direction)
 		{
-			case D_UP: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = 0; break;
-			case D_RIGHT: *s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); *s_flags = 0; break;
-			case D_DOWN: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = SPRITE_FLIP_Y; break;
-			case D_LEFT: *s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); *s_flags = SPRITE_FLIP_X; break;
-			default: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = 0; break;
+			case D_UP: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
+			case D_RIGHT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = 0; break;
+			case D_DOWN: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = SPRITE_FLIP_Y; break;
+			case D_LEFT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = SPRITE_FLIP_X; break;
+			default: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
 		}
 	}
+	MapSprite2(sprite_index, (const char*) s_map, s_flags);
+	return ++sprite_index;
 }
 
 int first_index()
@@ -613,16 +622,9 @@ void collision_detect_tiles(Player* player)
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
-	char* tank1_map = 0;
-	char* tank2_map = 0;
-	char* shot1_map = 0;
-	char* shot2_map = 0;
-	u8 tank1_flags = 0;
-	u8 tank2_flags = 0;
-	u8 shot1_flags = 0;
-	u8 shot2_flags = 0;
 	u8 x;
 	u8 y;
+	char sprite_index = 0;
 
 	// Render
 	if (game.paused)
@@ -633,14 +635,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else
 	{
-		get_tank_map(&player1, &tank1_map, &tank1_flags);
-		get_tank_map(&player2, &tank2_map, &tank2_flags);
-		get_shot_map(&player1, &shot1_map, &shot1_flags);
-		get_shot_map(&player2, &shot2_map, &shot2_flags);
-		MapSprite2(0, (const char*) tank1_map, tank1_flags);
-		MapSprite2(4, (const char*) tank2_map, tank2_flags);
-		MapSprite2(8, (const char*) shot1_map, shot1_flags);
-		MapSprite2(9, (const char*) shot2_map, shot2_flags);
+		sprite_index = tank_map(&player1, sprite_index);
+		sprite_index = tank_map(&player2, sprite_index);
+		sprite_index = shot_map(&player1, sprite_index);
+		sprite_index = shot_map(&player2, sprite_index);
 		render_player(&player1, 0);
 		render_player(&player2, 4);
 		render_shot(&player1, 8);
