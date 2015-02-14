@@ -18,8 +18,9 @@ typedef struct sAnimation {
 	char* anims[3];
 } Animation;
 
-char* LBGetNextFrame(Animation* anim)
+char* LBGetNextFrame(Animation* anim, char* looped)
 {
+	*looped = 0;
 	anim->frame_count += 1;
 	if (anim->frame_count < anim->frames_per_anim)
 	{
@@ -27,6 +28,7 @@ char* LBGetNextFrame(Animation* anim)
 	}
 	anim->frame_count = 0;
 	anim->current_anim = (anim->current_anim + 1) % anim->anim_count;
+	if (anim->current_anim == 0) *looped = 1;
 	return anim->anims[anim->current_anim];
 }
 

@@ -33,6 +33,7 @@
 #define FRAMES_PER_BANTER 90
 #define FRAMES_PER_GRACE 120
 #define FRAMES_PER_BLANK 20
+#define FRAMES_PER_ANIM 5
 
 // Handle select states
 #define SELECTING 0
@@ -47,6 +48,12 @@
 #define MAX_SPEED 50
 #define OVER_SPEED = 80
 
+// Shot
+#define BASIC_SHOT 0
+#define ROCKET_SHOT 1
+#define SHOT_REBOUNDS 2
+#define SHOT_SPEED 100
+
 // General macros
 #define MAX_SPRITES 13
 #define FRAME_TIME 0.0166666
@@ -57,16 +64,7 @@ Game game = {
 };
 JoyPadState p1;
 JoyPadState p2;
-/*
- * typedef struct sAnimation {
-	unsigned char current_anim;
-	unsigned char anim_count;
-	unsigned char frames_per_anim;
-	unsigned char frame_count;
-	unsigned char* anims[3];
-} Animation;
- *
- */
+
 Player player1 = {
 	.banter_frame = FRAMES_PER_BANTER,
 	.grace_frame = FRAMES_PER_GRACE,
@@ -79,24 +77,55 @@ Player player1 = {
 
 	/* Tracks animation (Up) */
 	.up_anim.current_anim = 0,
-	.up_anim.anim_count = 2,
-	.up_anim.frames_per_anim = 5,
+	.up_anim.anim_count = 1,
+	.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.up_anim.frame_count = 0,
-	.up_anim.anims = {(char*)map_tank1_up_0, (char*)map_tank1_up_1},
+	.up_anim.anims = {(char*)map_tank1_up_0},
 
 	/* Tracks animation (Down) */
 	.right_anim.current_anim = 0,
-	.right_anim.anim_count = 2,
-	.right_anim.frames_per_anim = 5,
+	.right_anim.anim_count = 1,
+	.right_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.right_anim.frame_count = 0,
-	.right_anim.anims = {(char*)map_tank1_right_0, (char*)map_tank1_right_1},
+	.right_anim.anims = {(char*)map_tank1_right_0},
 
 	/* Explosion Animation */
 	.exp_anim.current_anim = 0,
 	.exp_anim.anim_count = 3,
-	.exp_anim.frames_per_anim = 5,
+	.exp_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.exp_anim.frame_count = 0,
-	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2}
+	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2},
+
+	/* Shot */
+	.shot = {
+		{
+			.shot_type = BASIC_SHOT,
+			.x = 0,
+			.y = 0,
+			.rebounds = SHOT_REBOUNDS,
+			.active = 0,
+			.speed = SHOT_SPEED,
+			.up_anim.current_anim = 0,
+			.up_anim.anim_count = 1,
+			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.up_anim.frame_count = 0,
+			.up_anim.anims = {(char*)map_ball},
+		},
+		{
+			.shot_type = BASIC_SHOT,
+			.x = 0,
+			.y = 0,
+			.rebounds = SHOT_REBOUNDS,
+			.active = 0,
+			.speed = SHOT_SPEED,
+			.up_anim.current_anim = 0,
+			.up_anim.anim_count = 1,
+			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.up_anim.frame_count = 0,
+			.up_anim.anims = {(char*)map_ball},
+		}
+	}
+
 };
 Player player2 = {
 	.banter_frame = FRAMES_PER_BANTER,
@@ -110,25 +139,56 @@ Player player2 = {
 
 	/* Tracks animation (Up) */
 	.up_anim.current_anim = 0,
-	.up_anim.anim_count = 2,
-	.up_anim.frames_per_anim = 5,
+	.up_anim.anim_count = 1,
+	.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.up_anim.frame_count = 0,
-	.up_anim.anims = {(char*)map_tank2_up_0, (char*)map_tank2_up_1},
+	.up_anim.anims = {(char*)map_tank2_up_0},
 
 	/* Tracks animation (Down) */
 	.right_anim.current_anim = 0,
-	.right_anim.anim_count = 2,
-	.right_anim.frames_per_anim = 5,
+	.right_anim.anim_count = 1,
+	.right_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.right_anim.frame_count = 0,
-	.right_anim.anims = {(char*)map_tank2_right_0, (char*)map_tank2_right_1},
+	.right_anim.anims = {(char*)map_tank2_right_0},
 
 	/* Explosion Animation */
 	.exp_anim.current_anim = 0,
 	.exp_anim.anim_count = 3,
-	.exp_anim.frames_per_anim = 5,
+	.exp_anim.frames_per_anim = FRAMES_PER_ANIM,
 	.exp_anim.frame_count = 0,
-	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2}
+	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2},
+
+	/* Shot */
+	.shot = {
+		{
+			.shot_type = BASIC_SHOT,
+			.x = 0,
+			.y = 0,
+			.rebounds = SHOT_REBOUNDS,
+			.active = 0,
+			.speed = SHOT_SPEED,
+			.up_anim.current_anim = 0,
+			.up_anim.anim_count = 1,
+			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.up_anim.frame_count = 0,
+			.up_anim.anims = {(char*)map_ball},
+		},
+		{
+			.shot_type = BASIC_SHOT,
+			.x = 0,
+			.y = 0,
+			.rebounds = SHOT_REBOUNDS,
+			.active = 0,
+			.speed = SHOT_SPEED,
+			.up_anim.current_anim = 0,
+			.up_anim.anim_count = 1,
+			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.up_anim.frame_count = 0,
+			.up_anim.anims = {(char*)map_ball},
+		}
+	}
 };
+
 Level level = {
 	.buffer_size = 0,
 	.render_all = 1,
@@ -254,16 +314,6 @@ void reset_player_state(Player* s)
 	s->banter_index = 0;
 	s->score = 0;
 	s->level_score = 0;
-}
-
-void reset_shot_state(Shot* s)
-{
-
-}
-
-void reset_anim_state(Animation* s)
-{
-
 }
 
 void reset_game_state()
@@ -437,13 +487,11 @@ void render_player(Player* player, unsigned char sprite_index)
 	MoveSprite(sprite_index, player->x, player->y, 2, 2);
 }
 
-void get_tank_map(Player* player, char** t_map,
-		          const char* t_up_map0, const char* t_up_map1,
-		          const char* t_right_map0, const char* t_right_map1,
-		          u8* t_flags)
+void get_tank_map(Player* player, char** t_map, u8* t_flags)
 {
 	static unsigned char toggle_counter = FRAMES_PER_BLANK;
 	static unsigned char toggle_blank = 0;
+	char looped;
 
 	if (player->grace_frame != FRAMES_PER_GRACE)
 	{
@@ -451,11 +499,11 @@ void get_tank_map(Player* player, char** t_map,
 	}
 	switch (player->direction)
 	{
-		case D_UP: *t_map = (char*) t_up_map0; *t_flags = 0; break;
-		case D_RIGHT: *t_map = (char*) t_right_map0; *t_flags = 0; break;
-		case D_DOWN: *t_map = (char*) t_up_map0; *t_flags = SPRITE_FLIP_Y; break;
-		case D_LEFT: *t_map = (char*) t_right_map0; *t_flags = SPRITE_FLIP_X; break;
-		default: *t_map = (char*) t_up_map0; *t_flags = 0; break;
+		case D_UP: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = 0; break;
+		case D_RIGHT: *t_map = LBGetNextFrame(&player->right_anim, &looped); *t_flags = 0; break;
+		case D_DOWN: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = SPRITE_FLIP_Y; break;
+		case D_LEFT: *t_map = LBGetNextFrame(&player->right_anim, &looped); *t_flags = SPRITE_FLIP_X; break;
+		default: *t_map = LBGetNextFrame(&player->up_anim, &looped); *t_flags = 0; break;
 	}
 	if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
 	{
@@ -593,8 +641,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else
 	{
-		get_tank_map(&player1, &tank1_map, map_tank1_up_0, map_tank1_up_1, map_tank1_right_0, map_tank1_right_1, &tank1_flags);
-		get_tank_map(&player2, &tank2_map, map_tank2_up_0, map_tank2_up_1, map_tank2_right_0, map_tank2_right_1, &tank2_flags);
+		get_tank_map(&player1, &tank1_map, &tank1_flags);
+		get_tank_map(&player2, &tank2_map, &tank2_flags);
 		MapSprite2(0, (const char*) tank1_map, tank1_flags);
 		MapSprite2(4, (const char*) tank2_map, tank2_flags);
 		render_player(&player1, 0);
@@ -868,6 +916,8 @@ int get_random_seed()
 int main()
 {
 	// Initialize
+	SetMasterVolume(0);
+	StopSong();
 	random_seed = get_random_seed();
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);

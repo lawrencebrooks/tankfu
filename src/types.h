@@ -30,6 +30,7 @@ typedef struct sShot {
 	unsigned char y;
 	unsigned char rebounds;
 	unsigned char active;
+	unsigned char speed;
 	Animation up_anim;
 	Animation right_anim;
 
