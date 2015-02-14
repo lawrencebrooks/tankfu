@@ -12,51 +12,7 @@
 #include "types.h"
 #include "strings.h"
 #include "utils.h"
-
-// EEPROM ID's
-#define EEPROM_HANDLES_ID 0x87
-#define EEPROM_TANK_RANK_ID 0x88
-
-// Screens
-#define SPLASH 0
-#define TANK_RANK 1
-#define HANDLE_SELECT 2
-#define LEVEL 3
-
-// Selections
-#define PVCPU 0
-#define PVP 1
-#define TR 2
-
-// Frame counts
-#define FRAMES_PER_FADE 3
-#define FRAMES_PER_BANTER 90
-#define FRAMES_PER_GRACE 120
-#define FRAMES_PER_BLANK 20
-#define FRAMES_PER_ANIM 5
-
-// Handle select states
-#define SELECTING 0
-#define EDITING 1
-#define CONFIRMED 2
-
-// Movement
-#define D_UP 0
-#define D_RIGHT 1
-#define D_DOWN 2
-#define D_LEFT 3
-#define MAX_SPEED 50
-#define OVER_SPEED = 80
-
-// Shot
-#define BASIC_SHOT 0
-#define ROCKET_SHOT 1
-#define SHOT_REBOUNDS 2
-#define SHOT_SPEED 100
-
-// General macros
-#define MAX_SPRITES 13
-#define FRAME_TIME 0.0166666
+#include "macros.h"
 
 // Globals
 Game game = {
@@ -97,6 +53,7 @@ Player player1 = {
 	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2},
 
 	/* Shot */
+	.active_shots = 0,
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
@@ -105,6 +62,7 @@ Player player1 = {
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
 			.speed = SHOT_SPEED,
+			.direction = D_UP,
 			.up_anim.current_anim = 0,
 			.up_anim.anim_count = 1,
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
@@ -118,6 +76,7 @@ Player player1 = {
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
 			.speed = SHOT_SPEED,
+			.direction = D_UP,
 			.up_anim.current_anim = 0,
 			.up_anim.anim_count = 1,
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
@@ -159,6 +118,7 @@ Player player2 = {
 	.exp_anim.anims = {(char*)map_explosion_0, (char*)map_explosion_1, (char*)map_explosion_2},
 
 	/* Shot */
+	.active_shots = 0,
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
@@ -167,6 +127,7 @@ Player player2 = {
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
 			.speed = SHOT_SPEED,
+			.direction = D_UP,
 			.up_anim.current_anim = 0,
 			.up_anim.anim_count = 1,
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
@@ -180,6 +141,7 @@ Player player2 = {
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
 			.speed = SHOT_SPEED,
+			.direction = D_UP,
 			.up_anim.current_anim = 0,
 			.up_anim.anim_count = 1,
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
@@ -256,7 +218,7 @@ int random(int from, int to)
  * Return a random number between 'from' and 'to'.
  */
 {
-	static unsigned char shift_count = 0;
+	static u8 shift_count = 0;
 	int shifted = random_seed >> shift_count;
 	int delta = to - from;
 
@@ -277,7 +239,7 @@ void load_eeprom(struct EepromBlockStruct* block)
  *  0x04 = EEPROM_ERROR_NOT_FORMATTED
  */
 {
-	unsigned char status = 0;
+	u8 status = 0;
 	status = EepromReadBlock(block->id, block);
 	if (status == 0x03)
 	{
@@ -368,11 +330,11 @@ void load_level(int level_number)
 
 void save_score()
 {
-	unsigned char cur_delta = 0;
-	unsigned char tmp_score[4];
-	unsigned char save_score[4];
-	unsigned char save_delta = 0;
-	unsigned char saved = 0;
+	u8 cur_delta = 0;
+	u8 tmp_score[4];
+	u8 save_score[4];
+	u8 save_delta = 0;
+	u8 saved = 0;
 	Player* p_win = &player1;
 	Player* p_lose = &player2;
 
@@ -387,7 +349,7 @@ void save_score()
 	save_score[3] = p_lose->score;
 	save_delta = p_win->score - p_lose->score;
 
-	for (unsigned char i = 0; i < 28; i += 4)
+	for (u8 i = 0; i < 28; i += 4)
 	{
 		if (saved)
 		{
@@ -421,7 +383,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 		if ((p->pressed & BTN_SR) && (player->banter_frame == FRAMES_PER_BANTER))
 		{
 			player->banter_frame = 0;
-			player->banter_index = (unsigned char) random(0, 9);
+			player->banter_index = (u8) random(0, 9);
 		}
 		player->speed = player->max_speed;
 		if ((p->held & BTN_UP))
@@ -462,7 +424,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 	}
 }
 
-void render_score(Player* player, unsigned char x, unsigned char banter_x)
+void render_score(Player* player, u8 x, u8 banter_x)
 {
 	LBPrintStr(x+10, 0, player->handle, 3);
 	Print(x, 0, strScore);
@@ -482,15 +444,23 @@ void render_score(Player* player, unsigned char x, unsigned char banter_x)
 	}
 }
 
-void render_player(Player* player, unsigned char sprite_index)
+void render_player(Player* player, u8 sprite_index)
 {
 	MoveSprite(sprite_index, player->x, player->y, 2, 2);
 }
 
+void render_shot(Player* player, u8 sprite_index)
+{
+	for (u8 i = 0; i < player->active_shots; i++)
+	{
+		MoveSprite(sprite_index, player->shot[i].x, player->shot[i].y, 1, 1);
+	}
+}
+
 void get_tank_map(Player* player, char** t_map, u8* t_flags)
 {
-	static unsigned char toggle_counter = FRAMES_PER_BLANK;
-	static unsigned char toggle_blank = 0;
+	static u8 toggle_counter = FRAMES_PER_BLANK;
+	static u8 toggle_blank = 0;
 	char looped;
 
 	if (player->grace_frame != FRAMES_PER_GRACE)
@@ -514,6 +484,24 @@ void get_tank_map(Player* player, char** t_map, u8* t_flags)
 	{
 		toggle_counter = FRAMES_PER_BLANK;
 		toggle_blank = toggle_blank ^ 1;
+	}
+}
+
+void get_shot_map(Player* player, char** s_map, u8* s_flags)
+{
+	char looped = 0;
+
+	*s_map = (char*) map_tank_blank;
+	for (u8 i = 0; i < player->active_shots; i++)
+	{
+		switch (player->shot[i].direction)
+		{
+			case D_UP: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = 0; break;
+			case D_RIGHT: *s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); *s_flags = 0; break;
+			case D_DOWN: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = SPRITE_FLIP_Y; break;
+			case D_LEFT: *s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); *s_flags = SPRITE_FLIP_X; break;
+			default: *s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); *s_flags = 0; break;
+		}
 	}
 }
 
@@ -557,11 +545,11 @@ int inc_index(int* i)
 	return result;
 }
 
-unsigned char solid_tile(int tile_index, Player* player)
+u8 solid_tile(int tile_index, Player* player)
 {
-	unsigned char tile = level.level_map[tile_index];
-	unsigned char tile_x = (tile_index % 30) * 8;
-	unsigned char tile_y = (tile_index / 30 + 3) * 8;
+	u8 tile = level.level_map[tile_index];
+	u8 tile_x = (tile_index % 30) * 8;
+	u8 tile_y = (tile_index / 30 + 3) * 8;
 
 	if (tile == L_BRICK) return 1;
 	if (tile == L_METAL) return 1;
@@ -586,8 +574,8 @@ unsigned char solid_tile(int tile_index, Player* player)
 void collision_detect_tiles(Player* player)
 {
 	int tiles[8] = {0,0,0,0,0,0,0,0};
-	unsigned char x = player->x / 8;
-	unsigned char y = player->y / 8 - 3;
+	u8 x = player->x / 8;
+	u8 y = player->y / 8 - 3;
 
 	tiles[0] = (y * 30) + x;
 	tiles[1] = tiles[0]+2;
@@ -598,7 +586,7 @@ void collision_detect_tiles(Player* player)
 	tiles[6] = tiles[2]+1;
 	tiles[7] = tiles[0]+30;
 
-	for (unsigned char i = 0; i < 8; i++)
+	for (u8 i = 0; i < 8; i++)
 	{
 		if (solid_tile(tiles[i], player))
 		{
@@ -627,10 +615,14 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	char* tank1_map = 0;
 	char* tank2_map = 0;
+	char* shot1_map = 0;
+	char* shot2_map = 0;
 	u8 tank1_flags = 0;
-	u8 tank2_flags = 1;
-	unsigned char x;
-	unsigned char y;
+	u8 tank2_flags = 0;
+	u8 shot1_flags = 0;
+	u8 shot2_flags = 0;
+	u8 x;
+	u8 y;
 
 	// Render
 	if (game.paused)
@@ -643,10 +635,16 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		get_tank_map(&player1, &tank1_map, &tank1_flags);
 		get_tank_map(&player2, &tank2_map, &tank2_flags);
+		get_shot_map(&player1, &shot1_map, &shot1_flags);
+		get_shot_map(&player2, &shot2_map, &shot2_flags);
 		MapSprite2(0, (const char*) tank1_map, tank1_flags);
 		MapSprite2(4, (const char*) tank2_map, tank2_flags);
+		MapSprite2(8, (const char*) shot1_map, shot1_flags);
+		MapSprite2(9, (const char*) shot2_map, shot2_flags);
 		render_player(&player1, 0);
 		render_player(&player2, 4);
+		render_shot(&player1, 8);
+		render_shot(&player2, 9);
 		render_score(&player1, 0, 15);
 		render_score(&player2, 15, 0);
 		Print(14, 0, strVertSep);
@@ -740,8 +738,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 {
-	unsigned char y = 7;
-	unsigned char rank = 1;
+	u8 y = 7;
+	u8 rank = 1;
 
 	// Render
 	clear_sprites();
@@ -750,7 +748,7 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	MoveSprite(0, 7*8, 1*8, 2, 2);
 	MoveSprite(4, 20*8, 1*8, 2, 2);
 	Print(10, 2, strHighscores);
-	for (unsigned char i = 0; i < 20; i += 4)
+	for (u8 i = 0; i < 20; i += 4)
 	{
 		PrintByte(2, y, rank, false);
 		PrintChar(3, y, '.');
@@ -804,13 +802,13 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	}
 	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
 	{
-		ps->handle[(unsigned char) ps->char_index]--;
-		if (ps->handle[(unsigned char) ps->char_index] < 'A') ps->handle[(unsigned char) ps->char_index] = 'A';
+		ps->handle[(u8) ps->char_index]--;
+		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
 	{
-		ps->handle[(unsigned char) ps->char_index]++;
-		if (ps->handle[(unsigned char) ps->char_index] > 'Z') ps->handle[(unsigned char) ps->char_index] = 'Z';
+		ps->handle[(u8) ps->char_index]++;
+		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
 	}
 	else if ((p->pressed & BTN_A) && (ps->select_state == EDITING))
 	{
@@ -835,9 +833,9 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	}
 }
 
-void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigned char x_offset, unsigned char idx)
+void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_offset, u8 idx)
 {
-	unsigned char tmp[3] = {' ', ' ', ' '};
+	u8 tmp[3] = {' ', ' ', ' '};
 	if (ps->select_state == SELECTING)
 	{
 		MapSprite2(idx, map_ball, 0);
@@ -862,7 +860,7 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, unsigne
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 {
-	unsigned char start_game = 0;
+	u8 start_game = 0;
 
 	// Render
 	clear_sprites();

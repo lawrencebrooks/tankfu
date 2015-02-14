@@ -6,31 +6,33 @@
 #define LB_TYPES_H
 
 #include "utils.h"
+#include "macros.h"
 
 typedef struct sGameState {
-	unsigned char current_screen;
-	unsigned char current_level;
-	unsigned char level_count;
-	unsigned char paused;
+	u8 current_screen;
+	u8 current_level;
+	u8 level_count;
+	u8 paused;
 	char selection;
 } Game;
 
 typedef struct sLevelState {
-	unsigned char level_state;
-	unsigned char level_map[30*25];
-	unsigned char render_buffer[12];
-	unsigned char buffer_size;
-	unsigned char render_index;
-	unsigned char render_all;
+	u8 level_state;
+	u8 level_map[30*25];
+	u8 render_buffer[12];
+	u8 buffer_size;
+	u8 render_index;
+	u8 render_all;
 } Level;
 
 typedef struct sShot {
-	unsigned char shot_type;
-	unsigned char x;
-	unsigned char y;
-	unsigned char rebounds;
-	unsigned char active;
-	unsigned char speed;
+	u8 shot_type;
+	u8 x;
+	u8 y;
+	u8 rebounds;
+	u8 active;
+	u8 direction;
+	float speed;
 	Animation up_anim;
 	Animation right_anim;
 
@@ -38,22 +40,22 @@ typedef struct sShot {
 
 typedef struct sPlayer {
 	char handle_id;
-	unsigned char handle[3];
-	unsigned char score;
-	unsigned char level_score;
-	unsigned char active_shots;
+	u8 handle[3];
+	u8 score;
+	u8 level_score;
+	u8 active_shots;
 	float x;
 	float y;
-	unsigned char spawn_x;
-	unsigned char spawn_y;
-	unsigned char direction;
-	unsigned char player_state;
-	unsigned char banter_frame;
-	unsigned char banter_index;
-	unsigned char grace_frame;
+	u8 spawn_x;
+	u8 spawn_y;
+	u8 direction;
+	u8 player_state;
+	u8 banter_frame;
+	u8 banter_index;
+	u8 grace_frame;
 	float speed;
-	unsigned char max_speed;
-	Shot shot[2];
+	u8 max_speed;
+	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;
 	Animation exp_anim;
@@ -61,9 +63,9 @@ typedef struct sPlayer {
 
 typedef struct sHandleSelectState {
 	char handle_id;
-	unsigned char handle[3];
+	u8 handle[3];
 	char char_index;
-	unsigned char select_state;
+	u8 select_state;
 } HandleSelectState;
 
 #endif

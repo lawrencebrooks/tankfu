@@ -11,10 +11,10 @@ typedef struct sJoyPadState {
 } JoyPadState;
 
 typedef struct sAnimation {
-	unsigned char current_anim;			// Current animation
-	unsigned char anim_count;			// Total animation count
-	unsigned char frames_per_anim;		// Animation lifetime in amount of render frames
-	unsigned char frame_count;			// Render frame counter
+	u8 current_anim;			// Current animation
+	u8 anim_count;			// Total animation count
+	u8 frames_per_anim;		// Animation lifetime in amount of render frames
+	u8 frame_count;			// Render frame counter
 	char* anims[3];
 } Animation;
 
@@ -50,27 +50,27 @@ void LBGetJoyPadState(JoyPadState* p1, JoyPadState* p2)
 	p2_prev = p2->held;
 }
 
-void LBCopyChars(unsigned char* dst, unsigned char *src, unsigned char count)
+void LBCopyChars(u8* dst, u8 *src, u8 count)
 /*
  * Custom string copy
  */
 {
-	for (unsigned char i = 0; i < count; i++)
+	for (u8 i = 0; i < count; i++)
 	{
 		dst[i] = src[i];
 	}
 }
 
-void LBPrintStr(unsigned char x, unsigned char y, unsigned char* txt, unsigned char count)
+void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
 {
-	for (unsigned char i = 0; i < count; i++)
+	for (u8 i = 0; i < count; i++)
 	{
 		PrintChar(x+i, y, txt[i]);
 	}
 }
 
-unsigned char LBCollides(unsigned char x1, unsigned char y1, unsigned char width1, unsigned char height1,
-						 unsigned char x2, unsigned char y2, unsigned char width2, unsigned char height2)
+u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
+						 u8 x2, u8 y2, u8 width2, u8 height2)
 {
 	if (y1 + height1 < y2) return 0;
 	if (y1 > y2 + height2) return 0;
@@ -79,8 +79,8 @@ unsigned char LBCollides(unsigned char x1, unsigned char y1, unsigned char width
 	return 1;
 }
 
-unsigned char LBLineIntersect(unsigned char line1x1, unsigned char line1y1, unsigned char line1x2, unsigned char line1y2,
-							  unsigned char line2x1, unsigned char line2y1, unsigned char line2x2, unsigned char line2y2)
+u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
+							  u8 line2x1, u8 line2y1, u8 line2x2, u8 line2y2)
 {
 	float ua, ub;
 	float denom;

@@ -12,7 +12,7 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
  /usr/local/lib/gcc/avr/4.9.2/include/stddef.h ../data/tiles.pic.inc \
  ../data/sprites.pic.inc ../data/tiles.map.inc ../data/sprites.map.inc \
- ../data/levels.map.inc ../types.h ../utils.h ../strings.h
+ ../data/levels.map.inc ../types.h ../utils.h ../macros.h ../strings.h
 
 ../kernel/uzebox.h:
 
@@ -67,5 +67,7 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
 ../types.h:
 
 ../utils.h:
+
+../macros.h:
 
 ../strings.h:
