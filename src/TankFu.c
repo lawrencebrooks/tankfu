@@ -57,7 +57,7 @@ Player player1 = {
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
-			.x = 0,
+			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
@@ -68,10 +68,15 @@ Player player1 = {
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 			.up_anim.frame_count = 0,
 			.up_anim.anims = {(char*)map_ball},
+			.up_anim.current_anim = 0,
+			.right_anim.anim_count = 1,
+			.right_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.right_anim.frame_count = 0,
+			.right_anim.anims = {(char*)map_ball}
 		},
 		{
 			.shot_type = BASIC_SHOT,
-			.x = 0,
+			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
@@ -82,6 +87,10 @@ Player player1 = {
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 			.up_anim.frame_count = 0,
 			.up_anim.anims = {(char*)map_ball},
+			.right_anim.anim_count = 1,
+			.right_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.right_anim.frame_count = 0,
+			.right_anim.anims = {(char*)map_ball}
 		}
 	}
 
@@ -122,7 +131,7 @@ Player player2 = {
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
-			.x = 0,
+			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
@@ -133,10 +142,14 @@ Player player2 = {
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 			.up_anim.frame_count = 0,
 			.up_anim.anims = {(char*)map_ball},
+			.right_anim.anim_count = 1,
+			.right_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.right_anim.frame_count = 0,
+			.right_anim.anims = {(char*)map_ball}
 		},
 		{
 			.shot_type = BASIC_SHOT,
-			.x = 0,
+			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
 			.active = 0,
@@ -147,6 +160,10 @@ Player player2 = {
 			.up_anim.frames_per_anim = FRAMES_PER_ANIM,
 			.up_anim.frame_count = 0,
 			.up_anim.anims = {(char*)map_ball},
+			.right_anim.anim_count = 1,
+			.right_anim.frames_per_anim = FRAMES_PER_ANIM,
+			.right_anim.frame_count = 0,
+			.right_anim.anims = {(char*)map_ball}
 		}
 	}
 };
@@ -408,7 +425,11 @@ void update_level_helper(JoyPadState* p, Player* player)
 			player->direction = D_LEFT;
 			player->x -= FRAME_TIME * player->speed;
 		}
-		else if ((p->pressed & BTN_A) && (player->active_shots < MAX_SHOTS))
+		else
+		{
+			player->speed = 0;
+		}
+		if ((p->pressed & BTN_A) && (player->active_shots < MAX_SHOTS))
 		{
 			for (u8 i = 0; i < MAX_SHOTS; i++)
 			{
@@ -423,10 +444,6 @@ void update_level_helper(JoyPadState* p, Player* player)
 					break;
 				}
 			}
-		}
-		else
-		{
-			player->speed = 0;
 		}
 
 		/* Update Shot */
@@ -488,7 +505,8 @@ void render_shot(Player* player, u8 sprite_index)
 {
 	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
-		MoveSprite(sprite_index++, player->shot[i].x, player->shot[i].y, 1, 1);
+		MoveSprite(sprite_index, player->shot[i].x, player->shot[i].y, 1, 1);
+		sprite_index++;
 	}
 }
 
@@ -534,7 +552,6 @@ char shot_map(Player* player, char sprite_index)
 	u8 s_flags = 0;
 	Shot* shot;
 
-	s_map = (char*) map_tank_blank;
 	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
 		shot = &player->shot[i];
@@ -553,7 +570,8 @@ char shot_map(Player* player, char sprite_index)
 		{
 			s_map = (char*) map_tank_blank;
 		}
-		MapSprite2(sprite_index++, (const char*) s_map, s_flags);
+		MapSprite2(sprite_index, (const char*) s_map, s_flags);
+		sprite_index++;
 	}
 	return sprite_index;
 }
@@ -686,10 +704,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
 		shot_map(&player2, p2_shot_index);
-		render_player(&player1, p1_index);
-		render_player(&player2, p2_index);
-		render_shot(&player1, p1_shot_index);
-		render_shot(&player2, p2_shot_index);
 		render_score(&player1, 0, 15);
 		render_score(&player2, 15, 0);
 		Print(14, 0, strVertSep);
@@ -715,6 +729,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 			}
 		}
 		level.render_all = 0;
+		render_player(&player1, p1_index);
+		render_player(&player2, p2_index);
+		render_shot(&player1, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
 	}
 
 	// Update

@@ -8,7 +8,7 @@
 #include "utils.h"
 #include "macros.h"
 
-typedef struct sGameState {
+typedef struct __attribute__ ((packed)) sGameState {
 	u8 current_screen;
 	u8 current_level;
 	u8 level_count;
@@ -16,7 +16,7 @@ typedef struct sGameState {
 	char selection;
 } Game;
 
-typedef struct sLevelState {
+typedef struct __attribute__ ((packed)) sLevelState {
 	u8 level_state;
 	u8 level_map[30*25];
 	u8 render_buffer[12];
@@ -25,7 +25,7 @@ typedef struct sLevelState {
 	u8 render_all;
 } Level;
 
-typedef struct sShot {
+typedef struct __attribute__ ((packed)) sShot {
 	u8 shot_type;
 	float x;
 	float y;
@@ -38,7 +38,7 @@ typedef struct sShot {
 
 } Shot;
 
-typedef struct sPlayer {
+typedef struct __attribute__ ((packed)) sPlayer {
 	char handle_id;
 	u8 handle[3];
 	u8 score;
@@ -61,7 +61,7 @@ typedef struct sPlayer {
 	Animation exp_anim;
 } Player;
 
-typedef struct sHandleSelectState {
+typedef struct __attribute__ ((packed)) sHandleSelectState {
 	char handle_id;
 	u8 handle[3];
 	char char_index;

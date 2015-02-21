@@ -14,7 +14,7 @@ uzeboxVideoEngine.o: ../kernel/uzeboxVideoEngine.c \
  ../kernel/defines.h ../kernel/videoMode3/videoMode3.def.h \
  ../kernel/kernel.h ../kernel/videoMode3/videoMode3.h \
  /usr/local/avr/include/avr/interrupt.h ../kernel/videoMode3/videoMode3.c \
- ../kernel/uzebox.h ../kernel/intro.h ../kernel/data/logovoice.inc \
+ ../kernel/uzebox.h ../kernel/intro.h \
  ../kernel/videoMode3/uzeboxlogo_8x8.pic.inc \
  ../kernel/videoMode3/uzeboxlogo_8x8.map.inc
 
@@ -67,8 +67,6 @@ uzeboxVideoEngine.o: ../kernel/uzeboxVideoEngine.c \
 ../kernel/uzebox.h:
 
 ../kernel/intro.h:
-
-../kernel/data/logovoice.inc:
 
 ../kernel/videoMode3/uzeboxlogo_8x8.pic.inc:
 
