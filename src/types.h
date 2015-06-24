@@ -27,6 +27,7 @@ typedef struct __attribute__ ((packed)) sLevelState {
 
 typedef struct __attribute__ ((packed)) sShot {
 	u8 shot_type;
+	u8 hit_count;
 	float x;
 	float y;
 	u8 rebounds;

@@ -14,6 +14,9 @@
 #include "utils.h"
 #include "macros.h"
 
+// Prototypes
+void collision_detect_shot(Player* player, Shot* shot);
+
 // Globals
 Game game = {
 	.paused = 0
@@ -57,6 +60,7 @@ Player player1 = {
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
+			.hit_count = BASIC_SHOT_HIT_COUNT,
 			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
@@ -76,6 +80,7 @@ Player player1 = {
 		},
 		{
 			.shot_type = BASIC_SHOT,
+			.hit_count = BASIC_SHOT_HIT_COUNT,
 			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
@@ -131,6 +136,7 @@ Player player2 = {
 	.shot = {
 		{
 			.shot_type = BASIC_SHOT,
+			.hit_count = BASIC_SHOT_HIT_COUNT,
 			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
@@ -149,6 +155,7 @@ Player player2 = {
 		},
 		{
 			.shot_type = BASIC_SHOT,
+			.hit_count = BASIC_SHOT_HIT_COUNT,
 			.x = OFF_SCREEN,
 			.y = 0,
 			.rebounds = SHOT_REBOUNDS,
@@ -295,6 +302,26 @@ void reset_player_state(Player* s)
 	s->level_score = 0;
 }
 
+void reset_shot_state(Shot* s, u8 shot_type)
+{
+	s->active = 0;
+	s->shot_type = shot_type;
+	s->rebounds = SHOT_REBOUNDS;
+	s->hit_count = BASIC_SHOT_HIT_COUNT;
+	if (s->shot_type == ROCKET_SHOT) s->hit_count = ROCKET_SHOT_HIT_COUNT;
+	s->x = OFF_SCREEN;
+	s->y = 0;
+}
+
+void player_reset_shot_state(Player* player)
+{
+	player->active_shots = 0;
+	for (u8 i = 0; i < MAX_SHOTS; i++)
+	{
+		reset_shot_state(&player->shot[i], BASIC_SHOT);
+	}
+}
+
 void reset_game_state()
 {
 	game.current_screen = SPLASH;
@@ -306,14 +333,14 @@ void reset_game_state()
 	reset_player_state(&player2);
 }
 
-void player_level_init(Player* player)
+void player_spawn(Player* player)
 {
-	player->level_score = 0;
 	player->grace_frame = 0;
 	player->x = player->spawn_x;
 	player->y = player->spawn_y;
 	player->direction = D_UP;
 	player->speed = 0;
+	
 }
 
 void load_level(int level_number)
@@ -333,13 +360,17 @@ void load_level(int level_number)
 		{
 			player1.spawn_x = (i % 30) * 8;
 			player1.spawn_y = (i / 30) * 8 + 3*8;
-			player_level_init(&player1);
+			player1.level_score = 0;
+			player_reset_shot_state(&player1);
+			player_spawn(&player1);
 		}
 		if (level.level_map[i] == L_P2_SPAWN)
 		{
 			player2.spawn_x = (i % 30) * 8;
 			player2.spawn_y = (i / 30) * 8 + 3*8;
-			player_level_init(&player2);
+			player2.level_score = 0;
+			player_reset_shot_state(&player2);
+			player_spawn(&player2);
 		}
 	}
 	clear_sprites();
@@ -387,6 +418,29 @@ void save_score()
 		}
 	}
 	save_eeprom(&scores);
+}
+
+void position_shot(Player* player, Shot* shot)
+{
+	switch (shot->direction)
+	{
+		case D_UP:
+			shot->x = player->x + 4;
+			shot->y = player->y - 8;
+			break;
+		case D_RIGHT:
+			shot->x = player->x + 16;
+			shot->y = player->y + 4;
+			break;
+		case D_DOWN:
+			shot->x = player->x + 4;
+			shot->y = player->y + 16;
+			break;
+		case D_LEFT:
+			shot->x = player->x - 8;
+			shot->y = player->y + 4;
+			break;
+	}
 }
 
 void update_level_helper(JoyPadState* p, Player* player)
@@ -438,8 +492,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 				{
 					player->active_shots++;
 					shot->direction = player->direction;
-					shot->x = player->x + 4;
-					shot->y = player->y + 4;
+					position_shot(player, shot);
 					shot->active = 1;
 					break;
 				}
@@ -460,6 +513,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 					case D_LEFT: shot->x -= FRAME_TIME * shot->speed; break;
 					default: break;
 				}
+				collision_detect_shot(player, shot);
 			}
 		}
 	}
@@ -616,33 +670,196 @@ int inc_index(int* i)
 	return result;
 }
 
-u8 solid_tile(int tile_index, Player* player)
+/* Collision Detection */
+void recoil_player(Player* player)
+{
+	if (player->direction == D_UP)
+	{
+		player->y += FRAME_TIME * player->speed;
+	}
+	if (player->direction == D_RIGHT)
+	{
+		player->x -= FRAME_TIME * player->speed;
+	}
+	if (player->direction == D_DOWN)
+	{
+		player->y -= FRAME_TIME * player->speed;
+	}
+	if (player->direction == D_LEFT)
+	{
+		player->x += FRAME_TIME * player->speed;
+	}
+}
+
+void recoil_shot(Shot* shot)
+{
+	if (shot->direction == D_UP)
+	{
+		shot->y += FRAME_TIME * shot->speed;
+	}
+	if (shot->direction == D_RIGHT)
+	{
+		shot->x -= FRAME_TIME * shot->speed;
+	}
+	if (shot->direction == D_DOWN)
+	{
+		shot->y -= FRAME_TIME * shot->speed;
+	}
+	if (shot->direction == D_LEFT)
+	{
+		shot->x += FRAME_TIME * shot->speed;
+	}
+}
+
+u8 solid_square_tile(int tile_index)
+{
+	u8 tile = level.level_map[tile_index];
+	
+	if (tile == L_BRICK) return tile;
+	if (tile == L_METAL) return tile;
+
+	return 0;
+}
+
+u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 {
 	u8 tile = level.level_map[tile_index];
 	u8 tile_x = (tile_index % 30) * 8;
 	u8 tile_y = (tile_index / 30 + 3) * 8;
 
-	if (tile == L_BRICK) return 1;
-	if (tile == L_METAL) return 1;
 	if ((tile == L_TL) || (tile == L_BR))
 	{
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y, player->x, player->y+14)) return 1;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y, player->x+14, player->y)) return 1;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x+14, player->y, player->x+14, player->y+14)) return 1;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, player->x, player->y+14, player->x+14, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x+width, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x+width, y, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y+height, x+width, y+height)) return tile;
 	}
 	if ((tile == L_TR) || (tile == L_BL))
 	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y, player->x, player->y+14)) return 1;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y, player->x+14, player->y)) return 1;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x+14, player->y, player->x+14, player->y+14)) return 1;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, player->x, player->y+14, player->x+14, player->y+14)) return 1;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x+width, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x+width, y, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y+height, x+width, y+height)) return tile;
 	}
-
+	
 	return 0;
 }
 
-void collision_detect_tiles(Player* player)
+u8 player_shot(Player* p, Shot* shot)
+{
+	return LBCollides(p->x, p->y, 14, 14, shot->x, shot->y, 7, 7) && p->grace_frame == FRAMES_PER_GRACE;
+}
+
+void collision_detect_shot(Player* player, Shot* shot)
+{	 
+	int tiles[4] = {0, 0, 0, 0};
+	u8 x = shot->x / 8;
+	u8 y = shot->y / 8 - 3;
+	u8 tile;
+	Player* p = 0;
+	
+	tiles[0] = (y * 30) + x;
+	tiles[1] = tiles[0] + 1;
+	tiles[2] = tiles[0] + 30;
+	tiles[3] = tiles[2] + 1;
+	
+	/* Level boundries first */
+	if (shot->x < 0  || shot->x + 7 > 240 ||
+	    shot->y < 24 || shot->y + 7 > 224)
+	{
+		reset_shot_state(shot, shot->shot_type);
+		player->active_shots--;
+		return;
+	}
+	
+	/* Player interaction */
+	if (player_shot(&player1, shot))
+	{
+		p = &player1;
+		player2.level_score++;
+		player2.score++;
+	}
+	else if (player_shot(&player2, shot))
+	{
+		p = &player2;
+		player1.level_score++;
+		player1.score++;
+	}
+	if (p)
+	{
+		reset_shot_state(shot, shot->shot_type);
+		player->active_shots--;
+		player_spawn(p);
+		return;
+	}
+	
+	/* Tile interaction */
+	for (u8 i = 0; i < 4; i++)
+	{
+		tile = level.level_map[tiles[i]];
+		if (tile == L_EMPTY) continue;
+		if (tile == L_METAL)
+		{
+			recoil_shot(shot);
+			reset_shot_state(shot, shot->shot_type);
+			player->active_shots--;
+			break;
+		}
+		else if (tile == L_BRICK)
+		{
+			recoil_shot(shot);
+			level.level_map[tiles[i]] = L_EMPTY;
+			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			shot->hit_count--;
+			if (shot->hit_count <= 0)
+			{
+				reset_shot_state(shot, shot->shot_type);
+				player->active_shots--;
+			}
+			break;
+		}
+		else if (solid_directional_tile(tiles[i], shot->x, shot->y, 7, 7))
+		{
+			recoil_shot(shot);
+			switch (tile)
+			{
+				case L_TL:
+					if (shot->direction == D_UP)
+						shot->direction = D_RIGHT;
+					else
+						shot->direction = D_DOWN;
+					break;
+				case L_TR:
+					if (shot->direction == D_UP)
+						shot->direction = D_LEFT;
+					else
+						shot->direction = D_DOWN;
+					break;
+				case L_BL:
+					if (shot->direction == D_DOWN)
+						shot->direction = D_RIGHT;
+					else
+						shot->direction = D_UP;
+					break;
+				case L_BR:
+					if (shot->direction == D_DOWN)
+						shot->direction = D_LEFT;
+					else
+						shot->direction = D_UP;
+					break;
+			}
+			shot->rebounds--;
+			if (shot->rebounds <= 0)
+			{
+				reset_shot_state(shot, shot->shot_type);
+				player->active_shots--;
+			}
+			break;
+		}
+	}
+}
+
+void collision_detect_player(Player* player)
 {
 	int tiles[8] = {0,0,0,0,0,0,0,0};
 	u8 x = player->x / 8;
@@ -656,27 +873,22 @@ void collision_detect_tiles(Player* player)
     tiles[5] = tiles[1]+30;
 	tiles[6] = tiles[2]+1;
 	tiles[7] = tiles[0]+30;
+	
+	/* Level boundries first */
+	if (player->x < 0  || player->x + 14 > 240 ||
+	    player->y < 24 || player->y + 14 > 224)
+	{
+		recoil_player(player);
+		player->speed = 0;
+		return;
+	}
 
+	/* Tile interaction */
 	for (u8 i = 0; i < 8; i++)
 	{
-		if (solid_tile(tiles[i], player))
+		if (solid_square_tile(tiles[i]) || solid_directional_tile(tiles[i], player->x, player->y, 7, 14))
 		{
-			if (player->direction == D_UP)
-			{
-				player->y += FRAME_TIME * player->speed;
-			}
-			if (player->direction == D_RIGHT)
-			{
-				player->x -= FRAME_TIME * player->speed;
-			}
-			if (player->direction == D_DOWN)
-			{
-				player->y -= FRAME_TIME * player->speed;
-			}
-			if (player->direction == D_LEFT)
-			{
-				player->x += FRAME_TIME * player->speed;
-			}
+			recoil_player(player);
 			player->speed = 0;
 		}
 	}
@@ -738,8 +950,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	// Update
 	update_level_helper(p1, &player1);
 	update_level_helper(p2, &player2);
-	collision_detect_tiles(&player1);
-	collision_detect_tiles(&player2);
+	collision_detect_player(&player1);
+	collision_detect_player(&player2);
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)

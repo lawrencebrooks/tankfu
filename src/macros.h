@@ -38,12 +38,14 @@
 #define D_DOWN 2
 #define D_LEFT 3
 #define MAX_SPEED 50
-#define OVER_SPEED = 80
+#define OVER_SPEED 80
 
 // Shot
 #define BASIC_SHOT 0
 #define ROCKET_SHOT 1
-#define SHOT_REBOUNDS 2
+#define BASIC_SHOT_HIT_COUNT 1
+#define ROCKET_SHOT_HIT_COUNT 3
+#define SHOT_REBOUNDS 4
 #define SHOT_SPEED 100
 #define MAX_SHOTS 2
 
