@@ -98,4 +98,20 @@ u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
 	return 1;
 }
 
+int LBRandom(int from, int to)
+/*
+ * Return a random number between 'from' and 'to'.
+ */
+{
+	static int random_seed = 32767; // A very deterministic random seed...
+	static u8 shift_count = 0;
+	int shifted = random_seed >> shift_count;
+	int delta = to - from;
+
+	shift_count++;
+	if (shift_count >= 16) shift_count = 0;
+
+	return from + ((delta + shifted) % delta);
+}
+
 #endif

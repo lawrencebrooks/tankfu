@@ -13,48 +13,47 @@ typedef struct __attribute__ ((packed)) sGameState {
 	u8 current_level;
 	u8 level_count;
 	u8 paused;
+	u8 render_tiles;
+	u8 render_text;
 	char selection;
 } Game;
 
 typedef struct __attribute__ ((packed)) sLevelState {
 	u8 level_state;
 	u8 level_map[30*25];
-	u8 render_buffer[12];
-	u8 buffer_size;
-	u8 render_index;
-	u8 render_all;
 } Level;
 
-typedef struct __attribute__ ((packed)) sShot {
-	u8 shot_type;
-	u8 hit_count;
-	float x;
-	float y;
-	u8 rebounds;
-	u8 active;
+typedef struct __attribute__ ((packed)) sSpriteShared {
 	u8 direction;
 	float speed;
+	float x;
+	float y;
+} SpriteShared;
+
+typedef struct __attribute__ ((packed)) sShot {
+	SpriteShared shared;
+	u8 shot_type;
+	u8 hit_count;
+	u8 rebounds;
+	u8 active;
 	Animation up_anim;
 	Animation right_anim;
 
 } Shot;
 
 typedef struct __attribute__ ((packed)) sPlayer {
+	SpriteShared shared;
 	char handle_id;
 	u8 handle[3];
 	u8 score;
 	u8 level_score;
 	u8 active_shots;
-	float x;
-	float y;
 	u8 spawn_x;
 	u8 spawn_y;
-	u8 direction;
 	u8 player_state;
 	u8 banter_frame;
 	u8 banter_index;
 	u8 grace_frame;
-	float speed;
 	u8 max_speed;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
