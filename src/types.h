@@ -13,8 +13,6 @@ typedef struct __attribute__ ((packed)) sGameState {
 	u8 current_level;
 	u8 level_count;
 	u8 paused;
-	u8 render_tiles;
-	u8 render_text;
 	char selection;
 } Game;
 

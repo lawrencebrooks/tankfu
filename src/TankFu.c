@@ -26,6 +26,13 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 /* Collision Detection */
 void collision_detect_shot(Player* player, Shot* shot);
 
+/* Screen loaders */
+void load_splash();
+void load_tank_rank();
+void load_handle_select();
+void load_level(int level_number);
+void load_level_tiles();
+
 // Globals
 Game game;
 
@@ -175,13 +182,10 @@ void player_init_shot_state(Player* player)
 
 void init_game_state()
 {
-	game.current_screen = SPLASH;
 	game.current_level = 0;
 	game.level_count = LEVEL_COUNT;
 	game.selection = PVCPU;
 	game.paused = 0;
-	game.render_text = 1;
-	game.render_tiles = 1;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 }
@@ -237,39 +241,6 @@ void save_eeprom(struct EepromBlockStruct* block)
  */
 {
 	EepromWriteBlock(block);
-}
-
-void load_level(int level_number)
-{
-    int level_start = level_number*30*25;
-
-	fade_through();
-	game.current_screen = LEVEL;
-	game.current_level = 0;
-	game.level_count = LEVEL_COUNT;
-	game.render_tiles = 1;
-	game.render_text = 1;
-	for (int i = 0; i < 30*25; i++)
-	{
-		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
-		if (level.level_map[i] == L_P1_SPAWN)
-		{
-			player1.spawn_x = (i % 30) * 8;
-			player1.spawn_y = (i / 30) * 8 + 3*8;
-			player1.level_score = 0;
-			player_init_shot_state(&player1);
-			player_spawn(&player1);
-		}
-		if (level.level_map[i] == L_P2_SPAWN)
-		{
-			player2.spawn_x = (i % 30) * 8;
-			player2.spawn_y = (i / 30) * 8 + 3*8;
-			player2.level_score = 0;
-			player_init_shot_state(&player2);
-			player_spawn(&player2);
-		}
-	}
-	clear_sprites();
 }
 
 void save_score()
@@ -346,6 +317,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 	if ((p->pressed & BTN_START))
 	{
 		game.paused = game.paused ^ 1;
+		load_level_tiles();
 	}
 	if (!game.paused)
 	{
@@ -353,7 +325,6 @@ void update_level_helper(JoyPadState* p, Player* player)
 		{
 			player->banter_frame = 0;
 			player->banter_index = (u8) LBRandom(0, 9);
-			game.render_text = 1;
 		}
 		player->shared.speed = player->max_speed;
 		if ((p->held & BTN_UP))
@@ -422,18 +393,22 @@ void update_level_helper(JoyPadState* p, Player* player)
 			fade_through();
 			SetSpriteVisibility(true);
 			init_game_state();
-			game.current_screen = TANK_RANK;
+			load_tank_rank();
 		}
-		game.render_tiles = 1;
 	}
 }
 
-void render_score(Player* player, u8 x)
+void render_hud(Player* player, u8 x)
 {	
 	LBPrintStr(x+10, 0, player->handle, 3);
 	Print(x, 0, strScore);
-	PrintByte(x+8, 0, player->level_score, false);
 	Print(x, 1, strTotal);
+	
+}
+
+void render_score(Player* player, u8 x)
+{
+	PrintByte(x+8, 0, player->level_score, false);
 	PrintByte(x+8, 1, player->score, false);
 }
 
@@ -637,14 +612,14 @@ void collision_detect_shot(Player* player, Shot* shot)
 		p = &player1;
 		player2.level_score++;
 		player2.score++;
-		game.render_text = 1;
+		render_score(&player2, 15);
 	}
 	else if (player_shot(&player2, shot))
 	{
 		p = &player2;
 		player1.level_score++;
 		player1.score++;
-		game.render_text = 1;
+		render_score(&player1, 0);
 	}
 	if (p)
 	{
@@ -754,10 +729,71 @@ void collision_detect_player(Player* player)
 	}
 }
 
-void update_level(JoyPadState* p1, JoyPadState* p2)
+void load_level_tiles()
 {
 	u8 x;
 	u8 y;
+	
+	for (int i = 0; i < 30*25; i++)
+	{
+		x = i % 30;
+		y = 3 + i / 30;
+		switch (level.level_map[i])
+		{
+			case L_BRICK: DrawMap2(x, y, map_brick); break;
+			case L_METAL: DrawMap2(x, y, map_metal); break;
+			case L_TL: DrawMap2(x, y, map_metal_tl); break;
+			case L_TR: DrawMap2(x, y, map_metal_tr); break;
+			case L_BL: DrawMap2(x, y, map_metal_bl); break;
+			case L_BR: DrawMap2(x, y, map_metal_br); break;
+			case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
+			case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
+			case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
+			default : SetTile(x, y, 0); break;
+		}
+	}
+}
+
+void load_level(int level_number)
+{
+    int level_start = level_number*30*25;
+
+	game.current_screen = LEVEL;
+	clear_sprites();
+	game.current_level = 0;
+	game.level_count = LEVEL_COUNT;
+	for (int i = 0; i < 30*25; i++)
+	{
+		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
+		if (level.level_map[i] == L_P1_SPAWN)
+		{
+			player1.spawn_x = (i % 30) * 8;
+			player1.spawn_y = (i / 30) * 8 + 3*8;
+			player1.level_score = 0;
+			player_init_shot_state(&player1);
+			player_spawn(&player1);
+		}
+		if (level.level_map[i] == L_P2_SPAWN)
+		{
+			player2.spawn_x = (i % 30) * 8;
+			player2.spawn_y = (i / 30) * 8 + 3*8;
+			player2.level_score = 0;
+			player_init_shot_state(&player2);
+			player_spawn(&player2);
+		}
+	}
+	render_hud(&player1, 0);
+	render_hud(&player2, 15);
+	render_score(&player1, 0);
+	render_score(&player2, 15);
+	Print(14, 0, strVertSep);
+	Print(14, 1, strVertSep);
+	Print(14, 2, strVertSep);
+	load_level_tiles();
+}
+
+void update_level(JoyPadState* p1, JoyPadState* p2)
+{
 	char p1_index = 0;
 	char p2_index = 0;
 	char p1_shot_index = 0;
@@ -780,40 +816,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
 		shot_map(&player2, p2_shot_index);
-		if (game.render_text)
-		{
-			render_score(&player1, 0);
-			render_score(&player2, 15);
-			Print(14, 0, strVertSep);
-			Print(14, 1, strVertSep);
-			Print(14, 2, strVertSep);
-			game.render_text = 0;
-		}
 		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
 		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
-
-		if (game.render_tiles)
-		{
-			for(int i = 0; i < 30*25; i++)
-			{
-				x = i % 30;
-				y = 3 + i / 30;
-				switch (level.level_map[i])
-				{
-					case L_BRICK: DrawMap2(x, y, map_brick); break;
-					case L_METAL: DrawMap2(x, y, map_metal); break;
-					case L_TL: DrawMap2(x, y, map_metal_tl); break;
-					case L_TR: DrawMap2(x, y, map_metal_tr); break;
-					case L_BL: DrawMap2(x, y, map_metal_bl); break;
-					case L_BR: DrawMap2(x, y, map_metal_br); break;
-					case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
-					case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
-					case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
-					default : SetTile(x, y, 0); break;
-				}
-			}
-			game.render_tiles = 0;
-		}
 		render_player(&player1, p1_index);
 		render_player(&player2, p2_index);
 		render_shot(&player1, p1_shot_index);
@@ -827,11 +831,9 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	collision_detect_player(&player2);
 }
 
-void update_splash(JoyPadState* p1, JoyPadState* p2)
-/*
- * Splash or title screen
- */
+void load_splash()
 {
+	game.current_screen = SPLASH;
 	clear_sprites();
 	Print(7, 13, str1Player);
 	Print(7, 14, str2Player);
@@ -839,7 +841,13 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	Print(4, 26, strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_ball, 0);
+}
 
+void update_splash(JoyPadState* p1, JoyPadState* p2)
+/*
+ * Splash or title screen
+ */
+{
 	// Render
 	switch (game.selection)
 	{
@@ -872,24 +880,24 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		p2s.select_state = SELECTING;
 		fade_through();
 		load_eeprom(&handles);
-		game.current_screen = HANDLE_SELECT;
+		load_handle_select();
 		return;
 	}
 	else if ((p1->pressed & BTN_A) && (game.selection == TR))
 	{
 		fade_through();
 		load_eeprom(&scores);
-		game.current_screen = TANK_RANK;
+		load_tank_rank();
 		return;
 	}
 }
 
-void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
+void load_tank_rank()
 {
 	u8 y = 7;
 	u8 rank = 1;
-
-	// Render
+	
+	game.current_screen = TANK_RANK;
 	clear_sprites();
 	MapSprite2(0, map_tank1_up_0, 0);
 	MapSprite2(4, map_tank2_up_0, 0);
@@ -911,12 +919,15 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 		rank += 1;
 	}
 	Print(10, 23, strCancelHandle);
+}
 
+void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
+{
 	// Update
 	if (p1->pressed & BTN_X)
 	{
 		fade_through();
-		game.current_screen = SPLASH;
+		load_splash();
 	}
 }
 
@@ -977,7 +988,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	else if ((p->pressed & BTN_X))
 	{
 		fade_through();
-		game.current_screen = SPLASH;
+		load_splash();
 	}
 }
 
@@ -987,6 +998,7 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 	if (ps->select_state == SELECTING)
 	{
 		MapSprite2(idx, map_ball, 0);
+		MapSprite2(idx+1, map_none, 0);
 		MoveSprite(idx, x_offset*8, (8 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
@@ -1006,21 +1018,14 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 	LBPrintStr(x_offset+5, (8 + ps->handle_id), tmp, 3);
 }
 
-void update_handle_select(JoyPadState* p1, JoyPadState* p2)
+void load_handle_select()
 {
-	u8 start_game = 0;
-
-	// Render
+	game.current_screen = HANDLE_SELECT;
 	clear_sprites();
 	MapSprite2(0, map_tank1_up_0, 0);
 	MapSprite2(4, map_tank2_up_0, 0);
 	MoveSprite(0, 3*8, 4*8, 2, 2);
 	MoveSprite(4, 20*8, 4*8, 2, 2);
-	_handle_select_render_helper(&p1s, p1, 2, 8);
-	if (game.selection == PVP)
-	{
-		_handle_select_render_helper(&p2s, p2, 19, 10);
-	}
 	Print(9, 1, strHandlesTitle);
 	Print(6, 5, strPlayer1);
 	Print(23, 5, strPlayer2);
@@ -1033,6 +1038,18 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	Print(8, 22, strConfirmHandle);
 	Print(8, 23, strCancelHandle);
 	Print(8, 24, strChangeHandle);
+}
+
+void update_handle_select(JoyPadState* p1, JoyPadState* p2)
+{
+	u8 start_game = 0;
+
+	// Render
+	_handle_select_render_helper(&p1s, p1, 2, 8);
+	if (game.selection == PVP)
+	{
+		_handle_select_render_helper(&p2s, p2, 19, 10);
+	}
 
 	// Update
 	_handle_select_helper(&p1s, p1, &player1);
@@ -1049,6 +1066,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
+		fade_through();
 		load_level(0);
 	}
 }
@@ -1065,6 +1083,7 @@ int main()
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 	init_game_state();
+	load_splash();
 
 	while (1)
 	{
