@@ -18,6 +18,12 @@ const char map_pause[] PROGMEM ={
 ,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1,0x1
 };
 
+#define MAP_TILE_NONE_WIDTH 1
+#define MAP_TILE_NONE_HEIGHT 1
+const char map_tile_none[] PROGMEM ={
+1,1
+,0x0};
+
 #define MAP_BRICK_WIDTH 1
 #define MAP_BRICK_HEIGHT 1
 const char map_brick[] PROGMEM ={

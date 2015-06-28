@@ -44,12 +44,15 @@
 #define BASIC_SHOT 0
 #define ROCKET_SHOT 1
 #define BASIC_SHOT_HIT_COUNT 1
-#define ROCKET_SHOT_HIT_COUNT 3
+#define ROCKET_SHOT_HIT_COUNT 5
 #define SHOT_REBOUNDS 4
 #define SHOT_SPEED 100
+#define SHOT_OVER_SPEED 150
 #define MAX_SHOTS 2
 
 // General macros
 #define FRAME_TIME 0.0166666
+#define TEXT_LINGER 2 // seconds
+#define MAX_LEVEL_SCORE 5
 
 #endif

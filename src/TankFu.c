@@ -17,21 +17,24 @@
 /* Utilities */
 void load_eeprom(struct EepromBlockStruct* block);
 void fade_through();
+void level_transition(u8 index);
 void clear_sprites();
 void save_eeprom(struct EepromBlockStruct* block);
+void exit_game();
+void print_level_score(Player* winner, Player* loser);
 
 /* Initializers */
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
 
 /* Collision Detection */
-void collision_detect_shot(Player* player, Shot* shot);
+void collision_detect_shot(Player* player, Shot* shot, u8 hud_x);
 
 /* Screen loaders */
 void load_splash();
 void load_tank_rank();
 void load_handle_select();
 void load_level(int level_number);
-void load_level_tiles();
+void load_level_tiles(u8 blank);
 
 // Globals
 Game game;
@@ -122,6 +125,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->shared.direction = D_UP;
 	p->shared.speed = 0;
 	p->max_speed = MAX_SPEED;
+	p->has_over_speed = false;
+	p->has_rocket = false;
 
 	/* Tracks animation (Up) */
 	p->up_anim.current_anim = 0;
@@ -183,7 +188,6 @@ void player_init_shot_state(Player* player)
 void init_game_state()
 {
 	game.current_level = 0;
-	game.level_count = LEVEL_COUNT;
 	game.selection = PVCPU;
 	game.paused = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
@@ -225,6 +229,20 @@ void fade_through()
 	FadeOut(FRAMES_PER_FADE, true);
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
+}
+
+void level_transition(u8 index)
+{
+	FadeOut(FRAMES_PER_FADE, true);
+	ClearVram();
+	clear_sprites();
+	Print(10, 12, level_names[index]);
+	FadeIn(1, true);
+	LBWaitSeconds(TEXT_LINGER);
+	FadeOut(1, true);
+	ClearVram();
+	FadeIn(FRAMES_PER_FADE, false);
+	load_level(index);
 }
 
 void clear_sprites()
@@ -287,6 +305,14 @@ void save_score()
 	save_eeprom(&scores);
 }
 
+void exit_game()
+{
+	fade_through();
+	SetSpriteVisibility(true);
+	init_game_state();
+	load_tank_rank();
+}
+
 void position_shot(Player* player, Shot* shot)
 {
 	switch (shot->shared.direction)
@@ -310,14 +336,26 @@ void position_shot(Player* player, Shot* shot)
 	}
 }
 
-void update_level_helper(JoyPadState* p, Player* player)
+void print_level_score(Player* winner, Player* loser)
+{
+	LBPrintStr(4, 14, &winner->handle[0], 3);
+	Print(8, 14, strOwns);
+	LBPrintStr(13, 14, &loser->handle[0], 3);
+	Print(17, 14, strBy);
+	PrintByte(22, 14, winner->level_score ,true);
+	PrintChar(23, 14, '-');
+	PrintByte(26, 14, loser->level_score ,true);
+}
+
+void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u8 hud_x)
 {
 	Shot* shot;
+	u8 next_level;
 
 	if ((p->pressed & BTN_START))
 	{
 		game.paused = game.paused ^ 1;
-		load_level_tiles();
+		load_level_tiles(false);
 	}
 	if (!game.paused)
 	{
@@ -362,6 +400,18 @@ void update_level_helper(JoyPadState* p, Player* player)
 					shot->shared.direction = player->shared.direction;
 					position_shot(player, shot);
 					shot->active = 1;
+					shot->shot_type = BASIC_SHOT;
+					shot->shared.speed = SHOT_SPEED;
+					shot->hit_count = BASIC_SHOT_HIT_COUNT;
+					if (player->has_over_speed)
+					{
+						shot->shared.speed = SHOT_OVER_SPEED;
+					}
+					if (player->has_rocket)
+					{
+						shot->shot_type = ROCKET_SHOT;
+						shot->hit_count = ROCKET_SHOT_HIT_COUNT;
+					}
 					break;
 				}
 			}
@@ -381,7 +431,7 @@ void update_level_helper(JoyPadState* p, Player* player)
 					case D_LEFT: shot->shared.x -= FRAME_TIME * shot->shared.speed; break;
 					default: break;
 				}
-				collision_detect_shot(player, shot);
+				collision_detect_shot(player, shot, hud_x);
 			}
 		}
 	}
@@ -390,10 +440,28 @@ void update_level_helper(JoyPadState* p, Player* player)
 		if (p->pressed & BTN_X)
 		{
 			save_score();
-			fade_through();
-			SetSpriteVisibility(true);
-			init_game_state();
-			load_tank_rank();
+			exit_game();
+		}
+	}
+	
+	// Level transition
+	if (player->level_score == MAX_LEVEL_SCORE)
+	{
+		save_score();
+		load_level_tiles(true);
+		SetSpriteVisibility(false);
+		print_level_score(player, other_player);
+		LBWaitSeconds(TEXT_LINGER);
+		player->level_score = 0;
+		other_player->level_score = 0;
+		next_level = game.current_level + 1;
+		if (next_level >= LEVEL_COUNT)
+		{
+			exit_game();
+		}
+		else
+		{
+			level_transition(next_level);
 		}
 	}
 }
@@ -585,7 +653,27 @@ u8 collision_detect_boundries(SpriteShared* sprite)
 	return 0;
 }
 
-void collision_detect_shot(Player* player, Shot* shot)
+void kill_player(Player* player, u8 hud_x, int tile_index)
+{
+	if (player->has_over_speed)
+	{
+		SetTile(hud_x+10, 1, 0);
+		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map_speed_itm);
+		level.level_map[tile_index +31] = L_SPEED;
+		player->max_speed = MAX_SPEED;
+	}
+	if (player->has_rocket)
+	{
+		SetTile(hud_x+11, 1, 0);
+		DrawMap2(tile_index % 30 + 2, 3 + tile_index / 30 + 1, map_rocket_itm);
+		level.level_map[tile_index +32] = L_ROCKET;
+	}
+	player->has_over_speed = false;
+	player->has_rocket = false;
+	player_spawn(player);
+}
+
+void collision_detect_shot(Player* player, Shot* shot, u8 hud_x)
 {	 
 	int tiles[4] = {0, 0, 0, 0};
 	u8 x = shot->shared.x / 8;
@@ -625,7 +713,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	{
 		init_shot_state(shot, shot->shot_type);
 		player->active_shots--;
-		player_spawn(p);
+		kill_player(p, hud_x, tiles[0]);
 		return;
 	}
 	
@@ -695,11 +783,13 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 }
 
-void collision_detect_player(Player* player)
+void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 other_player_hud_x)
 {
 	int tiles[8] = {0,0,0,0,0,0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
+	u8 op_x = other_player->shared.x / 8;
+	u8 op_y = other_player->shared.y / 8 - 3;
 
 	tiles[0] = (y * 30) + x;
 	tiles[1] = tiles[0]+2;
@@ -726,10 +816,34 @@ void collision_detect_player(Player* player)
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
 		}
+		else if (level.level_map[tiles[i]] == L_SPEED)
+		{
+			level.level_map[tiles[i]] = L_EMPTY;
+			player->max_speed = OVER_SPEED;
+			player->has_over_speed = true;
+			DrawMap2(hud_x+10, 1, map_speed_itm);
+			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+		}
+		else if (level.level_map[tiles[i]] == L_ROCKET)
+		{
+			level.level_map[tiles[i]] = L_EMPTY;
+			player->has_rocket = true;
+			DrawMap2(hud_x+11, 1, map_rocket_itm);
+			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+		}
+		else if (level.level_map[tiles[i]] == L_EXPLODE)
+		{
+			level.level_map[tiles[i]] = L_EMPTY;
+			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			player->level_score++;
+			player->score++;
+			render_score(player, hud_x);
+			kill_player(other_player, other_player_hud_x, (op_y * 30) + op_x);
+		}
 	}
 }
 
-void load_level_tiles()
+void load_level_tiles(u8 blank)
 {
 	u8 x;
 	u8 y;
@@ -738,18 +852,25 @@ void load_level_tiles()
 	{
 		x = i % 30;
 		y = 3 + i / 30;
-		switch (level.level_map[i])
+		if (blank)
 		{
-			case L_BRICK: DrawMap2(x, y, map_brick); break;
-			case L_METAL: DrawMap2(x, y, map_metal); break;
-			case L_TL: DrawMap2(x, y, map_metal_tl); break;
-			case L_TR: DrawMap2(x, y, map_metal_tr); break;
-			case L_BL: DrawMap2(x, y, map_metal_bl); break;
-			case L_BR: DrawMap2(x, y, map_metal_br); break;
-			case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
-			case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
-			case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
-			default : SetTile(x, y, 0); break;
+			DrawMap2(x, y, map_tile_none);
+		}
+		else
+		{
+			switch (level.level_map[i])
+			{
+				case L_BRICK: DrawMap2(x, y, map_brick); break;
+				case L_METAL: DrawMap2(x, y, map_metal); break;
+				case L_TL: DrawMap2(x, y, map_metal_tl); break;
+				case L_TR: DrawMap2(x, y, map_metal_tr); break;
+				case L_BL: DrawMap2(x, y, map_metal_bl); break;
+				case L_BR: DrawMap2(x, y, map_metal_br); break;
+				case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
+				case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
+				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
+				default : SetTile(x, y, 0); break;
+			}
 		}
 	}
 }
@@ -760,8 +881,7 @@ void load_level(int level_number)
 
 	game.current_screen = LEVEL;
 	clear_sprites();
-	game.current_level = 0;
-	game.level_count = LEVEL_COUNT;
+	game.current_level = level_number;
 	for (int i = 0; i < 30*25; i++)
 	{
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
@@ -770,6 +890,9 @@ void load_level(int level_number)
 			player1.spawn_x = (i % 30) * 8;
 			player1.spawn_y = (i / 30) * 8 + 3*8;
 			player1.level_score = 0;
+			player1.has_over_speed = false;
+			player1.has_rocket = false;
+			player1.max_speed = MAX_SPEED;
 			player_init_shot_state(&player1);
 			player_spawn(&player1);
 		}
@@ -778,6 +901,9 @@ void load_level(int level_number)
 			player2.spawn_x = (i % 30) * 8;
 			player2.spawn_y = (i / 30) * 8 + 3*8;
 			player2.level_score = 0;
+			player2.has_over_speed = false;
+			player2.has_rocket = false;
+			player2.max_speed = MAX_SPEED;
 			player_init_shot_state(&player2);
 			player_spawn(&player2);
 		}
@@ -789,7 +915,7 @@ void load_level(int level_number)
 	Print(14, 0, strVertSep);
 	Print(14, 1, strVertSep);
 	Print(14, 2, strVertSep);
-	load_level_tiles();
+	load_level_tiles(false);
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
@@ -825,10 +951,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 
 	// Update
-	update_level_helper(p1, &player1);
-	update_level_helper(p2, &player2);
-	collision_detect_player(&player1);
-	collision_detect_player(&player2);
+	update_level_helper(p1, &player1, &player2, 15);
+	update_level_helper(p2, &player2, &player1, 0);
+	collision_detect_player(&player1, &player2, 0, 15);
+	collision_detect_player(&player2, &player1, 15, 0);
 }
 
 void load_splash()
@@ -1014,6 +1140,8 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 		PrintChar(x_offset+6, 5, '(');
 		LBPrintStr(x_offset+7, 5, ps->handle, 3);
 		PrintChar(x_offset+10, 5, ')');
+		MapSprite2(idx, map_none, 0);
+		MapSprite2(idx+1, map_none, 0);
 	}
 	LBPrintStr(x_offset+5, (8 + ps->handle_id), tmp, 3);
 }
@@ -1066,8 +1194,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
-		fade_through();
-		load_level(0);
+		level_transition(0);
 	}
 }
 
@@ -1080,8 +1207,6 @@ int main()
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
-	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
-	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 	init_game_state();
 	load_splash();
 

@@ -114,4 +114,12 @@ int LBRandom(int from, int to)
 	return from + ((delta + shifted) % delta);
 }
 
+void LBWaitSeconds(u8 seconds)
+{
+	for(u8 i = 0; i < seconds; i++)
+	{
+		WaitUs(65535);
+	}
+}
+
 #endif

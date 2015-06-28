@@ -11,7 +11,6 @@
 typedef struct __attribute__ ((packed)) sGameState {
 	u8 current_screen;
 	u8 current_level;
-	u8 level_count;
 	u8 paused;
 	char selection;
 } Game;
@@ -53,6 +52,8 @@ typedef struct __attribute__ ((packed)) sPlayer {
 	u8 banter_index;
 	u8 grace_frame;
 	u8 max_speed;
+	u8 has_rocket;
+	u8 has_over_speed;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;
