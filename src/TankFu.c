@@ -653,20 +653,24 @@ u8 collision_detect_boundries(SpriteShared* sprite)
 	return 0;
 }
 
-void kill_player(Player* player, u8 hud_x, int tile_index)
+void kill_player(Player* player, u8 hud_x)
 {
+	u8 x = player->shared.x / 8;
+	u8 y = player->shared.y / 8 - 3;
+	int tile_index = (y * 30) + x;
+
 	if (player->has_over_speed)
 	{
 		SetTile(hud_x+10, 1, 0);
-		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map_speed_itm);
-		level.level_map[tile_index +31] = L_SPEED;
+		DrawMap2(tile_index % 30, 3 + tile_index / 30 + 1, map_speed_itm);
+		level.level_map[tile_index +30] = L_SPEED;
 		player->max_speed = MAX_SPEED;
 	}
 	if (player->has_rocket)
 	{
 		SetTile(hud_x+11, 1, 0);
-		DrawMap2(tile_index % 30 + 2, 3 + tile_index / 30 + 1, map_rocket_itm);
-		level.level_map[tile_index +32] = L_ROCKET;
+		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map_rocket_itm);
+		level.level_map[tile_index +31] = L_ROCKET;
 	}
 	player->has_over_speed = false;
 	player->has_rocket = false;
@@ -713,7 +717,7 @@ void collision_detect_shot(Player* player, Shot* shot, u8 hud_x)
 	{
 		init_shot_state(shot, shot->shot_type);
 		player->active_shots--;
-		kill_player(p, hud_x, tiles[0]);
+		kill_player(p, hud_x);
 		return;
 	}
 	
@@ -788,8 +792,6 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	int tiles[8] = {0,0,0,0,0,0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
-	u8 op_x = other_player->shared.x / 8;
-	u8 op_y = other_player->shared.y / 8 - 3;
 
 	tiles[0] = (y * 30) + x;
 	tiles[1] = tiles[0]+2;
@@ -838,7 +840,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			player->level_score++;
 			player->score++;
 			render_score(player, hud_x);
-			kill_player(other_player, other_player_hud_x, (op_y * 30) + op_x);
+			kill_player(other_player, other_player_hud_x);
 		}
 	}
 }
