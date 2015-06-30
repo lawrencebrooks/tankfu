@@ -27,7 +27,7 @@ void print_level_score(Player* winner, Player* loser);
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
 
 /* Collision Detection */
-void collision_detect_shot(Player* player, Shot* shot, u8 hud_x);
+void collision_detect_shot(Player* player, Shot* shot);
 
 /* Screen loaders */
 void load_splash();
@@ -106,13 +106,30 @@ HandleSelectState p2s = {
 /* Initializers */
 void init_shot_state(Shot* s, u8 shot_type)
 {
+	s->shared.speed = SHOT_SPEED;
+	s->shared.direction = D_UP;
 	s->active = 0;
 	s->shot_type = shot_type;
 	s->rebounds = SHOT_REBOUNDS;
-	s->hit_count = BASIC_SHOT_HIT_COUNT;
-	if (s->shot_type == ROCKET_SHOT) s->hit_count = ROCKET_SHOT_HIT_COUNT;
+	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
 	s->shared.x = OFF_SCREEN;
 	s->shared.y = 0;
+}
+
+void set_shot_animations(Shot* s, u8 shot_type)
+{
+	s->up_anim.current_anim = 0;
+	s->up_anim.anim_count = 2;
+	s->up_anim.frames_per_anim = FRAMES_PER_ANIM;
+	s->up_anim.frame_count = 0;
+	s->up_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_0;
+	s->up_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_1;
+	s->up_anim.current_anim = 0;
+	s->right_anim.anim_count = 2;
+	s->right_anim.frames_per_anim = FRAMES_PER_ANIM;
+	s->right_anim.frame_count = 0;
+	s->right_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_0;
+	s->right_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_1;
 }
 
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0)
@@ -155,24 +172,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->active_shots = 0;
 	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
-		p->shot[i].shot_type = BASIC_SHOT;
-		p->shot[i].hit_count = BASIC_SHOT_HIT_COUNT;
-		p->shot[i].shared.x = OFF_SCREEN;
-		p->shot[i].shared.y = 0;
-		p->shot[i].rebounds = SHOT_REBOUNDS;
-		p->shot[i].active = 0;
-		p->shot[i].shared.speed = SHOT_SPEED;
-		p->shot[i].shared.direction = D_UP;
-		p->shot[i].up_anim.current_anim = 0;
-		p->shot[i].up_anim.anim_count = 1;
-		p->shot[i].up_anim.frames_per_anim = FRAMES_PER_ANIM;
-		p->shot[i].up_anim.frame_count = 0;
-		p->shot[i].up_anim.anims[0] = (char*)map_ball;
-		p->shot[i].up_anim.current_anim = 0;
-		p->shot[i].right_anim.anim_count = 1;
-		p->shot[i].right_anim.frames_per_anim = FRAMES_PER_ANIM;
-		p->shot[i].right_anim.frame_count = 0;
-		p->shot[i].right_anim.anims[0] = (char*)map_ball;
+		init_shot_state(&p->shot[i], BASIC_SHOT);
+		set_shot_animations(&p->shot[i], BASIC_SHOT);
 	}
 }
 
@@ -396,21 +397,23 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 				shot = &player->shot[i];
 				if (!shot->active)
 				{
+					if (player->has_rocket)
+					{
+						init_shot_state(shot, ROCKET_SHOT);
+						set_shot_animations(shot, ROCKET_SHOT);
+					}
+					else
+					{
+						init_shot_state(shot, BASIC_SHOT);
+						set_shot_animations(shot, BASIC_SHOT);
+					}
 					player->active_shots++;
 					shot->shared.direction = player->shared.direction;
 					position_shot(player, shot);
 					shot->active = 1;
-					shot->shot_type = BASIC_SHOT;
-					shot->shared.speed = SHOT_SPEED;
-					shot->hit_count = BASIC_SHOT_HIT_COUNT;
 					if (player->has_over_speed)
 					{
 						shot->shared.speed = SHOT_OVER_SPEED;
-					}
-					if (player->has_rocket)
-					{
-						shot->shot_type = ROCKET_SHOT;
-						shot->hit_count = ROCKET_SHOT_HIT_COUNT;
 					}
 					break;
 				}
@@ -431,7 +434,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 					case D_LEFT: shot->shared.x -= FRAME_TIME * shot->shared.speed; break;
 					default: break;
 				}
-				collision_detect_shot(player, shot, hud_x);
+				collision_detect_shot(player, shot);
 			}
 		}
 	}
@@ -677,12 +680,13 @@ void kill_player(Player* player, u8 hud_x)
 	player_spawn(player);
 }
 
-void collision_detect_shot(Player* player, Shot* shot, u8 hud_x)
+void collision_detect_shot(Player* player, Shot* shot)
 {	 
 	int tiles[4] = {0, 0, 0, 0};
 	u8 x = shot->shared.x / 8;
 	u8 y = shot->shared.y / 8 - 3;
 	u8 tile;
+	u8 hud_x;
 	Player* p = 0;
 	
 	tiles[0] = (y * 30) + x;
@@ -702,6 +706,7 @@ void collision_detect_shot(Player* player, Shot* shot, u8 hud_x)
 	if (player_shot(&player1, shot))
 	{
 		p = &player1;
+		hud_x = 0;
 		player2.level_score++;
 		player2.score++;
 		render_score(&player2, 15);
@@ -709,6 +714,7 @@ void collision_detect_shot(Player* player, Shot* shot, u8 hud_x)
 	else if (player_shot(&player2, shot))
 	{
 		p = &player2;
+		hud_x = 15;
 		player1.level_score++;
 		player1.score++;
 		render_score(&player1, 0);
