@@ -237,7 +237,7 @@ void level_transition(u8 index)
 	FadeOut(FRAMES_PER_FADE, true);
 	ClearVram();
 	clear_sprites();
-	Print(10, 12, level_names[index]);
+	Print(9, 12, level_names[index]);
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
 	FadeOut(1, true);
@@ -680,19 +680,40 @@ void kill_player(Player* player, u8 hud_x)
 	player_spawn(player);
 }
 
+void get_interesting_tile_indexes_shot(int* tiles, u8 x, u8 y, u8 direction)
+{
+	if (direction == D_UP)
+	{
+		tiles[0] = (y * 30) + x;
+		tiles[1] = tiles[0]+1;
+	}
+	else if (direction == D_RIGHT)
+	{
+		tiles[0] = (y * 30) + x + 1;
+		tiles[1] = tiles[0]+30;
+	}
+	else if (direction == D_DOWN)
+	{
+		tiles[0] = (y * 30) + x + 30;
+		tiles[1] = tiles[0]+1;
+	}
+	else
+	{
+		tiles[0] = (y * 30) + x;
+		tiles[1] = tiles[0]+30;
+	}
+}
+
 void collision_detect_shot(Player* player, Shot* shot)
 {	 
-	int tiles[4] = {0, 0, 0, 0};
+	int tiles[2] = {0, 0};
 	u8 x = shot->shared.x / 8;
 	u8 y = shot->shared.y / 8 - 3;
 	u8 tile;
 	u8 hud_x;
 	Player* p = 0;
 	
-	tiles[0] = (y * 30) + x;
-	tiles[1] = tiles[0] + 1;
-	tiles[2] = tiles[0] + 30;
-	tiles[3] = tiles[2] + 1;
+	get_interesting_tile_indexes_shot(tiles, x, y, shot->shared.direction);
 	
 	/* Level boundries first */
 	if (collision_detect_boundries(&shot->shared))
@@ -728,7 +749,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	
 	/* Tile interaction */
-	for (u8 i = 0; i < 4; i++)
+	for (u8 i = 0; i < 2; i++)
 	{
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
@@ -793,20 +814,42 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 }
 
+void get_interesting_tile_indexes(int* tiles, u8 x, u8 y, u8 direction)
+{
+	if (direction == D_UP)
+	{
+		tiles[0] = (y * 30) + x;
+		tiles[1] = tiles[0]+1;
+		tiles[2] = tiles[0]+2;
+	}
+	else if (direction == D_RIGHT)
+	{
+		tiles[0] = (y * 30) + x + 2;
+		tiles[1] = tiles[0]+30;
+		tiles[2] = tiles[0]+60;
+	}
+	else if (direction == D_DOWN)
+	{
+		tiles[0] = (y * 30) + x + 60;
+		tiles[1] = tiles[0]+1;
+		tiles[2] = tiles[0]+2;
+	}
+	else
+	{
+		tiles[0] = (y * 30) + x;
+		tiles[1] = tiles[0]+30;
+		tiles[2] = tiles[0]+60;
+	}
+}
+
 void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 other_player_hud_x)
 {
-	int tiles[8] = {0,0,0,0,0,0,0,0};
+	int tiles[3] = {0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
 
-	tiles[0] = (y * 30) + x;
-	tiles[1] = tiles[0]+2;
-	tiles[2] = tiles[0] + 60;
-	tiles[3] = tiles[1] + 60;
-	tiles[4] = tiles[0]+1;
-    tiles[5] = tiles[1]+30;
-	tiles[6] = tiles[2]+1;
-	tiles[7] = tiles[0]+30;
+	
+	get_interesting_tile_indexes(tiles, x, y, player->shared.direction);
 	
 	/* Level boundries first */
 	if (collision_detect_boundries(&player->shared))
@@ -817,7 +860,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	}
 
 	/* Tile interaction */
-	for (u8 i = 0; i < 8; i++)
+	for (u8 i = 0; i < 3; i++)
 	{
 		if (solid_square_tile(tiles[i]) || solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 7, 14))
 		{

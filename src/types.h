@@ -22,7 +22,7 @@ typedef struct __attribute__ ((packed)) sLevelState {
 
 typedef struct __attribute__ ((packed)) sSpriteShared {
 	u8 direction;
-	float speed;
+	u8 speed;
 	float x;
 	float y;
 } SpriteShared;

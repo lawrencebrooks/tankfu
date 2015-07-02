@@ -41,16 +41,16 @@ const char strExit [] PROGMEM = "Bail - X";
 const char strPaused [] PROGMEM = "Paused";
 
 // Level names
-const char strLevel1[] PROGMEM="Level One";
-const char strLevel2[] PROGMEM="Level Two";
+const char strLevel1[] PROGMEM="Level   One";
+const char strLevel2[] PROGMEM="Level   Two";
 const char strLevel3[] PROGMEM="Level Three";
-const char strLevel4[] PROGMEM="Level Four";
-const char strLevel5[] PROGMEM="Level Five";
-const char strLevel6[] PROGMEM="Level Six";
+const char strLevel4[] PROGMEM="Level  Four";
+const char strLevel5[] PROGMEM="Level  Five";
+const char strLevel6[] PROGMEM="Level   Six";
 const char strLevel7[] PROGMEM="Level Seven";
 const char strLevel8[] PROGMEM="Level Eight";
-const char strLevel9[] PROGMEM="Level Nine";
-const char strLevel10[] PROGMEM="Level Ten";
+const char strLevel9[] PROGMEM="Level  Nine";
+const char strLevel10[] PROGMEM="Level   Ten";
 
 const char* banter_map[] = {
 	strB1,
