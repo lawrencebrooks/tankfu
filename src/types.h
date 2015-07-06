@@ -68,7 +68,6 @@ typedef struct __attribute__ ((packed)) sHandleSelectState {
 } HandleSelectState;
 
 typedef struct __attribute__ ((packed)) sTileAnimations {
-	u8 first;
 	u8 next_available;
 	TileAnimation anims[TILE_ANIMATIONS_LENGTH];
 } TileAnimations;

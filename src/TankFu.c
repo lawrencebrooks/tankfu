@@ -106,7 +106,6 @@ HandleSelectState p2s = {
 /* Initializers */
 void init_tile_animations(TileAnimations* ta)
 {
-	ta->first = 0;
 	ta->next_available = 0;
 	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
 	{
@@ -538,42 +537,30 @@ void render_shot(Player* player, u8 sprite_index)
 	}
 }
 
-void draw_tile_explosions (TileAnimations* ta, u8 start, u8 end)
-{
-	char* map;
-	char looped;
-	
-	while (start < end)
-	{
-		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
-		if (looped)
-		{
-			map = (char*) map_tile_none;
-			ta->first = start + 1;
-			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
-		}
-		DrawMap2(ta->anims[start].tile_index % 30,
-				3 + ta->anims[start].tile_index / 30, 
-				(const char*) map
-		);
-		start++;
-	}
-}
-
 void render_tile_explosions(TileAnimations* ta)
-{
-	u8 start = 0;
-	u8 end = 0;
+{	
+	char looped;
+	char* map;
 	
-	if (ta->first == ta->next_available) return;
-	start = ta->first;
-	end = ta->next_available;
-	if (end < start)
+	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
 	{
-		draw_tile_explosions(ta, 0, end);
-		end = TILE_ANIMATIONS_LENGTH;
+		if (ta->anims[i].tile_index != 0)
+		{
+			map = LBGetNextFrame(&ta->anims[i].anim, &looped);
+			if (looped)
+			{
+				SetTile(ta->anims[i].tile_index % 30, 3 + ta->anims[i].tile_index / 30, 0);
+				ta->anims[i].tile_index = 0;
+			}
+			else
+			{
+				DrawMap2(ta->anims[i].tile_index % 30,
+						3 + ta->anims[i].tile_index / 30, 
+						(const char*) map
+				);
+			}
+		}
 	}
-	draw_tile_explosions(ta, start, end);
 }
 
 char tank_map(Player* player, char sprite_index)
@@ -776,7 +763,13 @@ void get_interesting_tile_indexes_shot(int* tiles, u8 x, u8 y, u8 direction)
 
 void explode_tile(TileAnimations* ta, int tile_index)
 {
+	SetTile(tile_index % 30, 3 + tile_index / 30, 0);
+	if (ta->anims[ta->next_available].tile_index != 0)
+	{
+		SetTile(ta->anims[ta->next_available].tile_index % 30, 3 + ta->anims[ta->next_available].tile_index / 30, 0);
+	}
 	ta->anims[ta->next_available].tile_index = tile_index;
+	ta->anims[ta->next_available].anim.current_anim = 0;
 	ta->next_available++;
 	if (ta->next_available == TILE_ANIMATIONS_LENGTH)
 	{
@@ -845,7 +838,6 @@ void collision_detect_shot(Player* player, Shot* shot)
 			explode_tile(&tile_animations, tiles[i]);
 			recoil_sprite(&shot->shared);
 			level.level_map[tiles[i]] = L_EMPTY;
-			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
 			shot->hit_count--;
 			if (shot->hit_count <= 0)
 			{
