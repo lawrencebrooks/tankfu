@@ -47,7 +47,7 @@ typedef struct __attribute__ ((packed)) sPlayer {
 	u8 active_shots;
 	u8 spawn_x;
 	u8 spawn_y;
-	u8 player_state;
+	u8 flags;
 	u8 banter_frame;
 	u8 banter_index;
 	u8 grace_frame;
@@ -66,5 +66,11 @@ typedef struct __attribute__ ((packed)) sHandleSelectState {
 	char char_index;
 	u8 select_state;
 } HandleSelectState;
+
+typedef struct __attribute__ ((packed)) sTileAnimations {
+	u8 first;
+	u8 next_available;
+	TileAnimation anims[TILE_ANIMATIONS_LENGTH];
+} TileAnimations;
 
 #endif

@@ -11,12 +11,17 @@ typedef struct sJoyPadState {
 } JoyPadState;
 
 typedef struct sAnimation {
-	u8 current_anim;			// Current animation
+	u8 current_anim;		// Current animation
 	u8 anim_count;			// Total animation count
 	u8 frames_per_anim;		// Animation lifetime in amount of render frames
 	u8 frame_count;			// Render frame counter
 	char* anims[3];
 } Animation;
+
+typedef struct sTileAnimation {
+	Animation anim;
+	int tile_index;
+} TileAnimation;
 
 char* LBGetNextFrame(Animation* anim, char* looped)
 {

@@ -54,5 +54,11 @@
 #define FRAME_TIME 0.0166666
 #define TEXT_LINGER 2 // seconds
 #define MAX_LEVEL_SCORE 5
+#define TILE_ANIMATIONS_LENGTH ROCKET_SHOT_HIT_COUNT*4
+
+// Flags
+#define EXPLODING_FLAG 1
+#define ROCKET_FLAG 2
+#define OVER_SPEED_FLAG 4
 
 #endif

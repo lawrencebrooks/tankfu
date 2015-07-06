@@ -38,14 +38,12 @@ void load_level_tiles(u8 blank);
 
 // Globals
 Game game;
-
 Player player1;
 Player player2;
-
 JoyPadState p1;
 JoyPadState p2;
-
 Level level;
+TileAnimations tile_animations;
 
 struct EepromBlockStruct handles = {
 	.id = EEPROM_HANDLES_ID,
@@ -72,6 +70,7 @@ struct EepromBlockStruct handles = {
 		0x43, 0x50, 0x55,
 	}
 };
+
 struct EepromBlockStruct scores = {
 	.id = EEPROM_TANK_RANK_ID,
 	// 1. owns 2. by 20 - 10
@@ -92,6 +91,7 @@ struct EepromBlockStruct scores = {
 		0, 0
 	}
 };
+
 HandleSelectState p1s = {
 	.handle_id = 0,
 	.char_index = 0,
@@ -104,6 +104,23 @@ HandleSelectState p2s = {
 };
 
 /* Initializers */
+void init_tile_animations(TileAnimations* ta)
+{
+	ta->first = 0;
+	ta->next_available = 0;
+	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
+	{
+		ta->anims[i].tile_index = 0;
+		ta->anims[i].anim.current_anim = 0;
+		ta->anims[i].anim.anim_count = 3;
+		ta->anims[i].anim.frames_per_anim = FRAMES_PER_ANIM;
+		ta->anims[i].anim.frame_count = 0;
+		ta->anims[i].anim.anims[0] = (char*)map_tile_exp_0;
+		ta->anims[i].anim.anims[1] = (char*)map_tile_exp_1;
+		ta->anims[i].anim.anims[2] = (char*)map_tile_exp_2;
+	}
+}
+
 void init_shot_state(Shot* s, u8 shot_type)
 {
 	s->shared.speed = SHOT_SPEED;
@@ -144,6 +161,7 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->max_speed = MAX_SPEED;
 	p->has_over_speed = false;
 	p->has_rocket = false;
+	p->flags = 0;
 
 	/* Tracks animation (Up) */
 	p->up_anim.current_anim = 0;
@@ -358,7 +376,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
 	}
-	if (!game.paused)
+	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
 	{
 		if ((p->pressed & BTN_SR) && (player->banter_frame == FRAMES_PER_BANTER))
 		{
@@ -448,7 +466,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	}
 	
 	// Level transition
-	if (player->level_score == MAX_LEVEL_SCORE)
+	if ((player->level_score == MAX_LEVEL_SCORE) && !(other_player->flags & EXPLODING_FLAG))
 	{
 		save_score();
 		load_level_tiles(true);
@@ -490,7 +508,7 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
 	{
 		if (player->banter_frame == 0)
 		{
-			Print(banter_x, 2, banter_map[player->banter_index]);
+			Print(banter_x, 2, &banter_map[player->banter_index*15]);
 		}
 		clear_banter = 1;
 		player->banter_frame++;
@@ -520,6 +538,48 @@ void render_shot(Player* player, u8 sprite_index)
 	}
 }
 
+void draw_tile_explosions (TileAnimations* ta, u8 start, u8 end)
+{
+	TileAnimation tile_animation;
+	char* map;
+	char looped;
+	
+	while (start < end)
+	{
+		tile_animation = ta->anims[start];
+		map = LBGetNextFrame(&tile_animation.anim, &looped);
+		if (looped)
+		{
+			ta->first = start + 1;
+			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
+		}
+		else
+		{
+			DrawMap2(tile_animation.tile_index % 30,
+					3 + tile_animation.tile_index / 30, 
+					(const char*) map
+			);
+		}
+		start++;
+	}
+}
+
+void render_tile_explosions(TileAnimations* ta)
+{
+	u8 start = 0;
+	u8 end = 0;
+	
+	if (ta->first == ta->next_available) return;
+	start = ta->first;
+	end = ta->next_available;
+	if (end < start)
+	{
+		draw_tile_explosions(ta, 0, end);
+		end = TILE_ANIMATIONS_LENGTH;
+	}
+	draw_tile_explosions(ta, start, end);
+}
+
 char tank_map(Player* player, char sprite_index)
 {
 	char* t_map = 0;
@@ -528,27 +588,41 @@ char tank_map(Player* player, char sprite_index)
 	static u8 toggle_blank = 0;
 	char looped;
 
-	if (player->grace_frame != FRAMES_PER_GRACE)
+	if (player->flags & EXPLODING_FLAG)
 	{
-		player->grace_frame++;
+		t_map = LBGetNextFrame(&player->exp_anim, &looped);
+		t_flags = 0;
+		if (looped)
+		{
+			player->flags = player->flags ^ EXPLODING_FLAG;
+			t_map = (char*) map_tank_blank;
+			player_spawn(player);
+		}
 	}
-	switch (player->shared.direction)
+	else
 	{
-		case D_UP: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
-		case D_RIGHT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = 0; break;
-		case D_DOWN: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = SPRITE_FLIP_Y; break;
-		case D_LEFT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = SPRITE_FLIP_X; break;
-		default: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
-	}
-	if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
-	{
-		t_map = (char*) map_tank_blank;
-	}
-	toggle_counter--;
-	if (toggle_counter == 0)
-	{
-		toggle_counter = FRAMES_PER_BLANK;
-		toggle_blank = toggle_blank ^ 1;
+		if (player->grace_frame != FRAMES_PER_GRACE)
+		{
+			player->grace_frame++;
+		}
+		switch (player->shared.direction)
+		{
+			case D_UP: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
+			case D_RIGHT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = 0; break;
+			case D_DOWN: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = SPRITE_FLIP_Y; break;
+			case D_LEFT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = SPRITE_FLIP_X; break;
+			default: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
+		}
+		if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
+		{
+			t_map = (char*) map_tank_blank;
+		}
+		toggle_counter--;
+		if (toggle_counter == 0)
+		{
+			toggle_counter = FRAMES_PER_BLANK;
+			toggle_blank = toggle_blank ^ 1;
+		}
 	}
 	MapSprite2(sprite_index, (const char*) t_map, t_flags);
 	sprite_index += 4;
@@ -677,7 +751,7 @@ void kill_player(Player* player, u8 hud_x)
 	}
 	player->has_over_speed = false;
 	player->has_rocket = false;
-	player_spawn(player);
+	player->flags = player->flags | EXPLODING_FLAG;
 }
 
 void get_interesting_tile_indexes_shot(int* tiles, u8 x, u8 y, u8 direction)
@@ -701,6 +775,16 @@ void get_interesting_tile_indexes_shot(int* tiles, u8 x, u8 y, u8 direction)
 	{
 		tiles[0] = (y * 30) + x;
 		tiles[1] = tiles[0]+30;
+	}
+}
+
+void explode_tile(TileAnimations* ta, int tile_index)
+{
+	ta->anims[ta->next_available].tile_index = tile_index;
+	ta->next_available++;
+	if (ta->next_available == TILE_ANIMATIONS_LENGTH)
+	{
+		ta->next_available = 0;
 	}
 }
 
@@ -762,6 +846,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		}
 		else if (tile == L_BRICK)
 		{
+			explode_tile(&tile_animations, tiles[i]);
 			recoil_sprite(&shot->shared);
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
@@ -999,6 +1084,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		render_player(&player2, p2_index);
 		render_shot(&player1, p1_shot_index);
 		render_shot(&player2, p2_shot_index);
+		render_tile_explosions(&tile_animations);
 	}
 
 	// Update
@@ -1259,8 +1345,9 @@ int main()
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
 	init_game_state();
+	init_tile_animations(&tile_animations);
 	load_splash();
-
+	
 	while (1)
 	{
 		WaitVsync(1);

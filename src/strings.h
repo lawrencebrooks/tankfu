@@ -22,16 +22,16 @@ const char strOwns [] PROGMEM = "Pwns";
 const char strBy [] PROGMEM = "By";
 
 // Banter
-const char strB1[] PROGMEM="You suck bro";
-const char strB2[] PROGMEM="LOL";
-const char strB3[] PROGMEM="Broken button?";
-const char strB4[] PROGMEM="At least try";
-const char strB5[] PROGMEM="Too easy";
-const char strB6[] PROGMEM="*YAWN*";
-const char strB7[] PROGMEM="A turkey shoot";
-const char strB8[] PROGMEM="That's it?";
-const char strB9[] PROGMEM="Need help?";
-const char strB10[] PROGMEM="RTFM!";
+const char banter_map[] PROGMEM="You suck bro  \0"
+	"LOL           \0"
+	"Broken button?\0"
+	"Try at least  \0"
+	"Too easy      \0"
+	"*YAWN*        \0"
+	"A turkey shoot\0"
+	"That's it?    \0"
+	"Need help?    \0"
+	"RTFM!         ";
 const char strBanterClear[] PROGMEM="              ";
 
 // In-Game
@@ -41,19 +41,15 @@ const char strExit [] PROGMEM = "Bail - X";
 const char strPaused [] PROGMEM = "Paused";
 
 // Level names
-const char strLevels[] PROGMEM="  Level One\0  Level Two\0Level Three\0 Level Four\0 Level Five\0  Level Six\0Level Seven\0Level Eight\0 Level Nine\0  Level Ten";
-
-const char* banter_map[] = {
-	strB1,
-	strB2,
-	strB3,
-	strB4,
-	strB5,
-	strB6,
-	strB7,
-	strB8,
-	strB9,
-	strB10
-};
+const char strLevels[] PROGMEM="  Level One\0"
+	"  Level Two\0"
+	"Level Three\0"
+	" Level Four\0"
+	" Level Five\0"
+	"  Level Six\0"
+	"Level Seven\0"
+	"Level Eight\0"
+	" Level Nine\0"
+	"  Level Ten";
 
 #endif
