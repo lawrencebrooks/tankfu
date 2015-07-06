@@ -540,26 +540,22 @@ void render_shot(Player* player, u8 sprite_index)
 
 void draw_tile_explosions (TileAnimations* ta, u8 start, u8 end)
 {
-	TileAnimation tile_animation;
 	char* map;
 	char looped;
 	
 	while (start < end)
 	{
-		tile_animation = ta->anims[start];
-		map = LBGetNextFrame(&tile_animation.anim, &looped);
+		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
 		if (looped)
 		{
+			map = (char*) map_tile_none;
 			ta->first = start + 1;
 			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
 		}
-		else
-		{
-			DrawMap2(tile_animation.tile_index % 30,
-					3 + tile_animation.tile_index / 30, 
-					(const char*) map
-			);
-		}
+		DrawMap2(ta->anims[start].tile_index % 30,
+				3 + ta->anims[start].tile_index / 30, 
+				(const char*) map
+		);
 		start++;
 	}
 }

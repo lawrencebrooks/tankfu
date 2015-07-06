@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         0000a85a  00000000  00000000  00000100  2**8
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000fd0  00800144  00800144  0000a9a4  2**5
+  2 .bss          00000f1c  00800144  00800144  0000a9a4  2**5
                   ALLOC
   3 .stab         00000618  00000000  00000000  0000a9a0  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -17,19 +17,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .debug_aranges 00000560  00000000  00000000  0000b270  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   00007b2b  00000000  00000000  0000b7d0  2**0
+  7 .debug_info   00007b27  00000000  00000000  0000b7d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00001536  00000000  00000000  000132fb  2**0
+  8 .debug_abbrev 00001536  00000000  00000000  000132f7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00001be4  00000000  00000000  00014831  2**0
+  9 .debug_line   00001be6  00000000  00000000  0001482d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  000011a4  00000000  00000000  00016418  2**2
+ 10 .debug_frame  000011b0  00000000  00000000  00016414  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    000018b1  00000000  00000000  000175bc  2**0
+ 11 .debug_str    000018a2  00000000  00000000  000175c4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00006d7a  00000000  00000000  00018e6d  2**0
+ 12 .debug_loc    00006db0  00000000  00000000  00018e66  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000600  00000000  00000000  0001fbe8  2**3
+ 13 .debug_ranges 00000600  00000000  00000000  0001fc18  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1299,7 +1299,7 @@ Disassembly of section .text:
     5952:	d9 f7       	brne	.-10     	; 0x594a <__do_copy_data+0xc>
 
 00005954 <__do_clear_bss>:
-    5954:	11 e1       	ldi	r17, 0x11	; 17
+    5954:	10 e1       	ldi	r17, 0x10	; 16
     5956:	a4 e4       	ldi	r26, 0x44	; 68
     5958:	b1 e0       	ldi	r27, 0x01	; 1
     595a:	01 c0       	rjmp	.+2      	; 0x595e <.do_clear_bss_start>
@@ -1308,7 +1308,7 @@ Disassembly of section .text:
     595c:	1d 92       	st	X+, r1
 
 0000595e <.do_clear_bss_start>:
-    595e:	a4 31       	cpi	r26, 0x14	; 20
+    595e:	a0 36       	cpi	r26, 0x60	; 96
     5960:	b1 07       	cpc	r27, r17
     5962:	e1 f7       	brne	.-8      	; 0x595c <.do_clear_bss_loop>
 
@@ -9341,7 +9341,7 @@ void init_tile_animations(TileAnimations* ta)
 	ta->next_available = 0;
     82ec:	11 82       	std	Z+1, r1	; 0x01
     82ee:	35 96       	adiw	r30, 0x05	; 5
-    82f0:	8b 50       	subi	r24, 0x0B	; 11
+    82f0:	8f 5b       	subi	r24, 0xBF	; 191
     82f2:	9f 4f       	sbci	r25, 0xFF	; 255
 	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
 	{
@@ -9720,16 +9720,16 @@ void init_game_state()
     84b0:	58 e2       	ldi	r21, 0x28	; 40
     84b2:	68 ea       	ldi	r22, 0xA8	; 168
     84b4:	78 e2       	ldi	r23, 0x28	; 40
-    84b6:	87 e2       	ldi	r24, 0x27	; 39
-    84b8:	9d e0       	ldi	r25, 0x0D	; 13
+    84b6:	83 e7       	ldi	r24, 0x73	; 115
+    84b8:	9c e0       	ldi	r25, 0x0C	; 12
     84ba:	0e 94 e5 41 	call	0x83ca	; 0x83ca <init_player>
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
     84be:	44 e8       	ldi	r20, 0x84	; 132
     84c0:	58 e2       	ldi	r21, 0x28	; 40
     84c2:	60 e9       	ldi	r22, 0x90	; 144
     84c4:	78 e2       	ldi	r23, 0x28	; 40
-    84c6:	88 e9       	ldi	r24, 0x98	; 152
-    84c8:	90 e1       	ldi	r25, 0x10	; 16
+    84c6:	84 ee       	ldi	r24, 0xE4	; 228
+    84c8:	9f e0       	ldi	r25, 0x0F	; 15
     84ca:	0c 94 e5 41 	jmp	0x83ca	; 0x83ca <init_player>
 
 000084ce <player_spawn>:
@@ -9888,23 +9888,23 @@ void save_score()
 	Player* p_lose = &player2;
 
 	if (player1.score < player2.score)
-    8578:	90 91 35 0d 	lds	r25, 0x0D35
-    857c:	80 91 a6 10 	lds	r24, 0x10A6
+    8578:	90 91 81 0c 	lds	r25, 0x0C81
+    857c:	80 91 f2 0f 	lds	r24, 0x0FF2
     8580:	98 17       	cp	r25, r24
     8582:	28 f4       	brcc	.+10     	; 0x858e <save_score+0x34>
 	{
 		p_win = &player2;
 		p_lose = &player1;
-    8584:	e7 e2       	ldi	r30, 0x27	; 39
-    8586:	fd e0       	ldi	r31, 0x0D	; 13
+    8584:	e3 e7       	ldi	r30, 0x73	; 115
+    8586:	fc e0       	ldi	r31, 0x0C	; 12
 	Player* p_win = &player1;
 	Player* p_lose = &player2;
 
 	if (player1.score < player2.score)
 	{
 		p_win = &player2;
-    8588:	a8 e9       	ldi	r26, 0x98	; 152
-    858a:	b0 e1       	ldi	r27, 0x10	; 16
+    8588:	a4 ee       	ldi	r26, 0xE4	; 228
+    858a:	bf e0       	ldi	r27, 0x0F	; 15
     858c:	04 c0       	rjmp	.+8      	; 0x8596 <save_score+0x3c>
 	u8 tmp_score[4];
 	u8 save_score[4];
@@ -9912,16 +9912,16 @@ void save_score()
 	u8 saved = 0;
 	Player* p_win = &player1;
 	Player* p_lose = &player2;
-    858e:	e8 e9       	ldi	r30, 0x98	; 152
-    8590:	f0 e1       	ldi	r31, 0x10	; 16
+    858e:	e4 ee       	ldi	r30, 0xE4	; 228
+    8590:	ff e0       	ldi	r31, 0x0F	; 15
 	u8 cur_delta = 0;
 	u8 tmp_score[4];
 	u8 save_score[4];
 	u8 save_delta = 0;
 	u8 saved = 0;
 	Player* p_win = &player1;
-    8592:	a7 e2       	ldi	r26, 0x27	; 39
-    8594:	bd e0       	ldi	r27, 0x0D	; 13
+    8592:	a3 e7       	ldi	r26, 0x73	; 115
+    8594:	bc e0       	ldi	r27, 0x0C	; 12
 	if (player1.score < player2.score)
 	{
 		p_win = &player2;
@@ -10548,135 +10548,141 @@ void render_shot(Player* player, u8 sprite_index)
 
 void draw_tile_explosions (TileAnimations* ta, u8 start, u8 end)
 {
-    8916:	bf 92       	push	r11
-    8918:	cf 92       	push	r12
-    891a:	df 92       	push	r13
-    891c:	ef 92       	push	r14
-    891e:	ff 92       	push	r15
-    8920:	0f 93       	push	r16
-    8922:	1f 93       	push	r17
-    8924:	cf 93       	push	r28
-    8926:	df 93       	push	r29
-    8928:	cd b7       	in	r28, 0x3d	; 61
-    892a:	de b7       	in	r29, 0x3e	; 62
-    892c:	2d 97       	sbiw	r28, 0x0d	; 13
-    892e:	0f b6       	in	r0, 0x3f	; 63
-    8930:	f8 94       	cli
-    8932:	de bf       	out	0x3e, r29	; 62
-    8934:	0f be       	out	0x3f, r0	; 63
-    8936:	cd bf       	out	0x3d, r28	; 61
-    8938:	7c 01       	movw	r14, r24
-    893a:	16 2f       	mov	r17, r22
-    893c:	b4 2e       	mov	r11, r20
+    8916:	9f 92       	push	r9
+    8918:	af 92       	push	r10
+    891a:	bf 92       	push	r11
+    891c:	cf 92       	push	r12
+    891e:	df 92       	push	r13
+    8920:	ef 92       	push	r14
+    8922:	ff 92       	push	r15
+    8924:	0f 93       	push	r16
+    8926:	1f 93       	push	r17
+    8928:	cf 93       	push	r28
+    892a:	df 93       	push	r29
+    892c:	1f 92       	push	r1
+    892e:	cd b7       	in	r28, 0x3d	; 61
+    8930:	de b7       	in	r29, 0x3e	; 62
+    8932:	7c 01       	movw	r14, r24
+    8934:	16 2f       	mov	r17, r22
+    8936:	94 2e       	mov	r9, r20
 	char* map;
 	char looped;
 	
 	while (start < end)
 	{
-		tile_animation = ta->anims[start];
-    893e:	0c e0       	ldi	r16, 0x0C	; 12
+		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
+    8938:	0c e0       	ldi	r16, 0x0C	; 12
+			map = (char*) map_tile_none;
+			ta->first = start + 1;
 			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
 		}
-		else
-		{
-			DrawMap2(tile_animation.tile_index % 30,
-					3 + tile_animation.tile_index / 30, 
-    8940:	8e e1       	ldi	r24, 0x1E	; 30
-    8942:	c8 2e       	mov	r12, r24
-    8944:	d1 2c       	mov	r13, r1
+		DrawMap2(ta->anims[start].tile_index % 30,
+				3 + ta->anims[start].tile_index / 30, 
+    893a:	8e e1       	ldi	r24, 0x1E	; 30
+    893c:	a8 2e       	mov	r10, r24
+    893e:	b1 2c       	mov	r11, r1
+void draw_tile_explosions (TileAnimations* ta, u8 start, u8 end)
 {
-	TileAnimation tile_animation;
 	char* map;
 	char looped;
 	
 	while (start < end)
-    8946:	1b 15       	cp	r17, r11
-    8948:	50 f5       	brcc	.+84     	; 0x899e <draw_tile_explosions+0x88>
+    8940:	19 15       	cp	r17, r9
+    8942:	80 f5       	brcc	.+96     	; 0x89a4 <draw_tile_explosions+0x8e>
 	{
-		tile_animation = ta->anims[start];
-    894a:	f7 01       	movw	r30, r14
-    894c:	01 9f       	mul	r16, r17
-    894e:	e0 0d       	add	r30, r0
-    8950:	f1 1d       	adc	r31, r1
-    8952:	11 24       	eor	r1, r1
-    8954:	32 96       	adiw	r30, 0x02	; 2
-    8956:	de 01       	movw	r26, r28
-    8958:	11 96       	adiw	r26, 0x01	; 1
-    895a:	80 2f       	mov	r24, r16
-    895c:	01 90       	ld	r0, Z+
-    895e:	0d 92       	st	X+, r0
-    8960:	8a 95       	dec	r24
-    8962:	e1 f7       	brne	.-8      	; 0x895c <draw_tile_explosions+0x46>
-		map = LBGetNextFrame(&tile_animation.anim, &looped);
-    8964:	be 01       	movw	r22, r28
-    8966:	63 5f       	subi	r22, 0xF3	; 243
-    8968:	7f 4f       	sbci	r23, 0xFF	; 255
-    896a:	ce 01       	movw	r24, r28
-    896c:	01 96       	adiw	r24, 0x01	; 1
-    896e:	0e 94 a4 3f 	call	0x7f48	; 0x7f48 <LBGetNextFrame>
-    8972:	9c 01       	movw	r18, r24
+		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
+    8944:	c1 2e       	mov	r12, r17
+    8946:	d1 2c       	mov	r13, r1
+    8948:	0c 9d       	mul	r16, r12
+    894a:	c0 01       	movw	r24, r0
+    894c:	0d 9d       	mul	r16, r13
+    894e:	90 0d       	add	r25, r0
+    8950:	11 24       	eor	r1, r1
+    8952:	02 96       	adiw	r24, 0x02	; 2
+    8954:	be 01       	movw	r22, r28
+    8956:	6f 5f       	subi	r22, 0xFF	; 255
+    8958:	7f 4f       	sbci	r23, 0xFF	; 255
+    895a:	8e 0d       	add	r24, r14
+    895c:	9f 1d       	adc	r25, r15
+    895e:	0e 94 a4 3f 	call	0x7f48	; 0x7f48 <LBGetNextFrame>
+    8962:	9c 01       	movw	r18, r24
 		if (looped)
-    8974:	8d 85       	ldd	r24, Y+13	; 0x0d
-    8976:	1f 5f       	subi	r17, 0xFF	; 255
-    8978:	88 23       	and	r24, r24
-    897a:	39 f0       	breq	.+14     	; 0x898a <draw_tile_explosions+0x74>
+    8964:	89 81       	ldd	r24, Y+1	; 0x01
+    8966:	1f 5f       	subi	r17, 0xFF	; 255
+    8968:	88 23       	and	r24, r24
+    896a:	41 f0       	breq	.+16     	; 0x897c <draw_tile_explosions+0x66>
 		{
+			map = (char*) map_tile_none;
 			ta->first = start + 1;
 			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
-    897c:	f7 01       	movw	r30, r14
-    897e:	14 31       	cpi	r17, 0x14	; 20
-    8980:	11 f0       	breq	.+4      	; 0x8986 <draw_tile_explosions+0x70>
+    896c:	f7 01       	movw	r30, r14
+    896e:	15 30       	cpi	r17, 0x05	; 5
+    8970:	11 f0       	breq	.+4      	; 0x8976 <draw_tile_explosions+0x60>
 	{
-		tile_animation = ta->anims[start];
-		map = LBGetNextFrame(&tile_animation.anim, &looped);
+		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
 		if (looped)
 		{
+			map = (char*) map_tile_none;
 			ta->first = start + 1;
-    8982:	10 83       	st	Z, r17
-    8984:	e0 cf       	rjmp	.-64     	; 0x8946 <draw_tile_explosions+0x30>
+    8972:	10 83       	st	Z, r17
+    8974:	01 c0       	rjmp	.+2      	; 0x8978 <draw_tile_explosions+0x62>
 			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
-    8986:	10 82       	st	Z, r1
-    8988:	de cf       	rjmp	.-68     	; 0x8946 <draw_tile_explosions+0x30>
-		}
-		else
+    8976:	10 82       	st	Z, r1
+	while (start < end)
+	{
+		map = LBGetNextFrame(&ta->anims[start].anim, &looped);
+		if (looped)
 		{
-			DrawMap2(tile_animation.tile_index % 30,
-					3 + tile_animation.tile_index / 30, 
-    898a:	8b 85       	ldd	r24, Y+11	; 0x0b
-    898c:	9c 85       	ldd	r25, Y+12	; 0x0c
-    898e:	b6 01       	movw	r22, r12
-    8990:	0e 94 fb 51 	call	0xa3f6	; 0xa3f6 <__divmodhi4>
+			map = (char*) map_tile_none;
+    8978:	2b ed       	ldi	r18, 0xDB	; 219
+    897a:	38 e2       	ldi	r19, 0x28	; 40
 			ta->first = start + 1;
 			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
 		}
-		else
+		DrawMap2(ta->anims[start].tile_index % 30,
+				3 + ta->anims[start].tile_index / 30, 
+    897c:	ff ef       	ldi	r31, 0xFF	; 255
+    897e:	cf 1a       	sub	r12, r31
+    8980:	df 0a       	sbc	r13, r31
+    8982:	0c 9d       	mul	r16, r12
+    8984:	f0 01       	movw	r30, r0
+    8986:	0d 9d       	mul	r16, r13
+    8988:	f0 0d       	add	r31, r0
+    898a:	11 24       	eor	r1, r1
+    898c:	ee 0d       	add	r30, r14
+    898e:	ff 1d       	adc	r31, r15
+    8990:	80 81       	ld	r24, Z
+    8992:	91 81       	ldd	r25, Z+1	; 0x01
+    8994:	b5 01       	movw	r22, r10
+    8996:	0e 94 fb 51 	call	0xa3f6	; 0xa3f6 <__divmodhi4>
 		{
-			DrawMap2(tile_animation.tile_index % 30,
-    8994:	6d 5f       	subi	r22, 0xFD	; 253
-    8996:	a9 01       	movw	r20, r18
-    8998:	0e 94 69 3e 	call	0x7cd2	; 0x7cd2 <DrawMap2>
-    899c:	d4 cf       	rjmp	.-88     	; 0x8946 <draw_tile_explosions+0x30>
-					(const char*) map
-			);
+			map = (char*) map_tile_none;
+			ta->first = start + 1;
+			if (ta->first == TILE_ANIMATIONS_LENGTH) ta->first = 0;
 		}
+		DrawMap2(ta->anims[start].tile_index % 30,
+    899a:	6d 5f       	subi	r22, 0xFD	; 253
+    899c:	a9 01       	movw	r20, r18
+    899e:	0e 94 69 3e 	call	0x7cd2	; 0x7cd2 <DrawMap2>
+    89a2:	ce cf       	rjmp	.-100    	; 0x8940 <draw_tile_explosions+0x2a>
+				3 + ta->anims[start].tile_index / 30, 
+				(const char*) map
+		);
 		start++;
 	}
 }
-    899e:	2d 96       	adiw	r28, 0x0d	; 13
-    89a0:	0f b6       	in	r0, 0x3f	; 63
-    89a2:	f8 94       	cli
-    89a4:	de bf       	out	0x3e, r29	; 62
-    89a6:	0f be       	out	0x3f, r0	; 63
-    89a8:	cd bf       	out	0x3d, r28	; 61
-    89aa:	df 91       	pop	r29
-    89ac:	cf 91       	pop	r28
-    89ae:	1f 91       	pop	r17
-    89b0:	0f 91       	pop	r16
-    89b2:	ff 90       	pop	r15
-    89b4:	ef 90       	pop	r14
-    89b6:	df 90       	pop	r13
-    89b8:	cf 90       	pop	r12
-    89ba:	bf 90       	pop	r11
+    89a4:	0f 90       	pop	r0
+    89a6:	df 91       	pop	r29
+    89a8:	cf 91       	pop	r28
+    89aa:	1f 91       	pop	r17
+    89ac:	0f 91       	pop	r16
+    89ae:	ff 90       	pop	r15
+    89b0:	ef 90       	pop	r14
+    89b2:	df 90       	pop	r13
+    89b4:	cf 90       	pop	r12
+    89b6:	bf 90       	pop	r11
+    89b8:	af 90       	pop	r10
+    89ba:	9f 90       	pop	r9
     89bc:	08 95       	ret
 
 000089be <render_tile_explosions>:
@@ -10706,7 +10712,7 @@ void render_tile_explosions(TileAnimations* ta)
     89d4:	60 e0       	ldi	r22, 0x00	; 0
     89d6:	0e 94 8b 44 	call	0x8916	; 0x8916 <draw_tile_explosions>
 		end = TILE_ANIMATIONS_LENGTH;
-    89da:	44 e1       	ldi	r20, 0x14	; 20
+    89da:	45 e0       	ldi	r20, 0x05	; 5
 	}
 	draw_tile_explosions(ta, start, end);
     89dc:	61 2f       	mov	r22, r17
@@ -11185,8 +11191,8 @@ void recoil_sprite(SpriteShared* sprite)
 u8 solid_square_tile(int tile_index)
 {
 	u8 tile = level.level_map[tile_index];
-    8c78:	87 55       	subi	r24, 0x57	; 87
-    8c7a:	92 4f       	sbci	r25, 0xF2	; 242
+    8c78:	8b 50       	subi	r24, 0x0B	; 11
+    8c7a:	93 4f       	sbci	r25, 0xF3	; 243
     8c7c:	fc 01       	movw	r30, r24
     8c7e:	81 81       	ldd	r24, Z+1	; 0x01
 	
@@ -11231,8 +11237,8 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
     8cb8:	b0 2e       	mov	r11, r16
 	u8 tile = level.level_map[tile_index];
     8cba:	fc 01       	movw	r30, r24
-    8cbc:	e7 55       	subi	r30, 0x57	; 87
-    8cbe:	f2 4f       	sbci	r31, 0xF2	; 242
+    8cbc:	eb 50       	subi	r30, 0x0B	; 11
+    8cbe:	f3 4f       	sbci	r31, 0xF3	; 243
     8cc0:	11 81       	ldd	r17, Z+1	; 0x01
 	u8 tile_x = (tile_index % 30) * 8;
     8cc2:	6e e1       	ldi	r22, 0x1E	; 30
@@ -11630,8 +11636,8 @@ void kill_player(Player* player, u8 hud_x)
 		level.level_map[tile_index +30] = L_SPEED;
     8f86:	87 e0       	ldi	r24, 0x07	; 7
     8f88:	fe 01       	movw	r30, r28
-    8f8a:	e7 55       	subi	r30, 0x57	; 87
-    8f8c:	f2 4f       	sbci	r31, 0xF2	; 242
+    8f8a:	eb 50       	subi	r30, 0x0B	; 11
+    8f8c:	f3 4f       	sbci	r31, 0xF3	; 243
     8f8e:	87 8f       	std	Z+31, r24	; 0x1f
 		player->max_speed = MAX_SPEED;
     8f90:	82 e3       	ldi	r24, 0x32	; 50
@@ -11662,8 +11668,8 @@ void kill_player(Player* player, u8 hud_x)
     8fbc:	8f 5f       	subi	r24, 0xFF	; 255
     8fbe:	0e 94 69 3e 	call	0x7cd2	; 0x7cd2 <DrawMap2>
 		level.level_map[tile_index +31] = L_ROCKET;
-    8fc2:	c7 55       	subi	r28, 0x57	; 87
-    8fc4:	d2 4f       	sbci	r29, 0xF2	; 242
+    8fc2:	cb 50       	subi	r28, 0x0B	; 11
+    8fc4:	d3 4f       	sbci	r29, 0xF3	; 243
     8fc6:	89 e0       	ldi	r24, 0x09	; 9
     8fc8:	88 a3       	std	Y+32, r24	; 0x20
 	}
@@ -11778,7 +11784,7 @@ void explode_tile(TileAnimations* ta, int tile_index)
 	ta->next_available++;
     904a:	9f 5f       	subi	r25, 0xFF	; 255
 	if (ta->next_available == TILE_ANIMATIONS_LENGTH)
-    904c:	94 31       	cpi	r25, 0x14	; 20
+    904c:	95 30       	cpi	r25, 0x05	; 5
     904e:	11 f0       	breq	.+4      	; 0x9054 <explode_tile+0x2a>
 }
 
@@ -11888,8 +11894,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	/* Player interaction */
 	if (player_shot(&player1, shot))
     90e4:	b7 01       	movw	r22, r14
-    90e6:	87 e2       	ldi	r24, 0x27	; 39
-    90e8:	9d e0       	ldi	r25, 0x0D	; 13
+    90e6:	83 e7       	ldi	r24, 0x73	; 115
+    90e8:	9c e0       	ldi	r25, 0x0C	; 12
     90ea:	0e 94 f1 46 	call	0x8de2	; 0x8de2 <player_shot>
     90ee:	88 23       	and	r24, r24
     90f0:	99 f0       	breq	.+38     	; 0x9118 <collision_detect_shot+0xc0>
@@ -11897,17 +11903,17 @@ void collision_detect_shot(Player* player, Shot* shot)
 		p = &player1;
 		hud_x = 0;
 		player2.level_score++;
-    90f2:	80 91 a7 10 	lds	r24, 0x10A7
+    90f2:	80 91 f3 0f 	lds	r24, 0x0FF3
     90f6:	8f 5f       	subi	r24, 0xFF	; 255
-    90f8:	80 93 a7 10 	sts	0x10A7, r24
+    90f8:	80 93 f3 0f 	sts	0x0FF3, r24
 		player2.score++;
-    90fc:	80 91 a6 10 	lds	r24, 0x10A6
+    90fc:	80 91 f2 0f 	lds	r24, 0x0FF2
     9100:	8f 5f       	subi	r24, 0xFF	; 255
-    9102:	80 93 a6 10 	sts	0x10A6, r24
+    9102:	80 93 f2 0f 	sts	0x0FF2, r24
 		render_score(&player2, 15);
     9106:	6f e0       	ldi	r22, 0x0F	; 15
-    9108:	88 e9       	ldi	r24, 0x98	; 152
-    910a:	90 e1       	ldi	r25, 0x10	; 16
+    9108:	84 ee       	ldi	r24, 0xE4	; 228
+    910a:	9f e0       	ldi	r25, 0x0F	; 15
     910c:	0e 94 e3 43 	call	0x87c6	; 0x87c6 <render_score>
 	}
 	
@@ -11915,8 +11921,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	if (player_shot(&player1, shot))
 	{
 		p = &player1;
-    9110:	07 e2       	ldi	r16, 0x27	; 39
-    9112:	1d e0       	ldi	r17, 0x0D	; 13
+    9110:	03 e7       	ldi	r16, 0x73	; 115
+    9112:	1c e0       	ldi	r17, 0x0C	; 12
 		hud_x = 0;
     9114:	b1 2c       	mov	r11, r1
     9116:	20 c0       	rjmp	.+64     	; 0x9158 <collision_detect_shot+0x100>
@@ -11926,8 +11932,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	else if (player_shot(&player2, shot))
     9118:	b7 01       	movw	r22, r14
-    911a:	88 e9       	ldi	r24, 0x98	; 152
-    911c:	90 e1       	ldi	r25, 0x10	; 16
+    911a:	84 ee       	ldi	r24, 0xE4	; 228
+    911c:	9f e0       	ldi	r25, 0x0F	; 15
     911e:	0e 94 f1 46 	call	0x8de2	; 0x8de2 <player_shot>
     9122:	81 11       	cpse	r24, r1
     9124:	06 c0       	rjmp	.+12     	; 0x9132 <collision_detect_shot+0xda>
@@ -11941,17 +11947,17 @@ void collision_detect_shot(Player* player, Shot* shot)
 		p = &player2;
 		hud_x = 15;
 		player1.level_score++;
-    9132:	80 91 36 0d 	lds	r24, 0x0D36
+    9132:	80 91 82 0c 	lds	r24, 0x0C82
     9136:	8f 5f       	subi	r24, 0xFF	; 255
-    9138:	80 93 36 0d 	sts	0x0D36, r24
+    9138:	80 93 82 0c 	sts	0x0C82, r24
 		player1.score++;
-    913c:	80 91 35 0d 	lds	r24, 0x0D35
+    913c:	80 91 81 0c 	lds	r24, 0x0C81
     9140:	8f 5f       	subi	r24, 0xFF	; 255
-    9142:	80 93 35 0d 	sts	0x0D35, r24
+    9142:	80 93 81 0c 	sts	0x0C81, r24
 		render_score(&player1, 0);
     9146:	60 e0       	ldi	r22, 0x00	; 0
-    9148:	87 e2       	ldi	r24, 0x27	; 39
-    914a:	9d e0       	ldi	r25, 0x0D	; 13
+    9148:	83 e7       	ldi	r24, 0x73	; 115
+    914a:	9c e0       	ldi	r25, 0x0C	; 12
     914c:	0e 94 e3 43 	call	0x87c6	; 0x87c6 <render_score>
 		player2.score++;
 		render_score(&player2, 15);
@@ -11959,8 +11965,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	else if (player_shot(&player2, shot))
 	{
 		p = &player2;
-    9150:	08 e9       	ldi	r16, 0x98	; 152
-    9152:	10 e1       	ldi	r17, 0x10	; 16
+    9150:	04 ee       	ldi	r16, 0xE4	; 228
+    9152:	1f e0       	ldi	r17, 0x0F	; 15
 		hud_x = 15;
     9154:	2f e0       	ldi	r18, 0x0F	; 15
     9156:	b2 2e       	mov	r11, r18
@@ -12036,8 +12042,8 @@ void collision_detect_shot(Player* player, Shot* shot)
     91bc:	91 90       	ld	r9, Z+
     91be:	3f 01       	movw	r6, r30
     91c0:	f4 01       	movw	r30, r8
-    91c2:	e7 55       	subi	r30, 0x57	; 87
-    91c4:	f2 4f       	sbci	r31, 0xF2	; 242
+    91c2:	eb 50       	subi	r30, 0x0B	; 11
+    91c4:	f3 4f       	sbci	r31, 0xF3	; 243
     91c6:	11 81       	ldd	r17, Z+1	; 0x01
 		if (tile == L_EMPTY) continue;
     91c8:	11 23       	and	r17, r17
@@ -12079,8 +12085,8 @@ void collision_detect_shot(Player* player, Shot* shot)
     91fe:	80 81       	ld	r24, Z
     9200:	91 81       	ldd	r25, Z+1	; 0x01
     9202:	fc 01       	movw	r30, r24
-    9204:	e7 55       	subi	r30, 0x57	; 87
-    9206:	f2 4f       	sbci	r31, 0xF2	; 242
+    9204:	eb 50       	subi	r30, 0x0B	; 11
+    9206:	f3 4f       	sbci	r31, 0xF3	; 243
     9208:	11 82       	std	Z+1, r1	; 0x01
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
     920a:	6e e1       	ldi	r22, 0x1E	; 30
@@ -12498,8 +12504,8 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 		}
 		else if (level.level_map[tiles[i]] == L_SPEED)
     943c:	f2 01       	movw	r30, r4
-    943e:	e7 55       	subi	r30, 0x57	; 87
-    9440:	f2 4f       	sbci	r31, 0xF2	; 242
+    943e:	eb 50       	subi	r30, 0x0B	; 11
+    9440:	f3 4f       	sbci	r31, 0xF3	; 243
     9442:	81 81       	ldd	r24, Z+1	; 0x01
     9444:	87 30       	cpi	r24, 0x07	; 7
     9446:	51 f4       	brne	.+20     	; 0x945c <collision_detect_player+0x13e>
@@ -12661,8 +12667,8 @@ void load_level_tiles(u8 blank)
     952c:	58 e2       	ldi	r21, 0x28	; 40
     952e:	11 c0       	rjmp	.+34     	; 0x9552 <load_level_tiles+0x52>
     9530:	fe 01       	movw	r30, r28
-    9532:	e7 55       	subi	r30, 0x57	; 87
-    9534:	f2 4f       	sbci	r31, 0xF2	; 242
+    9532:	eb 50       	subi	r30, 0x0B	; 11
+    9534:	f3 4f       	sbci	r31, 0xF3	; 243
 		}
 		else
 		{
@@ -12782,9 +12788,9 @@ void load_level(int level_number)
     95de:	0e 94 a0 42 	call	0x8540	; 0x8540 <clear_sprites>
 	game.current_level = level_number;
     95e2:	c0 93 32 0c 	sts	0x0C32, r28
-    95e6:	8a ea       	ldi	r24, 0xAA	; 170
+    95e6:	86 ef       	ldi	r24, 0xF6	; 246
     95e8:	c8 2e       	mov	r12, r24
-    95ea:	8d e0       	ldi	r24, 0x0D	; 13
+    95ea:	8c e0       	ldi	r24, 0x0C	; 12
     95ec:	d8 2e       	mov	r13, r24
 	for (int i = 0; i < 30*25; i++)
     95ee:	c0 e0       	ldi	r28, 0x00	; 0
@@ -12829,29 +12835,29 @@ void load_level(int level_number)
     9618:	88 0f       	add	r24, r24
     961a:	88 0f       	add	r24, r24
     961c:	88 0f       	add	r24, r24
-    961e:	80 93 38 0d 	sts	0x0D38, r24
+    961e:	80 93 84 0c 	sts	0x0C84, r24
 			player1.spawn_y = (i / 30) * 8 + 3*8;
     9622:	6d 5f       	subi	r22, 0xFD	; 253
     9624:	7f 4f       	sbci	r23, 0xFF	; 255
     9626:	66 0f       	add	r22, r22
     9628:	66 0f       	add	r22, r22
     962a:	66 0f       	add	r22, r22
-    962c:	60 93 39 0d 	sts	0x0D39, r22
+    962c:	60 93 85 0c 	sts	0x0C85, r22
 			player1.level_score = 0;
-    9630:	10 92 36 0d 	sts	0x0D36, r1
+    9630:	10 92 82 0c 	sts	0x0C82, r1
 			player1.has_over_speed = false;
-    9634:	10 92 40 0d 	sts	0x0D40, r1
+    9634:	10 92 8c 0c 	sts	0x0C8C, r1
 			player1.has_rocket = false;
-    9638:	10 92 3f 0d 	sts	0x0D3F, r1
+    9638:	10 92 8b 0c 	sts	0x0C8B, r1
 			player1.max_speed = MAX_SPEED;
-    963c:	90 92 3e 0d 	sts	0x0D3E, r9
+    963c:	90 92 8a 0c 	sts	0x0C8A, r9
 			player_init_shot_state(&player1);
-    9640:	87 e2       	ldi	r24, 0x27	; 39
-    9642:	9d e0       	ldi	r25, 0x0D	; 13
+    9640:	83 e7       	ldi	r24, 0x73	; 115
+    9642:	9c e0       	ldi	r25, 0x0C	; 12
     9644:	0e 94 43 42 	call	0x8486	; 0x8486 <player_init_shot_state>
 			player_spawn(&player1);
-    9648:	87 e2       	ldi	r24, 0x27	; 39
-    964a:	9d e0       	ldi	r25, 0x0D	; 13
+    9648:	83 e7       	ldi	r24, 0x73	; 115
+    964a:	9c e0       	ldi	r25, 0x0C	; 12
     964c:	0e 94 67 42 	call	0x84ce	; 0x84ce <player_spawn>
     9650:	bf ef       	ldi	r27, 0xFF	; 255
     9652:	cb 1a       	sub	r12, r27
@@ -12870,29 +12876,29 @@ void load_level(int level_number)
     9666:	88 0f       	add	r24, r24
     9668:	88 0f       	add	r24, r24
     966a:	88 0f       	add	r24, r24
-    966c:	80 93 a9 10 	sts	0x10A9, r24
+    966c:	80 93 f5 0f 	sts	0x0FF5, r24
 			player2.spawn_y = (i / 30) * 8 + 3*8;
     9670:	6d 5f       	subi	r22, 0xFD	; 253
     9672:	7f 4f       	sbci	r23, 0xFF	; 255
     9674:	66 0f       	add	r22, r22
     9676:	66 0f       	add	r22, r22
     9678:	66 0f       	add	r22, r22
-    967a:	60 93 aa 10 	sts	0x10AA, r22
+    967a:	60 93 f6 0f 	sts	0x0FF6, r22
 			player2.level_score = 0;
-    967e:	10 92 a7 10 	sts	0x10A7, r1
+    967e:	10 92 f3 0f 	sts	0x0FF3, r1
 			player2.has_over_speed = false;
-    9682:	10 92 b1 10 	sts	0x10B1, r1
+    9682:	10 92 fd 0f 	sts	0x0FFD, r1
 			player2.has_rocket = false;
-    9686:	10 92 b0 10 	sts	0x10B0, r1
+    9686:	10 92 fc 0f 	sts	0x0FFC, r1
 			player2.max_speed = MAX_SPEED;
-    968a:	90 92 af 10 	sts	0x10AF, r9
+    968a:	90 92 fb 0f 	sts	0x0FFB, r9
 			player_init_shot_state(&player2);
-    968e:	88 e9       	ldi	r24, 0x98	; 152
-    9690:	90 e1       	ldi	r25, 0x10	; 16
+    968e:	84 ee       	ldi	r24, 0xE4	; 228
+    9690:	9f e0       	ldi	r25, 0x0F	; 15
     9692:	0e 94 43 42 	call	0x8486	; 0x8486 <player_init_shot_state>
 			player_spawn(&player2);
-    9696:	88 e9       	ldi	r24, 0x98	; 152
-    9698:	90 e1       	ldi	r25, 0x10	; 16
+    9696:	84 ee       	ldi	r24, 0xE4	; 228
+    9698:	9f e0       	ldi	r25, 0x0F	; 15
     969a:	0e 94 67 42 	call	0x84ce	; 0x84ce <player_spawn>
     int level_start = level_number*30*25;
 
@@ -12913,23 +12919,23 @@ void load_level(int level_number)
 	}
 	render_hud(&player1, 0);
     96aa:	60 e0       	ldi	r22, 0x00	; 0
-    96ac:	87 e2       	ldi	r24, 0x27	; 39
-    96ae:	9d e0       	ldi	r25, 0x0D	; 13
+    96ac:	83 e7       	ldi	r24, 0x73	; 115
+    96ae:	9c e0       	ldi	r25, 0x0C	; 12
     96b0:	0e 94 c6 43 	call	0x878c	; 0x878c <render_hud>
 	render_hud(&player2, 15);
     96b4:	6f e0       	ldi	r22, 0x0F	; 15
-    96b6:	88 e9       	ldi	r24, 0x98	; 152
-    96b8:	90 e1       	ldi	r25, 0x10	; 16
+    96b6:	84 ee       	ldi	r24, 0xE4	; 228
+    96b8:	9f e0       	ldi	r25, 0x0F	; 15
     96ba:	0e 94 c6 43 	call	0x878c	; 0x878c <render_hud>
 	render_score(&player1, 0);
     96be:	60 e0       	ldi	r22, 0x00	; 0
-    96c0:	87 e2       	ldi	r24, 0x27	; 39
-    96c2:	9d e0       	ldi	r25, 0x0D	; 13
+    96c0:	83 e7       	ldi	r24, 0x73	; 115
+    96c2:	9c e0       	ldi	r25, 0x0C	; 12
     96c4:	0e 94 e3 43 	call	0x87c6	; 0x87c6 <render_score>
 	render_score(&player2, 15);
     96c8:	6f e0       	ldi	r22, 0x0F	; 15
-    96ca:	88 e9       	ldi	r24, 0x98	; 152
-    96cc:	90 e1       	ldi	r25, 0x10	; 16
+    96ca:	84 ee       	ldi	r24, 0xE4	; 228
+    96cc:	9f e0       	ldi	r25, 0x0F	; 15
     96ce:	0e 94 e3 43 	call	0x87c6	; 0x87c6 <render_score>
 	Print(14, 0, strVertSep);
     96d2:	47 eb       	ldi	r20, 0xB7	; 183
@@ -13927,60 +13933,60 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     9cdc:	0e 94 11 3d 	call	0x7a22	; 0x7a22 <SetSpriteVisibility>
 		p2_index = tank_map(&player1, p1_index);
     9ce0:	60 e0       	ldi	r22, 0x00	; 0
-    9ce2:	87 e2       	ldi	r24, 0x27	; 39
-    9ce4:	9d e0       	ldi	r25, 0x0D	; 13
+    9ce2:	83 e7       	ldi	r24, 0x73	; 115
+    9ce4:	9c e0       	ldi	r25, 0x0C	; 12
     9ce6:	0e 94 f9 44 	call	0x89f2	; 0x89f2 <tank_map>
     9cea:	18 2f       	mov	r17, r24
 		p1_shot_index = tank_map(&player2, p2_index);
     9cec:	68 2f       	mov	r22, r24
-    9cee:	88 e9       	ldi	r24, 0x98	; 152
-    9cf0:	90 e1       	ldi	r25, 0x10	; 16
+    9cee:	84 ee       	ldi	r24, 0xE4	; 228
+    9cf0:	9f e0       	ldi	r25, 0x0F	; 15
     9cf2:	0e 94 f9 44 	call	0x89f2	; 0x89f2 <tank_map>
     9cf6:	d8 2f       	mov	r29, r24
 		p2_shot_index = shot_map(&player1, p1_shot_index);
     9cf8:	68 2f       	mov	r22, r24
-    9cfa:	87 e2       	ldi	r24, 0x27	; 39
-    9cfc:	9d e0       	ldi	r25, 0x0D	; 13
+    9cfa:	83 e7       	ldi	r24, 0x73	; 115
+    9cfc:	9c e0       	ldi	r25, 0x0C	; 12
     9cfe:	0e 94 7b 45 	call	0x8af6	; 0x8af6 <shot_map>
     9d02:	c8 2f       	mov	r28, r24
 		shot_map(&player2, p2_shot_index);
     9d04:	68 2f       	mov	r22, r24
-    9d06:	88 e9       	ldi	r24, 0x98	; 152
-    9d08:	90 e1       	ldi	r25, 0x10	; 16
+    9d06:	84 ee       	ldi	r24, 0xE4	; 228
+    9d08:	9f e0       	ldi	r25, 0x0F	; 15
     9d0a:	0e 94 7b 45 	call	0x8af6	; 0x8af6 <shot_map>
 		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
     9d0e:	40 91 02 01 	lds	r20, 0x0102
     9d12:	6f e0       	ldi	r22, 0x0F	; 15
-    9d14:	87 e2       	ldi	r24, 0x27	; 39
-    9d16:	9d e0       	ldi	r25, 0x0D	; 13
+    9d14:	83 e7       	ldi	r24, 0x73	; 115
+    9d16:	9c e0       	ldi	r25, 0x0C	; 12
     9d18:	0e 94 ff 43 	call	0x87fe	; 0x87fe <render_banter>
     9d1c:	80 93 02 01 	sts	0x0102, r24
 		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
     9d20:	40 91 01 01 	lds	r20, 0x0101
     9d24:	60 e0       	ldi	r22, 0x00	; 0
-    9d26:	88 e9       	ldi	r24, 0x98	; 152
-    9d28:	90 e1       	ldi	r25, 0x10	; 16
+    9d26:	84 ee       	ldi	r24, 0xE4	; 228
+    9d28:	9f e0       	ldi	r25, 0x0F	; 15
     9d2a:	0e 94 ff 43 	call	0x87fe	; 0x87fe <render_banter>
     9d2e:	80 93 01 01 	sts	0x0101, r24
 		render_player(&player1, p1_index);
     9d32:	60 e0       	ldi	r22, 0x00	; 0
-    9d34:	87 e2       	ldi	r24, 0x27	; 39
-    9d36:	9d e0       	ldi	r25, 0x0D	; 13
+    9d34:	83 e7       	ldi	r24, 0x73	; 115
+    9d36:	9c e0       	ldi	r25, 0x0C	; 12
     9d38:	0e 94 27 44 	call	0x884e	; 0x884e <render_player>
 		render_player(&player2, p2_index);
     9d3c:	61 2f       	mov	r22, r17
-    9d3e:	88 e9       	ldi	r24, 0x98	; 152
-    9d40:	90 e1       	ldi	r25, 0x10	; 16
+    9d3e:	84 ee       	ldi	r24, 0xE4	; 228
+    9d40:	9f e0       	ldi	r25, 0x0F	; 15
     9d42:	0e 94 27 44 	call	0x884e	; 0x884e <render_player>
 		render_shot(&player1, p1_shot_index);
     9d46:	6d 2f       	mov	r22, r29
-    9d48:	87 e2       	ldi	r24, 0x27	; 39
-    9d4a:	9d e0       	ldi	r25, 0x0D	; 13
+    9d48:	83 e7       	ldi	r24, 0x73	; 115
+    9d4a:	9c e0       	ldi	r25, 0x0C	; 12
     9d4c:	0e 94 50 44 	call	0x88a0	; 0x88a0 <render_shot>
 		render_shot(&player2, p2_shot_index);
     9d50:	6c 2f       	mov	r22, r28
-    9d52:	88 e9       	ldi	r24, 0x98	; 152
-    9d54:	90 e1       	ldi	r25, 0x10	; 16
+    9d52:	84 ee       	ldi	r24, 0xE4	; 228
+    9d54:	9f e0       	ldi	r25, 0x0F	; 15
     9d56:	0e 94 50 44 	call	0x88a0	; 0x88a0 <render_shot>
 		render_tile_explosions(&tile_animations);
     9d5a:	85 e3       	ldi	r24, 0x35	; 53
@@ -13991,35 +13997,35 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	// Update
 	update_level_helper(p1, &player1, &player2, 15);
     9d62:	2f e0       	ldi	r18, 0x0F	; 15
-    9d64:	48 e9       	ldi	r20, 0x98	; 152
-    9d66:	50 e1       	ldi	r21, 0x10	; 16
-    9d68:	67 e2       	ldi	r22, 0x27	; 39
-    9d6a:	7d e0       	ldi	r23, 0x0D	; 13
+    9d64:	44 ee       	ldi	r20, 0xE4	; 228
+    9d66:	5f e0       	ldi	r21, 0x0F	; 15
+    9d68:	63 e7       	ldi	r22, 0x73	; 115
+    9d6a:	7c e0       	ldi	r23, 0x0C	; 12
     9d6c:	c6 01       	movw	r24, r12
     9d6e:	0e 94 91 4c 	call	0x9922	; 0x9922 <update_level_helper>
 	update_level_helper(p2, &player2, &player1, 0);
     9d72:	20 e0       	ldi	r18, 0x00	; 0
-    9d74:	47 e2       	ldi	r20, 0x27	; 39
-    9d76:	5d e0       	ldi	r21, 0x0D	; 13
-    9d78:	68 e9       	ldi	r22, 0x98	; 152
-    9d7a:	70 e1       	ldi	r23, 0x10	; 16
+    9d74:	43 e7       	ldi	r20, 0x73	; 115
+    9d76:	5c e0       	ldi	r21, 0x0C	; 12
+    9d78:	64 ee       	ldi	r22, 0xE4	; 228
+    9d7a:	7f e0       	ldi	r23, 0x0F	; 15
     9d7c:	c7 01       	movw	r24, r14
     9d7e:	0e 94 91 4c 	call	0x9922	; 0x9922 <update_level_helper>
 	collision_detect_player(&player1, &player2, 0, 15);
     9d82:	2f e0       	ldi	r18, 0x0F	; 15
     9d84:	40 e0       	ldi	r20, 0x00	; 0
-    9d86:	68 e9       	ldi	r22, 0x98	; 152
-    9d88:	70 e1       	ldi	r23, 0x10	; 16
-    9d8a:	87 e2       	ldi	r24, 0x27	; 39
-    9d8c:	9d e0       	ldi	r25, 0x0D	; 13
+    9d86:	64 ee       	ldi	r22, 0xE4	; 228
+    9d88:	7f e0       	ldi	r23, 0x0F	; 15
+    9d8a:	83 e7       	ldi	r24, 0x73	; 115
+    9d8c:	9c e0       	ldi	r25, 0x0C	; 12
     9d8e:	0e 94 8f 49 	call	0x931e	; 0x931e <collision_detect_player>
 	collision_detect_player(&player2, &player1, 15, 0);
     9d92:	20 e0       	ldi	r18, 0x00	; 0
     9d94:	4f e0       	ldi	r20, 0x0F	; 15
-    9d96:	67 e2       	ldi	r22, 0x27	; 39
-    9d98:	7d e0       	ldi	r23, 0x0D	; 13
-    9d9a:	88 e9       	ldi	r24, 0x98	; 152
-    9d9c:	90 e1       	ldi	r25, 0x10	; 16
+    9d96:	63 e7       	ldi	r22, 0x73	; 115
+    9d98:	7c e0       	ldi	r23, 0x0C	; 12
+    9d9a:	84 ee       	ldi	r24, 0xE4	; 228
+    9d9c:	9f e0       	ldi	r25, 0x0F	; 15
 }
     9d9e:	df 91       	pop	r29
     9da0:	cf 91       	pop	r28
@@ -14901,8 +14907,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 
 	// Update
 	_handle_select_helper(&p1s, p1, &player1);
-    a2b4:	47 e2       	ldi	r20, 0x27	; 39
-    a2b6:	5d e0       	ldi	r21, 0x0D	; 13
+    a2b4:	43 e7       	ldi	r20, 0x73	; 115
+    a2b6:	5c e0       	ldi	r21, 0x0C	; 12
     a2b8:	b8 01       	movw	r22, r16
     a2ba:	80 eb       	ldi	r24, 0xB0	; 176
     a2bc:	9b e0       	ldi	r25, 0x0B	; 11
@@ -14927,8 +14933,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	if (game.selection == PVP)
 	{
 		_handle_select_helper(&p2s, p2, &player2);
-    a2d4:	48 e9       	ldi	r20, 0x98	; 152
-    a2d6:	50 e1       	ldi	r21, 0x10	; 16
+    a2d4:	44 ee       	ldi	r20, 0xE4	; 228
+    a2d6:	5f e0       	ldi	r21, 0x0F	; 15
     a2d8:	be 01       	movw	r22, r28
     a2da:	8a ea       	ldi	r24, 0xAA	; 170
     a2dc:	9b e0       	ldi	r25, 0x0B	; 11
@@ -14948,13 +14954,13 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		{
 			player2.handle_id = 9;
     a2f4:	89 e0       	ldi	r24, 0x09	; 9
-    a2f6:	80 93 a2 10 	sts	0x10A2, r24
+    a2f6:	80 93 ee 0f 	sts	0x0FEE, r24
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
     a2fa:	43 e0       	ldi	r20, 0x03	; 3
     a2fc:	61 e4       	ldi	r22, 0x41	; 65
     a2fe:	71 e0       	ldi	r23, 0x01	; 1
-    a300:	83 ea       	ldi	r24, 0xA3	; 163
-    a302:	90 e1       	ldi	r25, 0x10	; 16
+    a300:	8f ee       	ldi	r24, 0xEF	; 239
+    a302:	9f e0       	ldi	r25, 0x0F	; 15
     a304:	0e 94 09 40 	call	0x8012	; 0x8012 <LBCopyChars>
 		}
 		level_transition(0);
@@ -15023,8 +15029,8 @@ int main()
 		LBGetJoyPadState(&p1, &p2);
     a360:	6b e2       	ldi	r22, 0x2B	; 43
     a362:	7c e0       	ldi	r23, 0x0C	; 12
-    a364:	83 ea       	ldi	r24, 0xA3	; 163
-    a366:	9d e0       	ldi	r25, 0x0D	; 13
+    a364:	8f ee       	ldi	r24, 0xEF	; 239
+    a366:	9c e0       	ldi	r25, 0x0C	; 12
     a368:	0e 94 c7 3f 	call	0x7f8e	; 0x7f8e <LBGetJoyPadState>
 		switch (game.current_screen)
     a36c:	80 91 31 0c 	lds	r24, 0x0C31
@@ -15043,8 +15049,8 @@ int main()
 				update_level(&p1, &p2);
     a37e:	6b e2       	ldi	r22, 0x2B	; 43
     a380:	7c e0       	ldi	r23, 0x0C	; 12
-    a382:	83 ea       	ldi	r24, 0xA3	; 163
-    a384:	9d e0       	ldi	r25, 0x0D	; 13
+    a382:	8f ee       	ldi	r24, 0xEF	; 239
+    a384:	9c e0       	ldi	r25, 0x0C	; 12
     a386:	0e 94 46 4e 	call	0x9c8c	; 0x9c8c <update_level>
 				break;
     a38a:	e6 cf       	rjmp	.-52     	; 0xa358 <main+0x38>
@@ -15056,8 +15062,8 @@ int main()
 				update_splash(&p1, &p2);
     a38c:	6b e2       	ldi	r22, 0x2B	; 43
     a38e:	7c e0       	ldi	r23, 0x0C	; 12
-    a390:	83 ea       	ldi	r24, 0xA3	; 163
-    a392:	9d e0       	ldi	r25, 0x0D	; 13
+    a390:	8f ee       	ldi	r24, 0xEF	; 239
+    a392:	9c e0       	ldi	r25, 0x0C	; 12
     a394:	0e 94 e2 50 	call	0xa1c4	; 0xa1c4 <update_splash>
 				break;
     a398:	df cf       	rjmp	.-66     	; 0xa358 <main+0x38>
@@ -15065,8 +15071,8 @@ int main()
 				update_tank_rank(&p1, &p2);
     a39a:	6b e2       	ldi	r22, 0x2B	; 43
     a39c:	7c e0       	ldi	r23, 0x0C	; 12
-    a39e:	83 ea       	ldi	r24, 0xA3	; 163
-    a3a0:	9d e0       	ldi	r25, 0x0D	; 13
+    a39e:	8f ee       	ldi	r24, 0xEF	; 239
+    a3a0:	9c e0       	ldi	r25, 0x0C	; 12
     a3a2:	0e 94 d8 4e 	call	0x9db0	; 0x9db0 <update_tank_rank>
 				break;
     a3a6:	d8 cf       	rjmp	.-80     	; 0xa358 <main+0x38>
@@ -15074,8 +15080,8 @@ int main()
 				update_handle_select(&p1, &p2);
     a3a8:	6b e2       	ldi	r22, 0x2B	; 43
     a3aa:	7c e0       	ldi	r23, 0x0C	; 12
-    a3ac:	83 ea       	ldi	r24, 0xA3	; 163
-    a3ae:	9d e0       	ldi	r25, 0x0D	; 13
+    a3ac:	8f ee       	ldi	r24, 0xEF	; 239
+    a3ae:	9c e0       	ldi	r25, 0x0C	; 12
     a3b0:	0e 94 42 51 	call	0xa284	; 0xa284 <update_handle_select>
 				break;
     a3b4:	d1 cf       	rjmp	.-94     	; 0xa358 <main+0x38>

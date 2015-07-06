@@ -64,7 +64,7 @@ currDeltaTime       0x2               uzeboxSoundEngine.o
 fadeDir             0x1               uzeboxVideoEngine.o
 patchPointers       0x2               uzeboxSoundEngine.o
 game                0x4               TankFu.o
-tile_animations     0xf2              TankFu.o
+tile_animations     0x3e              TankFu.o
 lastStatus          0x1               uzeboxSoundEngine.o
 joypadsConnectionStatus
                     0x1               uzeboxCore.o
@@ -1092,7 +1092,7 @@ END GROUP
                 0x0000000000800144                _edata = .
                 0x0000000000800144                PROVIDE (__data_end, .)
 
-.bss            0x0000000000800144      0xfd0
+.bss            0x0000000000800144      0xf1c
                 0x0000000000800144                PROVIDE (__bss_start, .)
  *(.bss)
  *fill*         0x0000000000800144       0x1c 
@@ -1152,24 +1152,24 @@ END GROUP
                 0x0000000000800c28                fadeActive
                 0x0000000000800c29                currFadeFrame
                 0x0000000000800c2a                fadeStep
- COMMON         0x0000000000800c2b      0x4e9 TankFu.o
+ COMMON         0x0000000000800c2b      0x435 TankFu.o
                 0x0000000000800c2b                p2
                 0x0000000000800c31                game
                 0x0000000000800c35                tile_animations
-                0x0000000000800d27                player1
-                0x0000000000800da3                p1
-                0x0000000000800da9                level
-                0x0000000000801098                player2
-                0x0000000000801114                PROVIDE (__bss_end, .)
+                0x0000000000800c73                player1
+                0x0000000000800cef                p1
+                0x0000000000800cf5                level
+                0x0000000000800fe4                player2
+                0x0000000000801060                PROVIDE (__bss_end, .)
                 0x000000000000a85a                __data_load_start = LOADADDR (.data)
                 0x000000000000a89e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0000000000801114        0x0
-                0x0000000000801114                PROVIDE (__noinit_start, .)
+.noinit         0x0000000000801060        0x0
+                0x0000000000801060                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0000000000801114                PROVIDE (__noinit_end, .)
-                0x0000000000801114                _end = .
-                0x0000000000801114                PROVIDE (__heap_start, .)
+                0x0000000000801060                PROVIDE (__noinit_end, .)
+                0x0000000000801060                _end = .
+                0x0000000000801060                PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
  *(.eeprom*)
@@ -1260,7 +1260,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x7b2b
+.debug_info     0x0000000000000000     0x7b27
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7d uzeboxVideoEngineCore.o
@@ -1268,7 +1268,7 @@ END GROUP
  .debug_info    0x0000000000001132     0x11b6 uzeboxSoundEngine.o
  .debug_info    0x00000000000022e8       0x73 uzeboxSoundEngineCore.o
  .debug_info    0x000000000000235b     0x1588 uzeboxVideoEngine.o
- .debug_info    0x00000000000038e3     0x4248 TankFu.o
+ .debug_info    0x00000000000038e3     0x4244 TankFu.o
 
 .debug_abbrev   0x0000000000000000     0x1536
  *(.debug_abbrev)
@@ -1280,7 +1280,7 @@ END GROUP
  .debug_abbrev  0x0000000000000c2f      0x3ab uzeboxVideoEngine.o
  .debug_abbrev  0x0000000000000fda      0x55c TankFu.o
 
-.debug_line     0x0000000000000000     0x1be4
+.debug_line     0x0000000000000000     0x1be6
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x47a uzeboxVideoEngineCore.o
@@ -1288,16 +1288,16 @@ END GROUP
  .debug_line    0x000000000000072d      0x3a1 uzeboxSoundEngine.o
  .debug_line    0x0000000000000ace      0x1f0 uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000cbe      0x4be uzeboxVideoEngine.o
- .debug_line    0x000000000000117c      0xa68 TankFu.o
+ .debug_line    0x000000000000117c      0xa6a TankFu.o
 
-.debug_frame    0x0000000000000000     0x11a4
+.debug_frame    0x0000000000000000     0x11b0
  *(.debug_frame)
  .debug_frame   0x0000000000000000      0x174 uzeboxCore.o
  .debug_frame   0x0000000000000174      0x248 uzeboxSoundEngine.o
  .debug_frame   0x00000000000003bc      0x4c0 uzeboxVideoEngine.o
- .debug_frame   0x000000000000087c      0x928 TankFu.o
+ .debug_frame   0x000000000000087c      0x934 TankFu.o
 
-.debug_str      0x0000000000000000     0x18b1
+.debug_str      0x0000000000000000     0x18a2
  *(.debug_str)
  .debug_str     0x0000000000000000      0x231 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_str     0x0000000000000231      0x4af uzeboxCore.o
@@ -1306,15 +1306,15 @@ END GROUP
                                         0x60c (size before relaxing)
  .debug_str     0x0000000000000ab0      0x2e3 uzeboxVideoEngine.o
                                         0x4ad (size before relaxing)
- .debug_str     0x0000000000000d93      0xb1e TankFu.o
-                                        0xe42 (size before relaxing)
+ .debug_str     0x0000000000000d93      0xb0f TankFu.o
+                                        0xe33 (size before relaxing)
 
-.debug_loc      0x0000000000000000     0x6d7a
+.debug_loc      0x0000000000000000     0x6db0
  *(.debug_loc)
  .debug_loc     0x0000000000000000      0x864 uzeboxCore.o
  .debug_loc     0x0000000000000864     0x107a uzeboxSoundEngine.o
  .debug_loc     0x00000000000018de     0x1d49 uzeboxVideoEngine.o
- .debug_loc     0x0000000000003627     0x3753 TankFu.o
+ .debug_loc     0x0000000000003627     0x3789 TankFu.o
 
 .debug_macinfo
  *(.debug_macinfo)
