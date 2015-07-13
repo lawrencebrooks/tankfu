@@ -8,6 +8,7 @@
 #include "data/sprites.pic.inc"
 #include "data/tiles.map.inc"
 #include "data/sprites.map.inc"
+#include "data/patches.h"
 #include "data/levels.map.inc"
 #include "types.h"
 #include "strings.h"
@@ -1119,11 +1120,15 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	{
 		game.selection--;
 		if (game.selection < PVCPU) game.selection = PVCPU;
+		//TriggerFx(PATCH_NAVIGATE, 0xff, true);
+		//TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
 		if (game.selection > TR) game.selection = TR;
+		//TriggerFx(PATCH_NAVIGATE, 0xff, true);
+		//TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
 	}
 	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
@@ -1326,12 +1331,13 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 int main()
 {
 	// Initialize
-	SetMasterVolume(0);
-	StopSong();
+	InitMusicPlayer(my_patches);
+	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
+	ClearVram();
 	init_game_state();
 	init_tile_animations(&tile_animations);
 	load_splash();

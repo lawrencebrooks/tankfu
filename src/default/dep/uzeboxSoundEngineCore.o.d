@@ -5,7 +5,7 @@ uzeboxSoundEngineCore.o: ../kernel/uzeboxSoundEngineCore.s \
  /usr/local/avr/include/avr/common.h /usr/local/avr/include/avr/version.h \
  /usr/local/avr/include/avr/fuse.h /usr/local/avr/include/avr/lock.h \
  ../kernel/defines.h ../kernel/videoMode3/videoMode3.def.h \
- ../kernel/soundMixerVsync.s ../kernel/data/steptable.inc \
+ ../kernel/soundMixerInline.s ../kernel/data/steptable.inc \
  ../kernel/data/sounds.inc
 
 /usr/local/avr/include/avr/io.h:
@@ -30,7 +30,7 @@ uzeboxSoundEngineCore.o: ../kernel/uzeboxSoundEngineCore.s \
 
 ../kernel/videoMode3/videoMode3.def.h:
 
-../kernel/soundMixerVsync.s:
+../kernel/soundMixerInline.s:
 
 ../kernel/data/steptable.inc:
 
