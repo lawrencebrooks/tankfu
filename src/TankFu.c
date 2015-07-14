@@ -1332,7 +1332,7 @@ int main()
 {
 	// Initialize
 	InitMusicPlayer(my_patches);
-	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
+	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);

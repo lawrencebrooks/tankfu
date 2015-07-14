@@ -14732,8 +14732,8 @@ int main()
     aa96:	86 e1       	ldi	r24, 0x16	; 22
     aa98:	90 e2       	ldi	r25, 0x20	; 32
     aa9a:	0e 94 46 37 	call	0x6e8c	; 0x6e8c <InitMusicPlayer>
-	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
-    aa9e:	2f ec       	ldi	r18, 0xCF	; 207
+	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
+    aa9e:	2f ef       	ldi	r18, 0xFF	; 255
     aaa0:	47 e1       	ldi	r20, 0x17	; 23
     aaa2:	60 e0       	ldi	r22, 0x00	; 0
     aaa4:	84 e0       	ldi	r24, 0x04	; 4
