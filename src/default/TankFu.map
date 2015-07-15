@@ -509,42 +509,42 @@ END GROUP
                 0x0000000000000294                str2Player
                 0x00000000000002a5                str1Player
                 0x00000000000002b3                strCopyright
-                0x00000000000002ca                level_data
-                0x0000000000002016                my_patches
-                0x000000000000201f                ad_navigate
-                0x000000000000318a                map_rocket_right_1
-                0x000000000000318d                map_rocket_right_0
-                0x0000000000003190                map_rocket_up_1
-                0x0000000000003193                map_rocket_up_0
-                0x0000000000003196                map_ball
-                0x0000000000003199                map_explosion_2
-                0x000000000000319f                map_explosion_1
-                0x00000000000031a5                map_explosion_0
-                0x00000000000031ab                map_tank2_right_1
-                0x00000000000031b1                map_tank2_right_0
-                0x00000000000031b7                map_tank2_up_1
-                0x00000000000031bd                map_tank2_up_0
-                0x00000000000031c3                map_tank1_right_1
-                0x00000000000031c9                map_tank1_right_0
-                0x00000000000031cf                map_tank1_up_1
-                0x00000000000031d5                map_tank1_up_0
-                0x00000000000031db                map_none
-                0x00000000000031de                map_tank_blank
-                0x00000000000031e4                map_metal_bl
-                0x00000000000031e7                map_metal_tr
-                0x00000000000031ea                map_metal_br
-                0x00000000000031ed                map_metal_tl
-                0x00000000000031f0                map_tile_exp_2
-                0x00000000000031f3                map_tile_exp_1
-                0x00000000000031f6                map_tile_exp_0
-                0x00000000000031f9                map_rocket_itm
-                0x00000000000031fc                map_explode_itm
-                0x00000000000031ff                map_speed_itm
-                0x0000000000003202                map_metal
-                0x0000000000003205                map_brick
-                0x0000000000003208                map_tile_none
-                0x000000000000320b                map_pause
-                0x0000000000003249                map_splash
+                0x00000000000002ca                my_patches
+                0x00000000000002d3                level_data
+                0x000000000000201f                map_rocket_right_1
+                0x0000000000002022                map_rocket_right_0
+                0x0000000000002025                map_rocket_up_1
+                0x0000000000002028                map_rocket_up_0
+                0x000000000000202b                map_ball
+                0x000000000000202e                map_explosion_2
+                0x0000000000002034                map_explosion_1
+                0x000000000000203a                map_explosion_0
+                0x0000000000002040                map_tank2_right_1
+                0x0000000000002046                map_tank2_right_0
+                0x000000000000204c                map_tank2_up_1
+                0x0000000000002052                map_tank2_up_0
+                0x0000000000002058                map_tank1_right_1
+                0x000000000000205e                map_tank1_right_0
+                0x0000000000002064                map_tank1_up_1
+                0x000000000000206a                map_tank1_up_0
+                0x0000000000002070                map_none
+                0x0000000000002073                map_tank_blank
+                0x0000000000002079                map_metal_bl
+                0x000000000000207c                map_metal_tr
+                0x000000000000207f                map_metal_br
+                0x0000000000002082                map_metal_tl
+                0x0000000000002085                map_tile_exp_2
+                0x0000000000002088                map_tile_exp_1
+                0x000000000000208b                map_tile_exp_0
+                0x000000000000208e                map_rocket_itm
+                0x0000000000002091                map_explode_itm
+                0x0000000000002094                map_speed_itm
+                0x0000000000002097                map_metal
+                0x000000000000209a                map_brick
+                0x000000000000209d                map_tile_none
+                0x00000000000020a0                map_pause
+                0x00000000000020de                map_splash
+                0x0000000000002134                ad_navigate
                 0x000000000000329f                sprites_data
                 0x0000000000003e9f                tiles_data
                 0x0000000000006260                . = ALIGN (0x2)
@@ -1248,7 +1248,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x7948
+.debug_info     0x0000000000000000     0x7947
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7d uzeboxVideoEngineCore.o
@@ -1256,9 +1256,9 @@ END GROUP
  .debug_info    0x00000000000010da     0x127a uzeboxSoundEngine.o
  .debug_info    0x0000000000002354       0x74 uzeboxSoundEngineCore.o
  .debug_info    0x00000000000023c8     0x12c5 uzeboxVideoEngine.o
- .debug_info    0x000000000000368d     0x42bb TankFu.o
+ .debug_info    0x000000000000368d     0x42ba TankFu.o
 
-.debug_abbrev   0x0000000000000000     0x1519
+.debug_abbrev   0x0000000000000000     0x1508
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x619 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_abbrev  0x0000000000000619       0x12 uzeboxVideoEngineCore.o
@@ -1266,9 +1266,9 @@ END GROUP
  .debug_abbrev  0x0000000000000911      0x307 uzeboxSoundEngine.o
  .debug_abbrev  0x0000000000000c18       0x12 uzeboxSoundEngineCore.o
  .debug_abbrev  0x0000000000000c2a      0x3a7 uzeboxVideoEngine.o
- .debug_abbrev  0x0000000000000fd1      0x548 TankFu.o
+ .debug_abbrev  0x0000000000000fd1      0x537 TankFu.o
 
-.debug_line     0x0000000000000000     0x1b1f
+.debug_line     0x0000000000000000     0x1b2a
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x47a uzeboxVideoEngineCore.o
@@ -1276,7 +1276,7 @@ END GROUP
  .debug_line    0x000000000000071e      0x3a6 uzeboxSoundEngine.o
  .debug_line    0x0000000000000ac4      0x1a8 uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000c6c      0x472 uzeboxVideoEngine.o
- .debug_line    0x00000000000010de      0xa41 TankFu.o
+ .debug_line    0x00000000000010de      0xa4c TankFu.o
 
 .debug_frame    0x0000000000000000     0x11a4
  *(.debug_frame)

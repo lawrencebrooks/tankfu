@@ -4,12 +4,13 @@
  */
 #include <uzebox.h>
 #include <avr/pgmspace.h>
-#include "data/tiles.pic.inc"
-#include "data/sprites.pic.inc"
-#include "data/tiles.map.inc"
-#include "data/sprites.map.inc"
-#include "data/patches.h"
-#include "data/levels.map.inc"
+#include "data/tiles.pic.h"
+#include "data/sprites.pic.h"
+#include "data/patches.pcm.h"
+#include "data/tiles.map.h"
+#include "data/sprites.map.h"
+#include "data/levels.map.h"
+#include "data/patches.map.h"
 #include "types.h"
 #include "strings.h"
 #include "utils.h"

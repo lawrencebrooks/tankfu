@@ -10,10 +10,10 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
  /usr/local/avr/include/avr/fuse.h /usr/local/avr/include/avr/lock.h \
  ../kernel/videoMode3/videoMode3.def.h ../kernel/kernel.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
- /usr/local/lib/gcc/avr/4.9.2/include/stddef.h ../data/tiles.pic.inc \
- ../data/sprites.pic.inc ../data/tiles.map.inc ../data/sprites.map.inc \
- ../data/patches.h ../data/levels.map.inc ../types.h ../utils.h \
- ../macros.h ../strings.h
+ /usr/local/lib/gcc/avr/4.9.2/include/stddef.h ../data/tiles.pic.h \
+ ../data/sprites.pic.h ../data/patches.pcm.h ../data/tiles.map.h \
+ ../data/sprites.map.h ../data/levels.map.h ../data/patches.map.h \
+ ../types.h ../utils.h ../macros.h ../strings.h
 
 ../kernel/uzebox.h:
 
@@ -55,17 +55,19 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
 
 /usr/local/lib/gcc/avr/4.9.2/include/stddef.h:
 
-../data/tiles.pic.inc:
+../data/tiles.pic.h:
 
-../data/sprites.pic.inc:
+../data/sprites.pic.h:
 
-../data/tiles.map.inc:
+../data/patches.pcm.h:
 
-../data/sprites.map.inc:
+../data/tiles.map.h:
 
-../data/patches.h:
+../data/sprites.map.h:
 
-../data/levels.map.inc:
+../data/levels.map.h:
+
+../data/patches.map.h:
 
 ../types.h:
 
