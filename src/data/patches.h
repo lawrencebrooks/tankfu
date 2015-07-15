@@ -380,7 +380,7 @@ const char ad_navigate[] PROGMEM={
 #define PCM_CHANNEL 4
 
 const struct PatchStruct my_patches[] PROGMEM = {
-  {2,ad_navigate,0,sizeof(ad_navigate)-1,sizeof(ad_navigate)-1}
+  {2,ad_navigate,0,sizeof(ad_navigate)-2,sizeof(ad_navigate)-1}
 };
 
 #endif 

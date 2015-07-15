@@ -1120,15 +1120,13 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	{
 		game.selection--;
 		if (game.selection < PVCPU) game.selection = PVCPU;
-		//TriggerFx(PATCH_NAVIGATE, 0xff, true);
-		//TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
+		TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
 		if (game.selection > TR) game.selection = TR;
-		//TriggerFx(PATCH_NAVIGATE, 0xff, true);
-		//TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xcf);
+		TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
 	}
 	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
@@ -1332,7 +1330,6 @@ int main()
 {
 	// Initialize
 	InitMusicPlayer(my_patches);
-	TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
@@ -1358,7 +1355,7 @@ int main()
 				update_handle_select(&p1, &p2);
 				break;
 			case LEVEL:
-				/* p2 should be replaced by AI input for Player v CPU */
+				// p2 should be replaced by AI input for Player v CPU
 				update_level(&p1, &p2);
 				break;
 			default:
