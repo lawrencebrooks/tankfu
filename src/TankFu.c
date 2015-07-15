@@ -376,6 +376,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	{
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
+		SFX_NAVIGATE;
 	}
 	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
 	{
@@ -383,27 +384,32 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		{
 			player->banter_frame = 0;
 			player->banter_index = (u8) LBRandom(0, 9);
+			SFX_BANTER;
 		}
 		player->shared.speed = player->max_speed;
 		if ((p->held & BTN_UP))
 		{
 			player->shared.direction = D_UP;
 			player->shared.y -= FRAME_TIME * player->shared.speed;
+			SFX_TRACKS;
 		}
 		else if ((p->held & BTN_RIGHT))
 		{
 			player->shared.direction = D_RIGHT;
 			player->shared.x += FRAME_TIME * player->shared.speed;
+			SFX_TRACKS;
 		}
 		else if ((p->held & BTN_DOWN))
 		{
 			player->shared.direction = D_DOWN;
 			player->shared.y += FRAME_TIME * player->shared.speed;
+			SFX_TRACKS;
 		}
 		else if ((p->held & BTN_LEFT))
 		{
 			player->shared.direction = D_LEFT;
 			player->shared.x -= FRAME_TIME * player->shared.speed;
+			SFX_TRACKS;
 		}
 		else
 		{
@@ -420,11 +426,13 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 					{
 						init_shot_state(shot, ROCKET_SHOT);
 						set_shot_animations(shot, ROCKET_SHOT);
+						SFX_ROCKET;
 					}
 					else
 					{
 						init_shot_state(shot, BASIC_SHOT);
 						set_shot_animations(shot, BASIC_SHOT);
+						SFX_CANNONBALL;
 					}
 					player->active_shots++;
 					shot->shared.direction = player->shared.direction;
@@ -477,6 +485,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		player->level_score = 0;
 		other_player->level_score = 0;
 		next_level = game.current_level + 1;
+		SFX_LEVEL_CLEAR;
 		if (next_level >= LEVEL_COUNT)
 		{
 			exit_game();
@@ -820,6 +829,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		init_shot_state(shot, shot->shot_type);
 		player->active_shots--;
 		kill_player(p, hud_x);
+		SFX_TANK_EXPLODE;
 		return;
 	}
 	
@@ -833,6 +843,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			recoil_sprite(&shot->shared);
 			init_shot_state(shot, shot->shot_type);
 			player->active_shots--;
+			SFX_METAL;
 			break;
 		}
 		else if (tile == L_BRICK)
@@ -846,6 +857,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 				init_shot_state(shot, shot->shot_type);
 				player->active_shots--;
 			}
+			SFX_BRICK_EXPLODE;
 			break;
 		}
 		else if (solid_directional_tile(tiles[i], shot->shared.x, shot->shared.y, 7, 7))
@@ -884,6 +896,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 				init_shot_state(shot, shot->shot_type);
 				player->active_shots--;
 			}
+			SFX_METAL;
 			break;
 		}
 	}
@@ -949,6 +962,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			player->has_over_speed = true;
 			DrawMap2(hud_x+10, 1, map_speed_itm);
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			SFX_ITEM;
 		}
 		else if (level.level_map[tiles[i]] == L_ROCKET)
 		{
@@ -956,6 +970,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			player->has_rocket = true;
 			DrawMap2(hud_x+11, 1, map_rocket_itm);
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			SFX_ITEM;
 		}
 		else if (level.level_map[tiles[i]] == L_EXPLODE)
 		{
@@ -965,6 +980,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			player->score++;
 			render_score(player, hud_x);
 			kill_player(other_player, other_player_hud_x);
+			SFX_ITEM;
 		}
 	}
 }
@@ -1042,6 +1058,7 @@ void load_level(int level_number)
 	Print(14, 1, strVertSep);
 	Print(14, 2, strVertSep);
 	load_level_tiles(false);
+	SFX_LEVEL_START;
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
@@ -1094,6 +1111,7 @@ void load_splash()
 	Print(4, 26, strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_ball, 0);
+	SFX_SPLASH;
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)
@@ -1121,13 +1139,13 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	{
 		game.selection--;
 		if (game.selection < PVCPU) game.selection = PVCPU;
-		TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
+		SFX_NAVIGATE;
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
 		if (game.selection > TR) game.selection = TR;
-		TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff);
+		SFX_NAVIGATE;
 	}
 	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
