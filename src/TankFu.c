@@ -374,9 +374,9 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 
 	if ((p->pressed & BTN_START))
 	{
+		SFX_NAVIGATE;
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
-		SFX_NAVIGATE;
 	}
 	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
 	{
@@ -391,25 +391,25 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		{
 			player->shared.direction = D_UP;
 			player->shared.y -= FRAME_TIME * player->shared.speed;
-			SFX_TRACKS;
+			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_RIGHT))
 		{
 			player->shared.direction = D_RIGHT;
 			player->shared.x += FRAME_TIME * player->shared.speed;
-			SFX_TRACKS;
+			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_DOWN))
 		{
 			player->shared.direction = D_DOWN;
 			player->shared.y += FRAME_TIME * player->shared.speed;
-			SFX_TRACKS;
+			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_LEFT))
 		{
 			player->shared.direction = D_LEFT;
 			player->shared.x -= FRAME_TIME * player->shared.speed;
-			SFX_TRACKS;
+			//SFX_TRACKS;
 		}
 		else
 		{
@@ -469,6 +469,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	{
 		if (p->pressed & BTN_X)
 		{
+			SFX_NAVIGATE;
 			save_score();
 			exit_game();
 		}
@@ -1151,6 +1152,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	{
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
+		SFX_NAVIGATE;
 		fade_through();
 		load_eeprom(&handles);
 		load_handle_select();
@@ -1199,6 +1201,7 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	// Update
 	if (p1->pressed & BTN_X)
 	{
+		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
 	}
@@ -1211,55 +1214,66 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	{
 		ps->handle_id--;
 		if (ps->handle_id < 0) ps->handle_id = 0;
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
 	{
 		ps->handle_id++;
 		if (ps->handle_id > 8) ps->handle_id = 8;
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_A) && (ps->select_state == SELECTING))
 	{
 		ps->select_state = EDITING;
 		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
 	{
 		ps->char_index++;
 		if (ps->char_index > 2) ps->char_index = 2;
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING))
 	{
 		ps->char_index--;
 		if (ps->char_index < 0) ps->char_index = 0;
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
 	{
 		ps->handle[(u8) ps->char_index]--;
 		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
 	{
 		ps->handle[(u8) ps->char_index]++;
 		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_A) && (ps->select_state == EDITING))
 	{
 		player->handle_id = ps->handle_id;
 		LBCopyChars(player->handle, ps->handle, 3);
 		LBCopyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
+		SFX_NAVIGATE;
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
 	}
 	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING))
 	{
 		ps->select_state = SELECTING;
+		SFX_NAVIGATE;
 	}
 	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED))
-		{
-			ps->select_state = EDITING;
-		}
+	{
+		ps->select_state = EDITING;
+		SFX_NAVIGATE;
+	}
 	else if ((p->pressed & BTN_X))
 	{
+		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
 	}
