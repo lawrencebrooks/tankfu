@@ -1160,6 +1160,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if ((p1->pressed & BTN_A) && (game.selection == TR))
 	{
+		SFX_NAVIGATE;
 		fade_through();
 		load_eeprom(&scores);
 		load_tank_rank();
@@ -1363,6 +1364,7 @@ int main()
 {
 	// Initialize
 	InitMusicPlayer(my_patches);
+	SetMasterVolume(0xff);
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
