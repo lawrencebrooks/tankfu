@@ -5,7 +5,7 @@
 #define LB_STRINGS_H
 
 // Menus
-const char strCopyright [] PROGMEM="2014 - Lawrence Brooks";
+const char strCopyright [] PROGMEM="2015 - Lawrence Brooks";
 const char str1Player [] PROGMEM="Player vs CPU";
 const char str2Player [] PROGMEM="Player vs Player";
 const char strHighscores [] PROGMEM="Tank Rank";

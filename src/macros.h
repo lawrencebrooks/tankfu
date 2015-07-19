@@ -53,7 +53,7 @@
 // General macros
 #define FRAME_TIME 0.0166666
 #define TEXT_LINGER 2 // seconds
-#define MAX_LEVEL_SCORE 5
+#define MAX_LEVEL_SCORE 1
 #define TILE_ANIMATIONS_LENGTH 2
 
 // Flags

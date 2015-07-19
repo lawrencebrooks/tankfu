@@ -256,7 +256,7 @@ void level_transition(u8 index)
 	FadeOut(FRAMES_PER_FADE, true);
 	ClearVram();
 	clear_sprites();
-	Print(7, 12, &strLevels[index*16]);
+	Print(8, 12, &strLevels[index*16]);
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
 	FadeOut(1, true);
