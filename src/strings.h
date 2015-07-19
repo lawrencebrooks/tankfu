@@ -41,15 +41,15 @@ const char strExit [] PROGMEM = "Bail - X";
 const char strPaused [] PROGMEM = "Paused";
 
 // Level names
-const char strLevels[] PROGMEM="  Level One\0"
-	"  Level Two\0"
-	"Level Three\0"
-	" Level Four\0"
-	" Level Five\0"
-	"  Level Six\0"
-	"Level Seven\0"
-	"Level Eight\0"
-	" Level Nine\0"
-	"  Level Ten";
+const char strLevels[] PROGMEM="   Boot Camp   \0"
+	"   Velocity    \0"
+	"    Digger     \0"
+	"Act 1 They Meet\0"
+	"   Richochet   \0"
+	" The Honey Pot \0"
+	"  Focal Point  \0"
+	"It's Not Fair! \0"
+	"  Much Better  \0"
+	"   Face Off    ";
 
 #endif
