@@ -38,7 +38,7 @@
 #define D_DOWN 2
 #define D_LEFT 3
 #define MAX_SPEED 50
-#define OVER_SPEED 80
+#define OVER_SPEED 65
 
 // Shot
 #define BASIC_SHOT 0
@@ -49,6 +49,7 @@
 #define SHOT_SPEED 100
 #define SHOT_OVER_SPEED 150
 #define MAX_SHOTS 2
+#define DISTANCE_TO_ARM 8
 
 // General macros
 #define FRAME_TIME 0.0166666

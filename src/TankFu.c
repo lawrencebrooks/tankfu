@@ -127,6 +127,7 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->shared.speed = SHOT_SPEED;
 	s->shared.direction = D_UP;
 	s->active = 0;
+	s->distance = 0;
 	s->shot_type = shot_type;
 	s->rebounds = SHOT_REBOUNDS;
 	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
@@ -339,18 +340,18 @@ void position_shot(Player* player, Shot* shot)
 	{
 		case D_UP:
 			shot->shared.x = player->shared.x + 4;
-			shot->shared.y = player->shared.y - 8;
+			shot->shared.y = player->shared.y;
 			break;
 		case D_RIGHT:
-			shot->shared.x = player->shared.x + 16;
+			shot->shared.x = player->shared.x + 8;
 			shot->shared.y = player->shared.y + 4;
 			break;
 		case D_DOWN:
 			shot->shared.x = player->shared.x + 4;
-			shot->shared.y = player->shared.y + 16;
+			shot->shared.y = player->shared.y + 8;
 			break;
 		case D_LEFT:
-			shot->shared.x = player->shared.x - 8;
+			shot->shared.x = player->shared.x;
 			shot->shared.y = player->shared.y + 4;
 			break;
 	}
@@ -461,6 +462,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 					case D_LEFT: shot->shared.x -= FRAME_TIME * shot->shared.speed; break;
 					default: break;
 				}
+				shot->distance += (shot->distance <= DISTANCE_TO_ARM) ? FRAME_TIME * shot->shared.speed : 0;
 				collision_detect_shot(player, shot);
 			}
 		}
@@ -712,7 +714,9 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 
 u8 player_shot(Player* p, Shot* shot)
 {
-	return LBCollides(p->shared.x, p->shared.y, 14, 14, shot->shared.x, shot->shared.y, 7, 7) && p->grace_frame == FRAMES_PER_GRACE;
+	return LBCollides(p->shared.x+1, p->shared.y+1, 14, 14, shot->shared.x, shot->shared.y, 7, 7) &&
+		   p->grace_frame == FRAMES_PER_GRACE &&
+		   shot->distance > DISTANCE_TO_ARM;
 }
 
 u8 collision_detect_boundries(SpriteShared* sprite)
@@ -809,7 +813,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	
 	/* Player interaction */
-	if (player_shot(&player1, shot))
+	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG))
 	{
 		p = &player1;
 		hud_x = 0;
@@ -817,7 +821,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		player2.score++;
 		render_score(&player2, 15);
 	}
-	else if (player_shot(&player2, shot))
+	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG))
 	{
 		p = &player2;
 		hud_x = 15;
@@ -841,7 +845,6 @@ void collision_detect_shot(Player* player, Shot* shot)
 		if (tile == L_EMPTY) continue;
 		if (tile == L_METAL)
 		{
-			recoil_sprite(&shot->shared);
 			init_shot_state(shot, shot->shot_type);
 			player->active_shots--;
 			SFX_METAL;
@@ -850,7 +853,6 @@ void collision_detect_shot(Player* player, Shot* shot)
 		else if (tile == L_BRICK)
 		{
 			explode_tile(&tile_animations, tiles[i]);
-			recoil_sprite(&shot->shared);
 			level.level_map[tiles[i]] = L_EMPTY;
 			shot->hit_count--;
 			if (shot->hit_count <= 0)
@@ -977,11 +979,14 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
-			player->level_score++;
-			player->score++;
-			render_score(player, hud_x);
-			kill_player(other_player, other_player_hud_x);
 			SFX_ITEM;
+			if (!(other_player->flags & EXPLODING_FLAG))
+			{
+				player->level_score++;
+				player->score++;
+				render_score(player, hud_x);
+				kill_player(other_player, other_player_hud_x);
+			}
 		}
 	}
 }
@@ -1356,7 +1361,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
-		level_transition(0);
+		level_transition(2);
 	}
 }
 
