@@ -1361,7 +1361,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
-		level_transition(2);
+		level_transition(0);
 	}
 }
 
