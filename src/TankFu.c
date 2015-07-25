@@ -492,10 +492,13 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	}
 	
 	// Level transition
-	if ((player->level_score >= MAX_LEVEL_SCORE) &&
-	    !(other_player->flags & EXPLODING_FLAG) &&
-	    (player->score != other_player->score))
+	if ((player->level_score >= MAX_LEVEL_SCORE) && !(other_player->flags & EXPLODING_FLAG))
 	{
+	    next_level = game.current_level + 1;
+
+	    // Tie breaker
+	    if ((next_level >= LEVEL_COUNT) && (other_player->score == player->score)) return;
+
 		save_score();
 		load_level_tiles(true);
 		SetSpriteVisibility(false);
@@ -503,7 +506,6 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		LBWaitSeconds(TEXT_LINGER);
 		player->level_score = 0;
 		other_player->level_score = 0;
-		next_level = game.current_level + 1;
 		SFX_LEVEL_CLEAR;
 		if (next_level >= LEVEL_COUNT)
 		{
@@ -725,7 +727,7 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x+width, y, x+width, y+height)) return tile;
 		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y+height, x+width, y+height)) return tile;
 	}
-	if ((tile == L_TR) || (tile == L_BL))
+	else if ((tile == L_TR) || (tile == L_BL))
 	{
 		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x, y+height)) return tile;
 		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x+width, y)) return tile;
@@ -738,7 +740,7 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 
 u8 player_shot(Player* p, Shot* shot)
 {
-	return LBCollides(p->shared.x+1, p->shared.y+1, 14, 14, shot->shared.x, shot->shared.y, 7, 7) &&
+	return LBCollides(p->shared.x+1,p->shared.y+1,14,14,shot->shared.x+2,shot->shared.y+2,4,4) &&
 		   p->grace_frame == FRAMES_PER_GRACE &&
 		   shot->distance > DISTANCE_TO_ARM;
 }
@@ -868,7 +870,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	{
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
-		if (tile == L_BRICK)
+		if (tile == L_BRICK && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
 		{
 			explode_tile(&tile_animations, tiles[i]);
 			level.level_map[tiles[i]] = L_EMPTY;
@@ -882,7 +884,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			hit_metal = 0;
 			break;
 		}
-		else if (solid_directional_tile(tiles[i], shot->shared.x, shot->shared.y, 8, 8))
+		else if (solid_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
 		{
 			recoil_sprite(&shot->shared);
 			switch (tile)
@@ -922,7 +924,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			hit_metal = 0;
 			break;
 		}
-		else if (tile == L_METAL)
+		else if (tile == L_METAL && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
         {
 		    hit_metal = 1;
         }
@@ -1228,7 +1230,8 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
-	Print(10, 23, strCancelHandle);
+	Print(3, 22, strReset);
+	Print(10, 24, strCancelHandle);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)

@@ -17,6 +17,7 @@ const char strPlayer2 [] PROGMEM="P2";
 const char strSelectHandle [] PROGMEM= "Select - A";
 const char strConfirmHandle [] PROGMEM="Confirm - A";
 const char strCancelHandle [] PROGMEM= "Cancel - X";
+const char strReset [] PROGMEM= "Reset Defaults - SL (5s)";
 const char strChangeHandle [] PROGMEM= "Edit - UP/DOWN";
 const char strOwns [] PROGMEM = "Pwns";
 const char strBy [] PROGMEM = "By";
