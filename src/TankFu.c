@@ -368,10 +368,24 @@ void print_level_score(Player* winner, Player* loser)
 	PrintByte(26, 14, loser->level_score ,true);
 }
 
+void print_final_score(Player* winner, Player* loser)
+{
+    Print(9, 13, strFinalScore);
+    LBPrintStr(4, 14, &winner->handle[0], 3);
+    Print(8, 14, strOwns);
+    LBPrintStr(13, 14, &loser->handle[0], 3);
+    Print(17, 14, strBy);
+    PrintByte(22, 14, winner->score ,true);
+    PrintChar(23, 14, '-');
+    PrintByte(26, 14, loser->score ,true);
+}
+
+
 void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u8 hud_x)
 {
 	Shot* shot;
 	u8 next_level;
+	Player* tmp;
 
 	if ((p->pressed & BTN_START))
 	{
@@ -478,7 +492,9 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	}
 	
 	// Level transition
-	if ((player->level_score == MAX_LEVEL_SCORE) && !(other_player->flags & EXPLODING_FLAG))
+	if ((player->level_score >= MAX_LEVEL_SCORE) &&
+	    !(other_player->flags & EXPLODING_FLAG) &&
+	    (player->score != other_player->score))
 	{
 		save_score();
 		load_level_tiles(true);
@@ -491,6 +507,14 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		SFX_LEVEL_CLEAR;
 		if (next_level >= LEVEL_COUNT)
 		{
+		    if (other_player->score > player->score)
+		    {
+		        tmp = player;
+		        player = other_player;
+		        other_player = tmp;
+		    }
+		    print_final_score(player, other_player);
+		    LBWaitSeconds(TEXT_LINGER);
 			exit_game();
 		}
 		else
@@ -696,17 +720,17 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 
 	if ((tile == L_TL) || (tile == L_BR))
 	{
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x+width, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x+width, y, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y+height, x+width, y+height)) return tile;
 	}
 	if ((tile == L_TR) || (tile == L_BL))
 	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x+width, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x+width, y, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y+height, x+width, y+height)) return tile;
 	}
 	
 	return 0;
@@ -801,6 +825,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	u8 tile;
 	u8 hud_x;
 	Player* p = 0;
+    char hit_metal = 0;
 	
 	get_interesting_tile_indexes_shot(tiles, x, y, shot->shared.direction);
 	
@@ -843,14 +868,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	{
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
-		if (tile == L_METAL)
-		{
-			init_shot_state(shot, shot->shot_type);
-			player->active_shots--;
-			SFX_METAL;
-			break;
-		}
-		else if (tile == L_BRICK)
+		if (tile == L_BRICK)
 		{
 			explode_tile(&tile_animations, tiles[i]);
 			level.level_map[tiles[i]] = L_EMPTY;
@@ -861,9 +879,10 @@ void collision_detect_shot(Player* player, Shot* shot)
 				player->active_shots--;
 			}
 			SFX_BRICK_EXPLODE;
+			hit_metal = 0;
 			break;
 		}
-		else if (solid_directional_tile(tiles[i], shot->shared.x, shot->shared.y, 7, 7))
+		else if (solid_directional_tile(tiles[i], shot->shared.x, shot->shared.y, 8, 8))
 		{
 			recoil_sprite(&shot->shared);
 			switch (tile)
@@ -900,8 +919,19 @@ void collision_detect_shot(Player* player, Shot* shot)
 				player->active_shots--;
 			}
 			SFX_METAL;
+			hit_metal = 0;
 			break;
 		}
+		else if (tile == L_METAL)
+        {
+		    hit_metal = 1;
+        }
+	}
+	if (hit_metal)
+	{
+        init_shot_state(shot, shot->shot_type);
+        player->active_shots--;
+        SFX_METAL;
 	}
 }
 
@@ -938,7 +968,6 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	int tiles[3] = {0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
-
 	
 	get_interesting_tile_indexes(tiles, x, y, player->shared.direction);
 	
@@ -953,7 +982,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	/* Tile interaction */
 	for (u8 i = 0; i < 3; i++)
 	{
-		if (solid_square_tile(tiles[i]) || solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 7, 14))
+		if (solid_square_tile(tiles[i]) || solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;

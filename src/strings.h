@@ -20,6 +20,7 @@ const char strCancelHandle [] PROGMEM= "Cancel - X";
 const char strChangeHandle [] PROGMEM= "Edit - UP/DOWN";
 const char strOwns [] PROGMEM = "Pwns";
 const char strBy [] PROGMEM = "By";
+const char strFinalScore [] PROGMEM="Final Score";
 
 // Banter
 const char banter_map[] PROGMEM="You suck bro  \0"
