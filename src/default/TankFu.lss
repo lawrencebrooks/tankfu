@@ -17,19 +17,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .debug_aranges 00000570  00000000  00000000  0000c398  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   00007fce  00000000  00000000  0000c908  2**0
+  7 .debug_info   00007fd1  00000000  00000000  0000c908  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 000014e7  00000000  00000000  000148d6  2**0
+  8 .debug_abbrev 000014d4  00000000  00000000  000148d9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00001bdc  00000000  00000000  00015dbd  2**0
+  9 .debug_line   00001bdc  00000000  00000000  00015dad  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00001238  00000000  00000000  0001799c  2**2
+ 10 .debug_frame  00001238  00000000  00000000  0001798c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    0000192a  00000000  00000000  00018bd4  2**0
+ 11 .debug_str    0000192a  00000000  00000000  00018bc4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    0000714f  00000000  00000000  0001a4fe  2**0
+ 12 .debug_loc    0000714f  00000000  00000000  0001a4ee  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000618  00000000  00000000  00021650  2**3
+ 13 .debug_ranges 00000618  00000000  00000000  00021640  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -9723,7 +9723,6 @@ void init_scores(struct EepromBlockStruct* e)
     8fe8:	0c 94 b4 5c 	jmp	0xb968	; 0xb968 <memcpy_P>
 
 00008fec <init_handles>:
-
 }
 
 void init_handles(struct EepromBlockStruct* e)

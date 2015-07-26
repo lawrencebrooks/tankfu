@@ -1285,7 +1285,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x7fce
+.debug_info     0x0000000000000000     0x7fd1
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.8.4/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x75 uzeboxVideoEngineCore.o
@@ -1293,9 +1293,9 @@ END GROUP
  .debug_info    0x00000000000010d2     0x1278 uzeboxSoundEngine.o
  .debug_info    0x000000000000234a       0x6c uzeboxSoundEngineCore.o
  .debug_info    0x00000000000023b6     0x1212 uzeboxVideoEngine.o
- .debug_info    0x00000000000035c8     0x4a06 TankFu.o
+ .debug_info    0x00000000000035c8     0x4a09 TankFu.o
 
-.debug_abbrev   0x0000000000000000     0x14e7
+.debug_abbrev   0x0000000000000000     0x14d4
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x619 /usr/local/lib/gcc/avr/4.8.4/../../../../avr/lib/avr5/crtm644.o
  .debug_abbrev  0x0000000000000619       0x12 uzeboxVideoEngineCore.o
@@ -1303,7 +1303,7 @@ END GROUP
  .debug_abbrev  0x0000000000000911      0x307 uzeboxSoundEngine.o
  .debug_abbrev  0x0000000000000c18       0x12 uzeboxSoundEngineCore.o
  .debug_abbrev  0x0000000000000c2a      0x353 uzeboxVideoEngine.o
- .debug_abbrev  0x0000000000000f7d      0x56a TankFu.o
+ .debug_abbrev  0x0000000000000f7d      0x557 TankFu.o
 
 .debug_line     0x0000000000000000     0x1bdc
  *(.debug_line .debug_line.* .debug_line_end)
