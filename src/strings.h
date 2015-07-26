@@ -54,4 +54,46 @@ const char strLevels[] PROGMEM="   Boot Camp   \0"
 	"  Much Better  \0"
 	"   Face Off    ";
 
+// Default handles and scores
+const unsigned char default_handles[] PROGMEM = {
+    // 1. UZE
+    // 2. LJB
+    // 3. AAA
+    // 4. BBB
+    // 5. CCC
+    // 6. DDD
+    // 7. EEE
+    // 8. FFF
+    // 9. GGG
+    // 10. CPU
+    0x55, 0x5a, 0x45,
+    0x4c, 0x4a, 0x42,
+    0x41, 0x41, 0x41,
+    0x42, 0x42, 0x42,
+    0x43, 0x43, 0x43,
+    0x44, 0x44, 0x44,
+    0x45, 0x45, 0x45,
+    0x46, 0x46, 0x46,
+    0x47, 0x47, 0x47,
+    0x43, 0x50, 0x55
+};
+
+const unsigned char default_scores[] PROGMEM = {
+    // 1. owns 2. by 20 - 13
+    // 2. owns 3. by 20 - 14
+    // 3. owns 4. by 20 - 15
+    // 4. owns 5. by 20 - 16
+    // 5. owns 6. by 20 - 17
+    // 6. owns 7. by 20 - 18
+    // 7. owns 1. by 20 - 19
+    0, 1, 20, 13,
+    1, 2, 20, 14,
+    2, 3, 20, 15,
+    3, 4, 20, 16,
+    4, 5, 20, 17,
+    5, 6, 20, 18,
+    6, 0, 20, 19,
+    0, 0
+};
+
 #endif

@@ -4,6 +4,7 @@
  */
 #include <uzebox.h>
 #include <avr/pgmspace.h>
+#include <string.h>
 #include "data/tiles.pic.h"
 #include "data/sprites.pic.h"
 #include "data/patches.pcm.h"
@@ -47,52 +48,8 @@ JoyPadState p2;
 Level level;
 TileAnimations tile_animations;
 
-struct EepromBlockStruct handles = {
-	.id = EEPROM_HANDLES_ID,
-	// 1. UZE
-	// 2. LJB
-	// 3. AAA
-	// 4. BBB
-	// 5. CCC
-	// 6. DDD
-	// 7. EEE
-	// 8. FFF
-	// 9. GGG
-	// 10. CPU
-	.data = {
-		0x55, 0x5a, 0x45,
-		0x4c, 0x4a, 0x42,
-		0x41, 0x41, 0x41,
-		0x42, 0x42, 0x42,
-		0x43, 0x43, 0x43,
-		0x44, 0x44, 0x44,
-		0x45, 0x45, 0x45,
-		0x46, 0x46, 0x46,
-		0x47, 0x47, 0x47,
-		0x43, 0x50, 0x55,
-	}
-};
-
-struct EepromBlockStruct scores = {
-	.id = EEPROM_TANK_RANK_ID,
-	// 1. owns 2. by 20 - 10
-	// 2. owns 3. by by 20 - 11
-	// 3. owns 4. by 20 - 12
-	// 4. owns 5. by 20 - 13
-	// 5. owns 6. by 20 - 14
-	// 6. owns 7. by 20 - 15
-	// 7. owns 1. by 20 - 16
-	.data = {
-		0, 1, 20, 10,
-		1, 2, 20, 11,
-		2, 3, 20, 12,
-		3, 4, 20, 13,
-		4, 5, 20, 14,
-		5, 6, 20, 15,
-		6, 0, 20, 16,
-		0, 0
-	}
-};
+struct EepromBlockStruct handles;
+struct EepromBlockStruct scores;
 
 HandleSelectState p1s = {
 	.handle_id = 0,
@@ -106,6 +63,19 @@ HandleSelectState p2s = {
 };
 
 /* Initializers */
+void init_scores(struct EepromBlockStruct* e)
+{
+    e->id = EEPROM_TANK_RANK_ID;
+    memcpy_P(e->data, default_scores, 30);
+
+}
+
+void init_handles(struct EepromBlockStruct* e)
+{
+    e->id = EEPROM_HANDLES_ID;
+    memcpy_P(e->data, default_handles, 30);
+}
+
 void init_tile_animations(TileAnimations* ta)
 {
 	ta->next_available = 0;
@@ -328,6 +298,7 @@ void save_score()
 
 void exit_game()
 {
+    save_score();
 	fade_through();
 	SetSpriteVisibility(true);
 	init_game_state();
@@ -486,7 +457,6 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		if (p->pressed & BTN_X)
 		{
 			SFX_NAVIGATE;
-			save_score();
 			exit_game();
 		}
 	}
@@ -499,7 +469,6 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	    // Tie breaker
 	    if ((next_level >= LEVEL_COUNT) && (other_player->score == player->score)) return;
 
-		save_score();
 		load_level_tiles(true);
 		SetSpriteVisibility(false);
 		print_level_score(player, other_player);
@@ -1243,6 +1212,15 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 		fade_through();
 		load_splash();
 	}
+	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
+	{
+	    SFX_NAVIGATE;
+	    init_scores(&scores);
+	    init_handles(&handles);
+	    save_eeprom(&scores);
+	    save_eeprom(&handles);
+	    load_tank_rank();
+	}
 }
 
 
@@ -1407,6 +1385,8 @@ int main()
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
 	ClearVram();
+	init_scores(&scores);
+	init_handles(&handles);
 	init_game_state();
 	init_tile_animations(&tile_animations);
 	load_splash();
@@ -1414,7 +1394,8 @@ int main()
 	while (1)
 	{
 		WaitVsync(1);
-		LBGetJoyPadState(&p1, &p2);
+		LBGetJoyPadState(&p1, 0);
+		LBGetJoyPadState(&p2, 1);
 		switch (game.current_screen)
 		{
 			case SPLASH:

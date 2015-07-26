@@ -10,7 +10,8 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
  /usr/local/avr/include/avr/fuse.h /usr/local/avr/include/avr/lock.h \
  ../kernel/videoMode3/videoMode3.def.h ../kernel/kernel.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
- /usr/local/lib/gcc/avr/4.8.4/include/stddef.h ../data/tiles.pic.h \
+ /usr/local/lib/gcc/avr/4.8.4/include/stddef.h \
+ /usr/local/avr/include/string.h ../data/tiles.pic.h \
  ../data/sprites.pic.h ../data/patches.pcm.h ../data/tiles.map.h \
  ../data/sprites.map.h ../data/levels.map.h ../data/patches.map.h \
  ../types.h ../utils.h ../macros.h ../strings.h
@@ -54,6 +55,8 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
 /usr/local/avr/include/avr/pgmspace.h:
 
 /usr/local/lib/gcc/avr/4.8.4/include/stddef.h:
+
+/usr/local/avr/include/string.h:
 
 ../data/tiles.pic.h:
 

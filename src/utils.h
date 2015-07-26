@@ -8,6 +8,7 @@ typedef struct sJoyPadState {
 	unsigned int pressed;
 	unsigned int released;
 	unsigned int held;
+	unsigned char held_cycles;
 } JoyPadState;
 
 typedef struct sAnimation {
@@ -37,22 +38,24 @@ char* LBGetNextFrame(Animation* anim, char* looped)
 	return anim->anims[anim->current_anim];
 }
 
-void LBGetJoyPadState(JoyPadState* p1, JoyPadState* p2)
+void LBGetJoyPadState(JoyPadState* p, unsigned char index)
 /*
- * Get the current joy pad button state for p1 and p2
+ * Get the current joy pad button state for index controller
  */
 {
-	static unsigned int p1_prev = 0;
-	static unsigned int p2_prev = 0;
+	static unsigned int p_prev[2] = {0,0};
 
-	p1->held = ReadJoypad(0);
-	p1->pressed = p1->held & (p1->held ^ p1_prev);
-	p1->released = p1_prev & (p1->held ^ p1_prev);
-	p1_prev = p1->held;
-	p2->held = ReadJoypad(1);
-	p2->pressed = p2->held & (p2->held ^ p2_prev);
-	p2->released = p2_prev & (p2->held ^ p2_prev);
-	p2_prev = p2->held;
+	p->held = ReadJoypad(index);
+
+	// Count held cycles
+	if (p->held == 0 || p->held != p_prev[index])
+	    p->held_cycles = 0;
+	else
+	    p->held_cycles += 1;
+
+	p->pressed = p->held & (p->held ^ p_prev[index]);
+	p->released = p_prev[index] & (p->held ^ p_prev[index]);
+	p_prev[index] = p->held;
 }
 
 void LBCopyChars(u8* dst, u8 *src, u8 count)
