@@ -966,7 +966,12 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	/* Tile interaction */
 	for (u8 i = 0; i < 3; i++)
 	{
-		if (solid_square_tile(tiles[i]) || solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
+		if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x+1,player->shared.y+1,14,14,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		{
+			recoil_sprite(&player->shared);
+			player->shared.speed = 0;
+		}
+		else if (solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
@@ -1388,6 +1393,53 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
+void evaluate_surrounding_nodes(char goal_x, char goal_y, char current_x, char current_y, JoyPadState* p)
+{
+	// Use Manhatten distance to determine the next node to visit, with a preference
+	// towards the current direction of travel.
+}
+
+void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
+{
+	// Update joy pad state artificially for a CPU player using basterdized A* pathfinding and custom
+	// strategies.
+	static char determine_goal = 1;
+	static char goal_x;
+	static char goal_y;
+	static float pixels_travelled = 8;
+	static float last_x;
+	static float last_y;
+	
+	if (determine_goal)
+	{
+		goal_x = other_player->shared.x / 8;
+		goal_y = other_player->shared.y / 8 + 3;
+		determine_goal = 0;
+	}
+	
+	if (!(player->flags & EXPLODING_FLAG))
+	{
+		// Achieve that goal!
+		if ((pixels_travelled >= 8) || (pixels_travelled <= -8))
+		{
+			recoil_sprite(&player->shared);
+			evaluate_surrounding_nodes(goal_x, goal_y, player->shared.x / 8, player->shared.y / 8 + 3, p);
+			last_x = player->shared.x;
+			last_y = player->shared.y;
+			pixels_travelled = 0;
+		}
+		else
+		{
+			pixels_travelled = player->shared.x - last_x;
+			if (pixels_travelled == 0)
+				pixels_travelled = player->shared.y - last_y;
+		}
+		
+	}
+	
+	if (!determine_goal && player->grace_frame != FRAMES_PER_GRACE) determine_goal = 1;
+}
+
 int main()
 {
 	// Initialize
@@ -1408,7 +1460,6 @@ int main()
 	{
 		WaitVsync(1);
 		LBGetJoyPadState(&p1, 0);
-		LBGetJoyPadState(&p2, 1);
 		switch (game.current_screen)
 		{
 			case SPLASH:
@@ -1418,10 +1469,14 @@ int main()
 				update_tank_rank(&p1, &p2);
 				break;
 			case HANDLE_SELECT:
+				LBGetJoyPadState(&p2, 1);
 				update_handle_select(&p1, &p2);
 				break;
 			case LEVEL:
-				// p2 should be replaced by AI input for Player v CPU
+				if (game.selection == PVCPU)
+					get_cpu_joypad_state(&player2, &player1, &p2);
+				else
+					LBGetJoyPadState(&p2, 1);
 				update_level(&p1, &p2);
 				break;
 			default:
