@@ -1393,15 +1393,15 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
-void evaluate_surrounding_nodes(char goal_x, char goal_y, char current_x, char current_y, JoyPadState* p)
+void crash_and_turn(char direction, char current_x, char current_y, JoyPadState* p)
 {
-	// Use Manhatten distance to determine the next node to visit, with a preference
-	// towards the current direction of travel.
+	// Move in the direction of the player. Used the left/right hand rule to move
+	// around objects blocking the way.
 }
 
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
-	// Update joy pad state artificially for a CPU player using basterdized A* pathfinding and custom
+	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
 	// strategies.
 	static char determine_goal = 1;
 	static char goal_x;
@@ -1409,11 +1409,20 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	static float pixels_travelled = 8;
 	static float last_x;
 	static float last_y;
+	char direction;
+	char distance_x;
+	char distance_y;
+	char player_x;
+	char player_y;
 	
 	if (determine_goal)
 	{
 		goal_x = other_player->shared.x / 8;
 		goal_y = other_player->shared.y / 8 + 3;
+		player_x = player->shared.x / 8;
+		player_y =  player->shared.y / 8 + 3;
+		distance_x = goal_x - player_x;
+		distance_y = goal_y - player_y;
 		determine_goal = 0;
 	}
 	
@@ -1423,7 +1432,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		if ((pixels_travelled >= 8) || (pixels_travelled <= -8))
 		{
 			recoil_sprite(&player->shared);
-			evaluate_surrounding_nodes(goal_x, goal_y, player->shared.x / 8, player->shared.y / 8 + 3, p);
+			crash_and_turn(direction, player->shared.x / 8, player->shared.y / 8 + 3, p);
 			last_x = player->shared.x;
 			last_y = player->shared.y;
 			pixels_travelled = 0;

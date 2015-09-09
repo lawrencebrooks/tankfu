@@ -172,7 +172,7 @@ Discarded input sections
  .text          0x0000000000000000        0x0 TankFu.o
  .text.save_eeprom
                 0x0000000000000000        0x4 TankFu.o
- .text.evaluate_surrounding_nodes
+ .text.crash_and_turn
                 0x0000000000000000        0x2 TankFu.o
  .text          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
  .data          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
@@ -1298,7 +1298,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x83bc
+.debug_info     0x0000000000000000     0x83f1
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7d uzeboxVideoEngineCore.o
@@ -1306,7 +1306,7 @@ END GROUP
  .debug_info    0x00000000000010da     0x127a uzeboxSoundEngine.o
  .debug_info    0x0000000000002354       0x74 uzeboxSoundEngineCore.o
  .debug_info    0x00000000000023c8     0x12c5 uzeboxVideoEngine.o
- .debug_info    0x000000000000368d     0x4d2f TankFu.o
+ .debug_info    0x000000000000368d     0x4d64 TankFu.o
 
 .debug_abbrev   0x0000000000000000     0x1538
  *(.debug_abbrev)
@@ -1335,7 +1335,7 @@ END GROUP
  .debug_frame   0x00000000000003cc      0x4c0 uzeboxVideoEngine.o
  .debug_frame   0x000000000000088c      0x9f0 TankFu.o
 
-.debug_str      0x0000000000000000     0x19b2
+.debug_str      0x0000000000000000     0x19ce
  *(.debug_str)
  .debug_str     0x0000000000000000      0x231 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_str     0x0000000000000231      0x496 uzeboxCore.o
@@ -1344,15 +1344,15 @@ END GROUP
                                         0x60c (size before relaxing)
  .debug_str     0x0000000000000a90      0x286 uzeboxVideoEngine.o
                                         0x401 (size before relaxing)
- .debug_str     0x0000000000000d16      0xc9c TankFu.o
-                                       0x1009 (size before relaxing)
+ .debug_str     0x0000000000000d16      0xcb8 TankFu.o
+                                       0x1025 (size before relaxing)
 
-.debug_loc      0x0000000000000000     0x7112
+.debug_loc      0x0000000000000000     0x7191
  *(.debug_loc)
  .debug_loc     0x0000000000000000      0x85c uzeboxCore.o
  .debug_loc     0x000000000000085c     0x119f uzeboxSoundEngine.o
  .debug_loc     0x00000000000019fb     0x1d49 uzeboxVideoEngine.o
- .debug_loc     0x0000000000003744     0x39ce TankFu.o
+ .debug_loc     0x0000000000003744     0x3a4d TankFu.o
 
 .debug_macinfo
  *(.debug_macinfo)

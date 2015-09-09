@@ -17,19 +17,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .debug_aranges 00000580  00000000  00000000  0000c528  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000083bc  00000000  00000000  0000caa8  2**0
+  7 .debug_info   000083f1  00000000  00000000  0000caa8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00001538  00000000  00000000  00014e64  2**0
+  8 .debug_abbrev 00001538  00000000  00000000  00014e99  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00001c93  00000000  00000000  0001639c  2**0
+  9 .debug_line   00001c93  00000000  00000000  000163d1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  0000127c  00000000  00000000  00018030  2**2
+ 10 .debug_frame  0000127c  00000000  00000000  00018064  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    000019b2  00000000  00000000  000192ac  2**0
+ 11 .debug_str    000019ce  00000000  00000000  000192e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00007112  00000000  00000000  0001ac5e  2**0
+ 12 .debug_loc    00007191  00000000  00000000  0001acae  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000638  00000000  00000000  00021d70  2**3
+ 13 .debug_ranges 00000638  00000000  00000000  00021e40  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -15976,8 +15976,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
     b43e:	08 95       	ret
 
 0000b440 <get_cpu_joypad_state>:
-	// Use Manhatten distance to determine the next node to visit, with a preference
-	// towards the current direction of travel.
+	// Move in the direction of the player. Used the left/right hand rule to move
+	// around objects blocking the way.
 }
 
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
@@ -15990,10 +15990,10 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
     b44a:	df 93       	push	r29
     b44c:	ec 01       	movw	r28, r24
     b44e:	7b 01       	movw	r14, r22
-	static char goal_y;
-	static float pixels_travelled = 8;
-	static float last_x;
-	static float last_y;
+	char distance_x;
+	char distance_y;
+	char player_x;
+	char player_y;
 	
 	if (determine_goal)
     b450:	80 91 05 01 	lds	r24, 0x0105
@@ -16031,6 +16031,10 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
     b494:	0e 94 82 5b 	call	0xb704	; 0xb704 <__addsf3>
     b498:	0e 94 52 5c 	call	0xb8a4	; 0xb8a4 <__fixsfsi>
     b49c:	60 93 f8 0a 	sts	0x0AF8, r22
+		player_x = player->shared.x / 8;
+		player_y =  player->shared.y / 8 + 3;
+		distance_x = goal_x - player_x;
+		distance_y = goal_y - player_y;
 		determine_goal = 0;
     b4a0:	10 92 05 01 	sts	0x0105, r1
 	}
@@ -16068,7 +16072,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 			recoil_sprite(&player->shared);
     b4e2:	ce 01       	movw	r24, r28
     b4e4:	0e 94 5a 4c 	call	0x98b4	; 0x98b4 <recoil_sprite>
-			evaluate_surrounding_nodes(goal_x, goal_y, player->shared.x / 8, player->shared.y / 8 + 3, p);
+			crash_and_turn(direction, player->shared.x / 8, player->shared.y / 8 + 3, p);
 			last_x = player->shared.x;
     b4e8:	8a 81       	ldd	r24, Y+2	; 0x02
     b4ea:	9b 81       	ldd	r25, Y+3	; 0x03
