@@ -1393,10 +1393,48 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
-void crash_and_turn(char direction, char current_x, char current_y, JoyPadState* p)
+void crash_and_turn(unsigned int goal_direction, char current_x, char current_y, JoyPadState* p)
+/* 
+ * Move in the direction of the player. Used the left/right hand rule to move
+ * around objects blocking the way.
+ */
 {
-	// Move in the direction of the player. Used the left/right hand rule to move
-	// around objects blocking the way.
+	if ((p->held & BTN_LEFT) && (solid_square_tile(current_y * 30 + current_x) || solid_square_tile((current_y+2) * 30 + current_x)))
+	{
+		p->held = (p->held ^ BTN_LEFT) | BTN_UP;
+	}
+	else if ((p->held & BTN_UP) && (solid_square_tile(current_y * 30 + current_x) || solid_square_tile(current_y * 30 + current_x+2)))
+	{
+		p->held = (p->held ^ BTN_UP) | BTN_RIGHT;
+	}
+	else if ((p->held & BTN_RIGHT) && (solid_square_tile(current_y * 30 + current_x + 2) || solid_square_tile((current_y+2) * 30 + current_x+2)))
+	{
+		p->held = (p->held ^ BTN_RIGHT) | BTN_DOWN;
+	}
+	else if ((p->held & BTN_DOWN) && (solid_square_tile((current_y+2) * 30 + current_x) || solid_square_tile((current_y+2) * 30 + current_x+2)))
+	{
+		p->held = (p->held ^ BTN_LEFT) | BTN_UP;
+	}
+}
+
+unsigned int get_cpu_goal_direction(char distance_x, char distance_y)
+{
+	char abs_distance_x = distance_x << 1 >> 1;
+	char abs_distance_y = distance_y << 1 >> 1;
+	unsigned int direction = BTN_UP;
+	
+	if (abs_distance_x > abs_distance_y)
+	{
+		direction = BTN_LEFT;
+		if (distance_x > 0) direction = BTN_RIGHT;
+	}
+	else
+	{
+		direction = BTN_UP;
+		if (distance_y > 0) direction = BTN_DOWN;
+	}
+	
+	return direction;
 }
 
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
@@ -1404,12 +1442,9 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
 	// strategies.
 	static char determine_goal = 1;
-	static char goal_x;
-	static char goal_y;
-	static float pixels_travelled = 8;
-	static float last_x;
-	static float last_y;
-	char direction;
+	static unsigned int goal_direction;
+	char goal_x;
+	char goal_y;
 	char distance_x;
 	char distance_y;
 	char player_x;
@@ -1424,27 +1459,10 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		distance_x = goal_x - player_x;
 		distance_y = goal_y - player_y;
 		determine_goal = 0;
+		goal_direction = get_cpu_goal_direction(distance_x, distance_y);
+		p->held = p->held | goal_direction;
 	}
-	
-	if (!(player->flags & EXPLODING_FLAG))
-	{
-		// Achieve that goal!
-		if ((pixels_travelled >= 8) || (pixels_travelled <= -8))
-		{
-			recoil_sprite(&player->shared);
-			crash_and_turn(direction, player->shared.x / 8, player->shared.y / 8 + 3, p);
-			last_x = player->shared.x;
-			last_y = player->shared.y;
-			pixels_travelled = 0;
-		}
-		else
-		{
-			pixels_travelled = player->shared.x - last_x;
-			if (pixels_travelled == 0)
-				pixels_travelled = player->shared.y - last_y;
-		}
-		
-	}
+	crash_and_turn(goal_direction, player->shared.x / 8, player->shared.y / 8 + 3, p);
 	
 	if (!determine_goal && player->grace_frame != FRAMES_PER_GRACE) determine_goal = 1;
 }
