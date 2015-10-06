@@ -1393,34 +1393,63 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
-void crash_and_turn(unsigned int goal_direction, char current_x, char current_y, JoyPadState* p)
+void crash_and_turn(unsigned int goal_direction, char current_x, char current_y, char moved, JoyPadState* p)
 /* 
- * Move in the direction of the player. Used the left/right hand rule to move
+ * Move in the direction of the goal. Use the left/right hand rule to move
  * around objects blocking the way.
  */
 {
-	if ((p->held & BTN_LEFT) && (solid_square_tile(current_y * 30 + current_x) || solid_square_tile((current_y+2) * 30 + current_x)))
+	static char feeling_my_way = 0;
+	static unsigned int gd = 0;
+	
+	if (gd != goal_direction) feeling_my_way = 0;
+	if (feeling_my_way)
 	{
-		p->held = (p->held ^ BTN_LEFT) | BTN_UP;
+		if ((p->held & BTN_UP) && !(solid_square_tile(current_y * 30 + current_x - 1) || solid_square_tile((current_y+1) * 30 + current_x - 1)))
+		{
+			p->held = BTN_LEFT;
+		}
+		else if ((p->held & BTN_LEFT) && !(solid_square_tile((current_y+2) * 30 + current_x) || solid_square_tile((current_y+2) * 30 + current_x+1)))
+		{
+			p->held = BTN_DOWN;
+		}
+		else if ((p->held & BTN_DOWN) && !(solid_square_tile((current_y) * 30 + current_x+2) || solid_square_tile(current_y+1 * 30 + current_x+2)))
+		{
+			p->held = BTN_LEFT;
+		}
+		else if ((p->held & BTN_RIGHT) && !(solid_square_tile((current_y-1) * 30 + current_x) || solid_square_tile((current_y-1) * 30 + current_x+1)))
+		{
+			p->held = BTN_UP;
+		}
+		if (goal_direction & p->held) feeling_my_way = 0;
 	}
-	else if ((p->held & BTN_UP) && (solid_square_tile(current_y * 30 + current_x) || solid_square_tile(current_y * 30 + current_x+2)))
+	if ((p->held & BTN_LEFT) && !moved)
 	{
-		p->held = (p->held ^ BTN_UP) | BTN_RIGHT;
+		p->held = BTN_UP;
+		feeling_my_way = 1;
 	}
-	else if ((p->held & BTN_RIGHT) && (solid_square_tile(current_y * 30 + current_x + 2) || solid_square_tile((current_y+2) * 30 + current_x+2)))
+	else if ((p->held & BTN_UP) && !moved)
 	{
-		p->held = (p->held ^ BTN_RIGHT) | BTN_DOWN;
+		p->held = BTN_RIGHT;
+		feeling_my_way = 1;
 	}
-	else if ((p->held & BTN_DOWN) && (solid_square_tile((current_y+2) * 30 + current_x) || solid_square_tile((current_y+2) * 30 + current_x+2)))
+	else if ((p->held & BTN_RIGHT) && !moved)
 	{
-		p->held = (p->held ^ BTN_LEFT) | BTN_UP;
+		p->held = BTN_DOWN;
+		feeling_my_way = 1;
 	}
+	else if ((p->held & BTN_DOWN) && !moved)
+	{
+		p->held = BTN_LEFT;
+		feeling_my_way = 1;
+	}
+	gd = goal_direction;
 }
 
 unsigned int get_cpu_goal_direction(char distance_x, char distance_y)
 {
-	char abs_distance_x = distance_x << 1 >> 1;
-	char abs_distance_y = distance_y << 1 >> 1;
+	char abs_distance_x = (distance_x < 0) ? -distance_x : distance_x;
+	char abs_distance_y = (distance_y < 0) ? -distance_y : distance_y;
 	unsigned int direction = BTN_UP;
 	
 	if (abs_distance_x > abs_distance_y)
@@ -1441,8 +1470,12 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
 	// strategies.
-	static char determine_goal = 1;
 	static unsigned int goal_direction;
+	static unsigned int goal_frame_count = 0;
+	static unsigned char shot_frame_count = 0;
+	static float old_x = 0;
+	static float old_y = 0;
+	char moved = 0;
 	char goal_x;
 	char goal_y;
 	char distance_x;
@@ -1450,21 +1483,37 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char player_x;
 	char player_y;
 	
-	if (determine_goal)
+	// Movement
+	if (goal_frame_count > DEFAULT_FRAMES_PER_GOAL || player->grace_frame == 0)
 	{
+		goal_frame_count = 0;
 		goal_x = other_player->shared.x / 8;
-		goal_y = other_player->shared.y / 8 + 3;
+		goal_y = other_player->shared.y / 8 - 3;
 		player_x = player->shared.x / 8;
-		player_y =  player->shared.y / 8 + 3;
+		player_y =  player->shared.y / 8 - 3;
 		distance_x = goal_x - player_x;
 		distance_y = goal_y - player_y;
-		determine_goal = 0;
 		goal_direction = get_cpu_goal_direction(distance_x, distance_y);
-		p->held = p->held | goal_direction;
+		p->held = goal_direction;
 	}
-	crash_and_turn(goal_direction, player->shared.x / 8, player->shared.y / 8 + 3, p);
+	if (player->shared.x != old_x) moved = 1;
+	if (player->shared.y != old_y) moved = 1;
+	old_x = player->shared.x;
+	old_y = player->shared.y;
+	crash_and_turn(goal_direction, player->shared.x / 8, player->shared.y / 8 - 3, moved, p);
+	goal_frame_count++;
 	
-	if (!determine_goal && player->grace_frame != FRAMES_PER_GRACE) determine_goal = 1;
+	// Shot
+	if (p->pressed & BTN_A)
+	{
+		p->pressed = 0;
+	}
+	if (shot_frame_count > DEFAULT_FRAMES_PER_SHOT)
+	{
+		p->pressed = BTN_A;
+		shot_frame_count = 0;
+	}
+	shot_frame_count++;
 }
 
 int main()
