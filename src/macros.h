@@ -67,7 +67,7 @@
 // General macros
 #define FRAME_TIME 0.0166666
 #define TEXT_LINGER 2 // seconds
-#define MAX_LEVEL_SCORE 5
+#define MAX_LEVEL_SCORE 10
 #define TILE_ANIMATIONS_LENGTH 2
 
 // Flags
@@ -92,6 +92,6 @@
 
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 300
-#define DEFAULT_FRAMES_PER_SHOT 60
+#define DEFAULT_FRAMES_PER_SHOT 20
 
 #endif
