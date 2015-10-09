@@ -32,6 +32,7 @@
 #define PVCPU 0
 #define PVP 1
 #define TR 2
+#define CPUVCPU 3
 
 // Frame counts
 #define FRAMES_PER_FADE 3
@@ -69,6 +70,7 @@
 #define TEXT_LINGER 2 // seconds
 #define MAX_LEVEL_SCORE 10
 #define TILE_ANIMATIONS_LENGTH 2
+#define DEMO_FRAMES 300
 
 // Flags
 #define EXPLODING_FLAG 1
@@ -93,5 +95,6 @@
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 300
 #define DEFAULT_FRAMES_PER_SHOT 20
+#define CEASE_FIRE_FRAMES 120
 
 #endif

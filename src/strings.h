@@ -38,16 +38,6 @@ const char strOwns [] PROGMEM = "Pwns";
 const char strBy [] PROGMEM = "By";
 const char strFinalScore [] PROGMEM="Final Score";
 
-// Debug
-const char strDebug[] PROGMEM="GD\0GL\0BT\0CX\0CY\0MV\0FW";
-#define GD 0
-#define GL 3
-#define BT 6
-#define CX 9
-#define CY 12
-#define MV 15
-#define FW 18
-
 // Banter
 const char banter_map[] PROGMEM="You suck bro  \0"
 	"LOL           \0"

@@ -68,6 +68,12 @@ typedef struct sPlayer {
 	u8 max_speed;
 	u8 has_rocket;
 	u8 has_over_speed;
+	u8 feeling_my_way;
+	unsigned int goal_direction;
+	char goal;
+	char goal_reached;
+	float old_x;
+	float old_y;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;

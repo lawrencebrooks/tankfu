@@ -61,6 +61,7 @@ JoyPadState p1;
 JoyPadState p2;
 Level level;
 TileAnimations tile_animations;
+unsigned int global_frame_counter = 1;
 
 struct EepromBlockStruct handles;
 struct EepromBlockStruct scores;
@@ -178,6 +179,14 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 		init_shot_state(&p->shot[i], BASIC_SHOT);
 		set_shot_animations(&p->shot[i], BASIC_SHOT);
 	}
+	
+	/* pathfinding variables */
+	p->feeling_my_way = 0;
+	p->goal_direction = 0;
+	p->goal = 0;
+	p->goal_reached = 0;
+	p->old_x = 0;
+	p->old_y = 0;
 }
 
 void player_init_shot_state(Player* player)
@@ -1137,6 +1146,13 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	update_level_helper(p2, &player2, &player1, 0);
 	collision_detect_player(&player1, &player2, 0, 15);
 	collision_detect_player(&player2, &player1, 15, 0);
+	
+	if ((p1->pressed & BTN_START) && game.selection == CPUVCPU)
+	{
+		fade_through();
+		init_game_state();
+		load_splash();
+	}
 }
 
 void load_splash()
@@ -1157,6 +1173,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
  * Splash or title screen
  */
 {
+	static unsigned int demo_counter = 0;
+	
 	// Render
 	switch (game.selection)
 	{
@@ -1173,6 +1191,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	Print(9, 21, strSelectHandle);
 
 	// Update
+	if (p1->pressed) demo_counter = 0;
+	
 	if (p1->pressed & BTN_UP)
 	{
 		game.selection--;
@@ -1203,6 +1223,22 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		load_tank_rank();
 		return;
 	}
+	else if (demo_counter >= DEMO_FRAMES)
+	{
+		demo_counter = 0;
+		game.selection = CPUVCPU;
+		player1.handle_id = 9;
+		LBCopyChars(player1.handle, &handles.data[9*3], 3);
+		player2.handle_id = 9;
+		LBCopyChars(player2.handle, &handles.data[9*3], 3);
+		SFX_NAVIGATE;
+		clear_sprites();
+		fade_through();
+		level_transition(0);
+		return;
+		
+	}
+	demo_counter++;
 }
 
 void load_tank_rank()
@@ -1407,16 +1443,13 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
-char crash_and_turn(unsigned int goal_direction, char goal, char current_x, char current_y, char moved, JoyPadState* p)
+char crash_and_turn(char current_x, char current_y, char moved, Player* player, JoyPadState* p)
 /* 
  * Move in the direction of the goal. Use the left/right hand rule to move
  * around objects blocking the way.
  */
-{
-	static char feeling_my_way = 0;
-	static char printed = 0;
-	
-	if (feeling_my_way)
+{	
+	if (player->feeling_my_way)
 	{
 		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
 		{
@@ -1434,49 +1467,31 @@ char crash_and_turn(unsigned int goal_direction, char goal, char current_x, char
 		{
 			p->held = BTN_UP;
 		}
-		if (goal_direction & p->held) feeling_my_way = 0;
+		if (player->goal_direction & p->held) player->feeling_my_way = 0;
 	}
 	if ((p->held & BTN_LEFT) && !moved)
 	{
 		p->held = BTN_UP;
-		feeling_my_way = 1;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_UP) && !moved)
 	{
 		p->held = BTN_RIGHT;
-		feeling_my_way = 1;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_RIGHT) && !moved)
 	{
 		p->held = BTN_DOWN;
-		feeling_my_way = 1;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_DOWN) && !moved)
 	{
 		p->held = BTN_LEFT;
-		feeling_my_way = 1;
+		player->feeling_my_way = 1;
 	}
 
-	// Debug
-	/*Print(0, 4, &strDebug[GD]);
-	PrintByte(4, 4, (&goal_direction)[0] ,true);
-	Print(6, 4, &strDebug[GL]);
-	PrintByte(10, 4, goal ,true);
-	Print(12, 4, &strDebug[BT]);
-	PrintByte(16, 4, (&p->held)[0] ,true);
-	Print(18, 4, &strDebug[CX]);
-	PrintByte(22, 4, current_x ,true);
-	Print(24, 4, &strDebug[CY]);
-	PrintByte(28, 4, current_y ,true);
-	
-	// Newline
-	Print(0, 5, &strDebug[MV]);
-	PrintByte(4, 5, moved ,true);
-	Print(6, 5, &strDebug[FW]);
-	PrintByte(10, 5, feeling_my_way ,true);
-	*/
-	if ((goal_direction == BTN_UP || goal_direction == BTN_DOWN) && current_y == goal) return 1;
-	if ((goal_direction == BTN_LEFT || goal_direction == BTN_RIGHT) && current_x == goal) return 1;
+	if ((player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) && current_y == player->goal) return 1;
+	if ((player->goal_direction == BTN_LEFT || player->goal_direction == BTN_RIGHT) && current_x == player->goal) return 1;
 	
 	return 0;
 }
@@ -1505,13 +1520,6 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
 	// strategies.
-	static unsigned int goal_direction;
-	static char goal = 0;
-	static unsigned int goal_frame_count = 0;
-	static unsigned char shot_frame_count = 0;
-	static char goal_reached = 0;
-	static float old_x = 0;
-	static float old_y = 0;
 	char moved = 0;
 	char goal_x;
 	char goal_y;
@@ -1532,39 +1540,40 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	{
 		p->pressed = 0;
 	}
-	if (shot_frame_count > DEFAULT_FRAMES_PER_SHOT)
+	if (global_frame_counter % DEFAULT_FRAMES_PER_SHOT == 0)
 	{
 		p->pressed = BTN_A;
-		shot_frame_count = 0;
 	}
-	shot_frame_count++;
 	
 	// Dont get to close
-	if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2)
+	if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2 && (global_frame_counter % CEASE_FIRE_FRAMES == 0))
 	{
-		p->held = 0;
-		goal_reached = 1;
+		player->goal_reached = 0;
+		player->goal = LBRandom(5, 18);
+		player->goal_direction = LBRandom(0, 3);
+		if (player->goal_direction == 0) player->goal_direction = BTN_LEFT;
+		if (player->goal_direction == 1) player->goal_direction = BTN_RIGHT;
+		if (player->goal_direction == 2) player->goal_direction = BTN_UP;
+		if (player->goal_direction == 3) player->goal_direction = BTN_DOWN;
 		return;
 	}
 		
 	// Movement
-	if (goal_frame_count >= DEFAULT_FRAMES_PER_GOAL || player->grace_frame == 2 || goal_reached)
+	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 12 || player->goal_reached)
 	{
-		goal_frame_count = 0;
-		goal_reached = 0;
-		goal_direction = get_cpu_goal_direction(distance_x, distance_y);
-		goal = goal_x;
-		if (goal_direction == BTN_UP || goal_direction == BTN_DOWN) goal = goal_y;
-		p->held = goal_direction;
-		old_x = 0;
-		old_y = 0;
+		player->goal_reached = 0;
+		player->goal_direction = get_cpu_goal_direction(distance_x, distance_y);
+		player->goal = goal_x;
+		if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
+		p->held = player->goal_direction;
+		player->old_x = 0;
+		player->old_y = 0;
 	}
-	if (player->shared.x != old_x) moved = 1;
-	if (player->shared.y != old_y) moved = 1;
-	old_x = player->shared.x;
-	old_y = player->shared.y;
-	goal_reached = crash_and_turn(goal_direction, goal, player->shared.x / 8, player->shared.y / 8 - 3, moved, p);
-	goal_frame_count++;
+	if (player->shared.x != player->old_x) moved = 1;
+	if (player->shared.y != player->old_y) moved = 1;
+	player->old_x = player->shared.x;
+	player->old_y = player->shared.y;
+	player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, moved, player, p);
 }
 
 int main()
@@ -1586,28 +1595,42 @@ int main()
 	while (1)
 	{
 		WaitVsync(1);
-		LBGetJoyPadState(&p1, 0);
 		switch (game.current_screen)
 		{
 			case SPLASH:
+				LBGetJoyPadState(&p1, 0);
 				update_splash(&p1, &p2);
 				break;
 			case TANK_RANK:
+				LBGetJoyPadState(&p1, 0);
 				update_tank_rank(&p1, &p2);
 				break;
 			case HANDLE_SELECT:
+				LBGetJoyPadState(&p1, 0);
 				LBGetJoyPadState(&p2, 1);
 				update_handle_select(&p1, &p2);
 				break;
 			case LEVEL:
 				if (game.selection == PVCPU)
+				{
+					LBGetJoyPadState(&p1, 0);
 					get_cpu_joypad_state(&player2, &player1, &p2);
+				}
+				else if (game.selection == CPUVCPU)
+				{
+					get_cpu_joypad_state(&player1, &player2, &p1);
+					get_cpu_joypad_state(&player2, &player1, &p2);
+				}
 				else
+				{
+					LBGetJoyPadState(&p1, 0);
 					LBGetJoyPadState(&p2, 1);
+				}
 				update_level(&p1, &p2);
 				break;
 			default:
 				break;
 		}
+		global_frame_counter++;
 	}
 }
