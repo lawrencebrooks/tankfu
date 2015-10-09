@@ -1418,19 +1418,19 @@ char crash_and_turn(unsigned int goal_direction, char goal, char current_x, char
 	
 	if (feeling_my_way)
 	{
-		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
+		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
 		{
 			p->held = BTN_LEFT;
 		}
-		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+2)))
+		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+1) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_DOWN;
 		}
-		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile(current_y+2 * 30 + current_x+2)))
+		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile((current_y+1) * 30 + current_x+2) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_RIGHT;
 		}
-		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+2)))
+		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+1) || solid_tile((current_y-1) * 30 + current_x+2)))
 		{
 			p->held = BTN_UP;
 		}
