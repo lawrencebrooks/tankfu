@@ -1126,83 +1126,83 @@ END GROUP
                 0x0000000000800106                _edata = .
                 0x0000000000800106                PROVIDE (__data_end, .)
 
-.bss            0x0000000000800106      0xf8b
+.bss            0x0000000000800106      0xf4b
                 0x0000000000800106                PROVIDE (__bss_start, .)
  *(.bss)
  *fill*         0x0000000000800106       0x1a 
- .bss           0x0000000000800120      0xa40 uzeboxVideoEngineCore.o
+ .bss           0x0000000000800120      0xa00 uzeboxVideoEngineCore.o
                 0x0000000000800120                vram
                 0x0000000000800468                sprites
                 0x0000000000800468                overlay_vram
                 0x0000000000800498                ram_tiles
-                0x0000000000800ad8                ram_tiles_restore
-                0x0000000000800b23                sprites_tile_banks
-                0x0000000000800b2e                Screen
-                0x0000000000800b32                sync_phase
-                0x0000000000800b33                sync_pulse
-                0x0000000000800b34                sync_flags
-                0x0000000000800b39                first_render_line
-                0x0000000000800b3a                render_lines_count
-                0x0000000000800b3b                first_render_line_tmp
-                0x0000000000800b3c                render_lines_count_tmp
-                0x0000000000800b3d                joypad1_status_lo
-                0x0000000000800b3f                joypad1_status_hi
-                0x0000000000800b41                joypad2_status_lo
-                0x0000000000800b43                joypad2_status_hi
- .bss           0x0000000000800b60        0x1 uzeboxSoundEngine.o
-                0x0000000000800b60                playSong
- .bss           0x0000000000800b61       0x23 uzeboxSoundEngineCore.o
-                0x0000000000800b61                sound_enabled
-                0x0000000000800b62                mixer
-                0x0000000000800b75                tr4_params
-                0x0000000000800b76                tr4_barrel_lo
-                0x0000000000800b77                tr4_barrel_hi
- .bss           0x0000000000800b84       0x18 TankFu.o
-                0x0000000000800b84                p2s
-                0x0000000000800b8a                p1s
+                0x0000000000800a98                ram_tiles_restore
+                0x0000000000800ae0                sprites_tile_banks
+                0x0000000000800aeb                Screen
+                0x0000000000800aee                sync_phase
+                0x0000000000800aef                sync_pulse
+                0x0000000000800af0                sync_flags
+                0x0000000000800af5                first_render_line
+                0x0000000000800af6                render_lines_count
+                0x0000000000800af7                first_render_line_tmp
+                0x0000000000800af8                render_lines_count_tmp
+                0x0000000000800af9                joypad1_status_lo
+                0x0000000000800afb                joypad1_status_hi
+                0x0000000000800afd                joypad2_status_lo
+                0x0000000000800aff                joypad2_status_hi
+ .bss           0x0000000000800b20        0x1 uzeboxSoundEngine.o
+                0x0000000000800b20                playSong
+ .bss           0x0000000000800b21       0x23 uzeboxSoundEngineCore.o
+                0x0000000000800b21                sound_enabled
+                0x0000000000800b22                mixer
+                0x0000000000800b35                tr4_params
+                0x0000000000800b36                tr4_barrel_lo
+                0x0000000000800b37                tr4_barrel_hi
+ .bss           0x0000000000800b44       0x18 TankFu.o
+                0x0000000000800b44                p2s
+                0x0000000000800b4a                p1s
  *(.bss*)
  *(COMMON)
- COMMON         0x0000000000800b9c        0x1 uzeboxCore.o
-                0x0000000000800b9c                joypadsConnectionStatus
- COMMON         0x0000000000800b9d       0x7e uzeboxSoundEngine.o
-                0x0000000000800b9d                songStart
-                0x0000000000800b9f                tracks
-                0x0000000000800c0d                currDeltaTime
-                0x0000000000800c0f                patchPointers
-                0x0000000000800c11                lastStatus
-                0x0000000000800c12                masterVolume
-                0x0000000000800c13                nextDeltaTime
-                0x0000000000800c15                songSpeed
-                0x0000000000800c16                songPos
-                0x0000000000800c18                loopStart
-                0x0000000000800c1a                step
- COMMON         0x0000000000800c1b        0x6 uzeboxVideoEngine.o
-                0x0000000000800c1b                fadeSpeed
-                0x0000000000800c1c                fadeDir
-                0x0000000000800c1d                free_tile_index
-                0x0000000000800c1e                fadeActive
-                0x0000000000800c1f                currFadeFrame
-                0x0000000000800c20                fadeStep
- COMMON         0x0000000000800c21      0x470 TankFu.o
-                0x0000000000800c21                scores
-                0x0000000000800c41                p2
-                0x0000000000800c48                handles
-                0x0000000000800c68                game
-                0x0000000000800c6c                tile_animations
-                0x0000000000800c85                player1
-                0x0000000000800d10                p1
-                0x0000000000800d17                level
-                0x0000000000801006                player2
-                0x0000000000801091                PROVIDE (__bss_end, .)
+ COMMON         0x0000000000800b5c        0x1 uzeboxCore.o
+                0x0000000000800b5c                joypadsConnectionStatus
+ COMMON         0x0000000000800b5d       0x7e uzeboxSoundEngine.o
+                0x0000000000800b5d                songStart
+                0x0000000000800b5f                tracks
+                0x0000000000800bcd                currDeltaTime
+                0x0000000000800bcf                patchPointers
+                0x0000000000800bd1                lastStatus
+                0x0000000000800bd2                masterVolume
+                0x0000000000800bd3                nextDeltaTime
+                0x0000000000800bd5                songSpeed
+                0x0000000000800bd6                songPos
+                0x0000000000800bd8                loopStart
+                0x0000000000800bda                step
+ COMMON         0x0000000000800bdb        0x6 uzeboxVideoEngine.o
+                0x0000000000800bdb                fadeSpeed
+                0x0000000000800bdc                fadeDir
+                0x0000000000800bdd                free_tile_index
+                0x0000000000800bde                fadeActive
+                0x0000000000800bdf                currFadeFrame
+                0x0000000000800be0                fadeStep
+ COMMON         0x0000000000800be1      0x470 TankFu.o
+                0x0000000000800be1                scores
+                0x0000000000800c01                p2
+                0x0000000000800c08                handles
+                0x0000000000800c28                game
+                0x0000000000800c2c                tile_animations
+                0x0000000000800c45                player1
+                0x0000000000800cd0                p1
+                0x0000000000800cd7                level
+                0x0000000000800fc6                player2
+                0x0000000000801051                PROVIDE (__bss_end, .)
                 0x000000000000c142                __data_load_start = LOADADDR (.data)
                 0x000000000000c148                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0000000000801091        0x0
-                0x0000000000801091                PROVIDE (__noinit_start, .)
+.noinit         0x0000000000801051        0x0
+                0x0000000000801051                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0000000000801091                PROVIDE (__noinit_end, .)
-                0x0000000000801091                _end = .
-                0x0000000000801091                PROVIDE (__heap_start, .)
+                0x0000000000801051                PROVIDE (__noinit_end, .)
+                0x0000000000801051                _end = .
+                0x0000000000801051                PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
  *(.eeprom*)
