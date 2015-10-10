@@ -13,7 +13,7 @@ INFO=../gameinfo.properties
 ## Kernel settings
 KERNEL_DIR = ../kernel
 KERNEL_OPTIONS  = -DVIDEO_MODE=3  -DSOUND_MIXER=1 -DINTRO_LOGO=0 
-KERNEL_OPTIONS += -DMAX_SPRITES=12 -DRAM_TILES_COUNT=23 -DTRUE_RANDOM_GEN=1
+KERNEL_OPTIONS += -DMAX_SPRITES=12 -DRAM_TILES_COUNT=25 -DTRUE_RANDOM_GEN=1
 
 ## Options common to compile, link and assembly rules
 COMMON = -mmcu=$(MCU)

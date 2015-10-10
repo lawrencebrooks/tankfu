@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         0000c142  00000000  00000000  00000100  2**8
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000f0b  00800106  00800106  0000c266  2**5
+  2 .bss          00000f8b  00800106  00800106  0000c266  2**5
                   ALLOC
   3 .stab         00000618  00000000  00000000  0000c248  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -17,19 +17,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .debug_aranges 000005b0  00000000  00000000  0000cb18  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000088dd  00000000  00000000  0000d0c8  2**0
+  7 .debug_info   0000860d  00000000  00000000  0000d0c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 0000152d  00000000  00000000  000159a5  2**0
+  8 .debug_abbrev 0000152d  00000000  00000000  000156d5  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00001e3b  00000000  00000000  00016ed2  2**0
+  9 .debug_line   00001e3b  00000000  00000000  00016c02  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00001340  00000000  00000000  00018d10  2**2
+ 10 .debug_frame  00001340  00000000  00000000  00018a40  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00001a3c  00000000  00000000  0001a050  2**0
+ 11 .debug_str    00001926  00000000  00000000  00019d80  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00007844  00000000  00000000  0001ba8c  2**0
+ 12 .debug_loc    00007844  00000000  00000000  0001b6a6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000668  00000000  00000000  000232d0  2**3
+ 13 .debug_ranges 00000668  00000000  00000000  00022ef0  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -117,98 +117,42 @@ Disassembly of section .text:
      114:	55 5a 45 4c 4a 42 41 41 41 42 42 42 43 43 43 44     UZELJBAAABBBCCCD
      124:	44 44 45 45 45 46 46 46 47 47 47 43 50 55           DDEEEFFFGGGCPU
 
-00000132 <strLevels>:
-     132:	20 20 20 42 6f 6f 74 20 43 61 6d 70 20 20 20 00        Boot Camp   .
-     142:	20 20 20 56 65 6c 6f 63 69 74 79 20 20 20 20 00        Velocity    .
-     152:	20 20 20 20 44 69 67 67 65 72 20 20 20 20 20 00         Digger     .
-     162:	41 63 74 20 31 20 54 68 65 79 20 4d 65 65 74 00     Act 1 They Meet.
-     172:	20 20 20 52 69 63 68 6f 63 68 65 74 20 20 20 00        Richochet   .
-     182:	20 54 68 65 20 48 6f 6e 65 79 20 50 6f 74 20 00      The Honey Pot .
-     192:	20 20 46 6f 63 61 6c 20 50 6f 69 6e 74 20 20 00       Focal Point  .
-     1a2:	49 74 27 73 20 4e 6f 74 20 46 61 69 72 21 20 00     It's Not Fair! .
-     1b2:	20 20 4d 75 63 68 20 42 65 74 74 65 72 20 20 00       Much Better  .
-     1c2:	20 20 20 46 61 63 65 20 4f 66 66 20 20 20 20 00        Face Off    .
-
-000001d2 <strPaused>:
-     1d2:	50 61 75 73 65 64 00                                Paused.
-
-000001d9 <strExit>:
-     1d9:	42 61 69 6c 20 2d 20 58 00                          Bail - X.
-
-000001e2 <strTotal>:
-     1e2:	54 6f 74 61 6c 3a 00                                Total:.
-
-000001e9 <strScore>:
-     1e9:	53 63 6f 72 65 3a 00                                Score:.
-
-000001f0 <strBanterClear>:
-     1f0:	20 20 20 20 20 20 20 20 20 20 20 20 20 20 00                      .
-
-000001ff <banter_map>:
-     1ff:	59 6f 75 20 73 75 63 6b 20 62 72 6f 20 20 00 4c     You suck bro  .L
-     20f:	4f 4c 20 20 20 20 20 20 20 20 20 20 20 00 42 72     OL           .Br
-     21f:	6f 6b 65 6e 20 62 75 74 74 6f 6e 3f 00 54 72 79     oken button?.Try
-     22f:	20 61 74 20 6c 65 61 73 74 20 20 00 54 6f 6f 20      at least  .Too 
-     23f:	65 61 73 79 20 20 20 20 20 20 00 2a 59 41 57 4e     easy      .*YAWN
-     24f:	2a 20 20 20 20 20 20 20 20 00 41 20 74 75 72 6b     *        .A turk
-     25f:	65 79 20 73 68 6f 6f 74 00 54 68 61 74 27 73 20     ey shoot.That's 
-     26f:	69 74 3f 20 20 20 20 00 4e 65 65 64 20 68 65 6c     it?    .Need hel
-     27f:	70 3f 20 20 20 20 00 52 54 46 4d 21 20 20 20 20     p?    .RTFM!    
-     28f:	20 20 20 20 20 00                                        .
-
-00000295 <strFinalScore>:
-     295:	46 69 6e 61 6c 20 53 63 6f 72 65 00                 Final Score.
-
-000002a1 <strBy>:
-     2a1:	42 79 00                                            By.
-
-000002a4 <strOwns>:
-     2a4:	50 77 6e 73 00                                      Pwns.
-
-000002a9 <strChangeHandle>:
-     2a9:	45 64 69 74 20 2d 20 55 50 2f 44 4f 57 4e 00        Edit - UP/DOWN.
-
-000002b8 <strReset>:
-     2b8:	52 65 73 65 74 20 44 65 66 61 75 6c 74 73 20 2d     Reset Defaults -
-     2c8:	20 53 4c 20 28 35 73 29 00                           SL (5s).
-
-000002d1 <strCancelHandle>:
-     2d1:	43 61 6e 63 65 6c 20 2d 20 58 00                    Cancel - X.
-
-000002dc <strConfirmHandle>:
-     2dc:	43 6f 6e 66 69 72 6d 20 2d 20 41 00                 Confirm - A.
-
-000002e8 <strSelectHandle>:
-     2e8:	53 65 6c 65 63 74 20 2d 20 41 00                    Select - A.
-
-000002f3 <strPlayer2>:
-     2f3:	50 32 00                                            P2.
-
-000002f6 <strPlayer1>:
-     2f6:	50 31 00                                            P1.
-
-000002f9 <strVertSep>:
-     2f9:	7c 00                                               |.
-
-000002fb <strUnderline>:
-     2fb:	5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 00                 ___________.
-
-00000307 <strHandlesTitle>:
-     307:	45 64 69 74 20 48 61 6e 64 6c 65 00                 Edit Handle.
-
-00000313 <strHighscores>:
-     313:	54 61 6e 6b 20 52 61 6e 6b 00                       Tank Rank.
-
-0000031d <str2Player>:
-     31d:	50 6c 61 79 65 72 20 76 73 20 50 6c 61 79 65 72     Player vs Player
+00000132 <strMap>:
+     132:	32 30 31 35 20 2d 20 4c 61 77 72 65 6e 63 65 20     2015 - Lawrence 
+     142:	42 72 6f 6f 6b 73 00 50 6c 61 79 65 72 20 76 73     Brooks.Player vs
+     152:	20 43 50 55 00 50 6c 61 79 65 72 20 76 73 20 50      CPU.Player vs P
+     162:	6c 61 79 65 72 00 54 61 6e 6b 20 52 61 6e 6b 00     layer.Tank Rank.
+     172:	45 64 69 74 20 48 61 6e 64 6c 65 00 5f 5f 5f 5f     Edit Handle.____
+     182:	5f 5f 5f 5f 5f 5f 5f 00 7c 00 50 31 00 50 32 00     _______.|.P1.P2.
+     192:	53 65 6c 65 63 74 20 2d 20 41 00 43 6f 6e 66 69     Select - A.Confi
+     1a2:	72 6d 20 2d 20 41 00 43 61 6e 63 65 6c 20 2d 20     rm - A.Cancel - 
+     1b2:	58 00 52 65 73 65 74 20 44 65 66 61 75 6c 74 73     X.Reset Defaults
+     1c2:	20 2d 20 53 4c 20 28 35 73 29 00 45 64 69 74 20      - SL (5s).Edit 
+     1d2:	2d 20 55 50 2f 44 4f 57 4e 00 50 77 6e 73 00 42     - UP/DOWN.Pwns.B
+     1e2:	79 00 46 69 6e 61 6c 20 53 63 6f 72 65 00 59 6f     y.Final Score.Yo
+     1f2:	75 20 73 75 63 6b 20 62 72 6f 20 20 00 4c 4f 4c     u suck bro  .LOL
+     202:	20 20 20 20 20 20 20 20 20 20 20 00 42 72 6f 6b                .Brok
+     212:	65 6e 20 62 75 74 74 6f 6e 3f 00 54 72 79 20 61     en button?.Try a
+     222:	74 20 6c 65 61 73 74 20 20 00 54 6f 6f 20 65 61     t least  .Too ea
+     232:	73 79 20 20 20 20 20 20 00 2a 59 41 57 4e 2a 20     sy      .*YAWN* 
+     242:	20 20 20 20 20 20 20 00 41 20 74 75 72 6b 65 79            .A turkey
+     252:	20 73 68 6f 6f 74 00 54 68 61 74 27 73 20 69 74      shoot.That's it
+     262:	3f 20 20 20 20 00 4e 65 65 64 20 68 65 6c 70 3f     ?    .Need help?
+     272:	20 20 20 20 00 52 54 46 4d 21 20 20 20 20 20 20         .RTFM!      
+     282:	20 20 20 00 20 20 20 20 20 20 20 20 20 20 20 20        .            
+     292:	20 20 00 53 63 6f 72 65 3a 00 54 6f 74 61 6c 3a       .Score:.Total:
+     2a2:	00 42 61 69 6c 20 2d 20 58 00 50 61 75 73 65 64     .Bail - X.Paused
+     2b2:	00 20 20 20 42 6f 6f 74 20 43 61 6d 70 20 20 20     .   Boot Camp   
+     2c2:	00 20 20 20 56 65 6c 6f 63 69 74 79 20 20 20 20     .   Velocity    
+     2d2:	00 20 20 20 20 44 69 67 67 65 72 20 20 20 20 20     .    Digger     
+     2e2:	00 41 63 74 20 31 20 54 68 65 79 20 4d 65 65 74     .Act 1 They Meet
+     2f2:	00 20 20 20 52 69 63 68 6f 63 68 65 74 20 20 20     .   Richochet   
+     302:	00 20 54 68 65 20 48 6f 6e 65 79 20 50 6f 74 20     . The Honey Pot 
+     312:	00 20 20 46 6f 63 61 6c 20 50 6f 69 6e 74 20 20     .  Focal Point  
+     322:	00 49 74 27 73 20 4e 6f 74 20 46 61 69 72 21 20     .It's Not Fair! 
+     332:	00 20 20 4d 75 63 68 20 42 65 74 74 65 72 20 20     .  Much Better  
+     342:	00 20 20 20 46 61 63 65 20 4f 66 66 20 20 20 20     .   Face Off    
 	...
-
-0000032e <str1Player>:
-     32e:	50 6c 61 79 65 72 20 76 73 20 43 50 55 00           Player vs CPU.
-
-0000033c <strCopyright>:
-     33c:	32 30 31 35 20 2d 20 4c 61 77 72 65 6e 63 65 20     2015 - Lawrence 
-     34c:	42 72 6f 6f 6b 73 00                                Brooks.
 
 00000353 <my_patches>:
      353:	02 a6 30 00 00 4f 07 50 07 02 c1 29 00 00 e3 06     ..0..O.P...)....
@@ -1988,7 +1932,7 @@ Disassembly of section .text:
     67e2:	1d 92       	st	X+, r1
 
 000067e4 <.do_clear_bss_start>:
-    67e4:	a1 31       	cpi	r26, 0x11	; 17
+    67e4:	a1 39       	cpi	r26, 0x91	; 145
     67e6:	b1 07       	cpc	r27, r17
     67e8:	e1 f7       	brne	.-8      	; 0x67e2 <.do_clear_bss_loop>
 
@@ -2033,53 +1977,53 @@ void Initialize(void){
 		//initialize LFSR		
 		tr4_barrel_lo=1;
     680e:	81 e0       	ldi	r24, 0x01	; 1
-    6810:	80 93 f6 0a 	sts	0x0AF6, r24
+    6810:	80 93 76 0b 	sts	0x0B76, r24
 		tr4_barrel_hi=1;		
-    6814:	80 93 f7 0a 	sts	0x0AF7, r24
+    6814:	80 93 77 0b 	sts	0x0B77, r24
 		tr4_params=0b00000001; //15 bits no divider (1)
-    6818:	80 93 f5 0a 	sts	0x0AF5, r24
+    6818:	80 93 75 0b 	sts	0x0B75, r24
 		snesMouseEnabled=false;
 	#endif
 
 	//silence all sound channels
 	for(i=0;i<CHANNELS;i++){
 		mixer.channels.all[i].volume=0;
-    681c:	10 92 e2 0a 	sts	0x0AE2, r1
-    6820:	10 92 e8 0a 	sts	0x0AE8, r1
-    6824:	10 92 ee 0a 	sts	0x0AEE, r1
-    6828:	10 92 f4 0a 	sts	0x0AF4, r1
-    682c:	10 92 fa 0a 	sts	0x0AFA, r1
+    681c:	10 92 62 0b 	sts	0x0B62, r1
+    6820:	10 92 68 0b 	sts	0x0B68, r1
+    6824:	10 92 6e 0b 	sts	0x0B6E, r1
+    6828:	10 92 74 0b 	sts	0x0B74, r1
+    682c:	10 92 7a 0b 	sts	0x0B7A, r1
 	}
 	
 	//set sync parameters. starts at odd field, in pre-eq pulses, line 1, vsync flag cleared
 	sync_phase=0;
-    6830:	10 92 ac 0a 	sts	0x0AAC, r1
+    6830:	10 92 32 0b 	sts	0x0B32, r1
 	sync_flags=0;
-    6834:	10 92 ae 0a 	sts	0x0AAE, r1
+    6834:	10 92 34 0b 	sts	0x0B34, r1
 	sync_pulse=SYNC_PRE_EQ_PULSES+SYNC_EQ_PULSES+SYNC_POST_EQ_PULSES;
     6838:	92 e1       	ldi	r25, 0x12	; 18
-    683a:	90 93 ad 0a 	sts	0x0AAD, r25
+    683a:	90 93 33 0b 	sts	0x0B33, r25
 
 	//set rendering parameters
 	render_lines_count_tmp=FRAME_LINES;
     683e:	90 ee       	ldi	r25, 0xE0	; 224
-    6840:	90 93 b6 0a 	sts	0x0AB6, r25
+    6840:	90 93 3c 0b 	sts	0x0B3C, r25
 	render_lines_count=FRAME_LINES;
-    6844:	90 93 b4 0a 	sts	0x0AB4, r25
+    6844:	90 93 3a 0b 	sts	0x0B3A, r25
 	first_render_line_tmp=FIRST_RENDER_LINE;
     6848:	94 e1       	ldi	r25, 0x14	; 20
-    684a:	90 93 b5 0a 	sts	0x0AB5, r25
+    684a:	90 93 3b 0b 	sts	0x0B3B, r25
 	first_render_line=FIRST_RENDER_LINE;
-    684e:	90 93 b3 0a 	sts	0x0AB3, r25
+    684e:	90 93 39 0b 	sts	0x0B39, r25
 
 	joypad1_status_hi=0;
-    6852:	10 92 ba 0a 	sts	0x0ABA, r1
-    6856:	10 92 b9 0a 	sts	0x0AB9, r1
+    6852:	10 92 40 0b 	sts	0x0B40, r1
+    6856:	10 92 3f 0b 	sts	0x0B3F, r1
 	joypad2_status_hi=0;
-    685a:	10 92 be 0a 	sts	0x0ABE, r1
-    685e:	10 92 bd 0a 	sts	0x0ABD, r1
+    685a:	10 92 44 0b 	sts	0x0B44, r1
+    685e:	10 92 43 0b 	sts	0x0B43, r1
 	sound_enabled=1;
-    6862:	80 93 e1 0a 	sts	0x0AE1, r24
+    6862:	80 93 61 0b 	sts	0x0B61, r24
 
 	InitializeVideoMode();
     6866:	0e 94 60 45 	call	0x8ac0	; 0x8ac0 <InitializeVideoMode>
@@ -2139,7 +2083,7 @@ void Initialize(void){
 
 		;Set ramtiles indexes in VRAM 
 		ldi ZL,lo8(ram_tiles_restore);
-    689c:	e8 e5       	ldi	r30, 0x58	; 88
+    689c:	e8 ed       	ldi	r30, 0xD8	; 216
 		ldi ZH,hi8(ram_tiles_restore);
     689e:	fa e0       	ldi	r31, 0x0A	; 10
 
@@ -2149,7 +2093,7 @@ void Initialize(void){
     68a2:	d1 e0       	ldi	r29, 0x01	; 1
 
 		lds r18,free_tile_index
-    68a4:	20 91 9d 0b 	lds	r18, 0x0B9D
+    68a4:	20 91 1d 0c 	lds	r18, 0x0C1D
 
 
 		clr r16
@@ -2190,7 +2134,7 @@ void Initialize(void){
 		inc r16
     68c0:	03 95       	inc	r16
 		cpi r16,RAM_TILES_COUNT
-    68c2:	07 31       	cpi	r16, 0x17	; 23
+    68c2:	09 31       	cpi	r16, 0x19	; 25
 		brlo upd_loop ;23
     68c4:	90 f3       	brcs	.-28     	; 0x68aa <upd_loop>
 
@@ -2199,7 +2143,7 @@ void Initialize(void){
 		ldi r16,60-RAM_TILES_COUNT 
 	#else
 		ldi r16,61-RAM_TILES_COUNT 
-    68c6:	06 e2       	ldi	r16, 0x26	; 38
+    68c6:	04 e2       	ldi	r16, 0x24	; 36
 
 000068c8 <wait_loop>:
 	#endif
@@ -2219,13 +2163,13 @@ void Initialize(void){
     68d0:	d9 f7       	brne	.-10     	; 0x68c8 <wait_loop>
 
 		lds r2,overlay_tile_table
-    68d2:	20 90 a9 0a 	lds	r2, 0x0AA9
+    68d2:	20 90 2f 0b 	lds	r2, 0x0B2F
 		lds r3,overlay_tile_table+1
-    68d6:	30 90 aa 0a 	lds	r3, 0x0AAA
+    68d6:	30 90 30 0b 	lds	r3, 0x0B30
 		lds r16,tile_table_lo 
-    68da:	00 91 a5 0a 	lds	r16, 0x0AA5
+    68da:	00 91 2b 0b 	lds	r16, 0x0B2B
 		lds r17,tile_table_hi
-    68de:	10 91 a6 0a 	lds	r17, 0x0AA6
+    68de:	10 91 2c 0b 	lds	r17, 0x0B2C
 		movw r12,r16
     68e2:	68 01       	movw	r12, r16
 		movw r6,r16
@@ -2244,7 +2188,7 @@ void Initialize(void){
 
 		;load values for overlay if it's activated (overlay_height>0)
 		lds r19,overlay_height	
-    68f0:	30 91 a8 0a 	lds	r19, 0x0AA8
+    68f0:	30 91 2e 0b 	lds	r19, 0x0B2E
 		cpi r19,0
     68f4:	30 30       	cpi	r19, 0x00	; 0
 		
@@ -2380,7 +2324,7 @@ void Initialize(void){
 
 		;set vsync flag & flip field
 		lds ZL,sync_flags
-    6964:	e0 91 ae 0a 	lds	r30, 0x0AAE
+    6964:	e0 91 34 0b 	lds	r30, 0x0B34
 		ldi r20,SYNC_FLAG_FIELD
     6968:	42 e0       	ldi	r20, 0x02	; 2
 		ori ZL,SYNC_FLAG_VSYNC
@@ -2388,7 +2332,7 @@ void Initialize(void){
 		eor ZL,r20
     696c:	e4 27       	eor	r30, r20
 		sts sync_flags,ZL
-    696e:	e0 93 ae 0a 	sts	0x0AAE, r30
+    696e:	e0 93 34 0b 	sts	0x0B34, r30
 
 		;clear any pending timer int
 		ldi ZL,(1<<OCF1A)
@@ -2420,9 +2364,9 @@ void Initialize(void){
 		movw r16,r12 ;current tile table (main or overlay)
     6980:	86 01       	movw	r16, r12
 		subi r16,lo8(RAM_TILES_COUNT*TILE_HEIGHT*TILE_WIDTH)
-    6982:	00 5c       	subi	r16, 0xC0	; 192
+    6982:	00 54       	subi	r16, 0x40	; 64
 		sbci r17,hi8(RAM_TILES_COUNT*TILE_HEIGHT*TILE_WIDTH)
-    6984:	15 40       	sbci	r17, 0x05	; 5
+    6984:	16 40       	sbci	r17, 0x06	; 6
 
 		add r16,r0
     6986:	00 0d       	add	r16, r0
@@ -2456,7 +2400,7 @@ void Initialize(void){
     699e:	a1 01       	movw	r20, r2
 		
 		cpi r18,RAM_TILES_COUNT
-    69a0:	27 31       	cpi	r18, 0x17	; 23
+    69a0:	29 31       	cpi	r18, 0x19	; 25
 		brcc .+2
     69a2:	08 f4       	brcc	.+2      	; 0x69a6 <render_tile_line+0x2a>
 		movw r20,r4		;ram tiles
@@ -2471,7 +2415,7 @@ void Initialize(void){
     69aa:	f0 01       	movw	r30, r0
 		
 		cpi r18,RAM_TILES_COUNT
-    69ac:	27 31       	cpi	r18, 0x17	; 23
+    69ac:	29 31       	cpi	r18, 0x19	; 25
 		brcs ramloop
     69ae:	f0 f0       	brcs	.+60     	; 0x69ec <ramloop>
 
@@ -2500,7 +2444,7 @@ void Initialize(void){
 	    out _SFR_IO_ADDR(DATA_PORT),r16        ;pixel 3
     69be:	08 b9       	out	0x08, r16	; 8
 		cpi r18,RAM_TILES_COUNT		;is tile in RAM or ROM? (RAM tiles have indexes<RAM_TILES_COUNT)
-    69c0:	27 31       	cpi	r18, 0x17	; 23
+    69c0:	29 31       	cpi	r18, 0x19	; 25
 		nop
     69c2:	00 00       	nop
 
@@ -2528,7 +2472,7 @@ void Initialize(void){
     69d6:	08 b9       	out	0x08, r16	; 8
 		
 		cpi r18,RAM_TILES_COUNT	
-    69d8:	27 31       	cpi	r18, 0x17	; 23
+    69d8:	29 31       	cpi	r18, 0x19	; 25
 		dec r17			;decrement tiles to draw on line
     69da:	1a 95       	dec	r17
    
@@ -2580,7 +2524,7 @@ void Initialize(void){
 		out _SFR_IO_ADDR(DATA_PORT),r16         ;pixel 3
     69fe:	08 b9       	out	0x08, r16	; 8
 		cpi r18,RAM_TILES_COUNT
-    6a00:	27 31       	cpi	r18, 0x17	; 23
+    6a00:	29 31       	cpi	r18, 0x19	; 25
    		rjmp .
     6a02:	00 c0       	rjmp	.+0      	; 0x6a04 <ramloop+0x18>
 
@@ -2610,7 +2554,7 @@ void Initialize(void){
 		out _SFR_IO_ADDR(DATA_PORT),r16       ;pixel 6
     6a18:	08 b9       	out	0x08, r16	; 8
 		cpi r18,RAM_TILES_COUNT
-    6a1a:	27 31       	cpi	r18, 0x17	; 23
+    6a1a:	29 31       	cpi	r18, 0x19	; 25
 		rjmp .  
     6a1c:	00 c0       	rjmp	.+0      	; 0x6a1e <ramloop+0x32>
 
@@ -2664,12 +2608,12 @@ void Initialize(void){
 
 	;compute source adress
 	lds ZL,tile_table_lo
-    6a3e:	e0 91 a5 0a 	lds	r30, 0x0AA5
+    6a3e:	e0 91 2b 0b 	lds	r30, 0x0B2B
 	lds ZH,tile_table_hi
-    6a42:	f0 91 a6 0a 	lds	r31, 0x0AA6
+    6a42:	f0 91 2c 0b 	lds	r31, 0x0B2C
 	;andi r24,0x7f
 	subi r24,RAM_TILES_COUNT
-    6a46:	87 51       	subi	r24, 0x17	; 23
+    6a46:	89 51       	subi	r24, 0x19	; 25
 	mul r24,r18
     6a48:	82 9f       	mul	r24, r18
 	add ZL,r0
@@ -2880,9 +2824,9 @@ BlitSprite:
 	mul r16,r25
     6b7e:	09 9f       	mul	r16, r25
 	ldi YL,lo8(sprites_tile_banks)	
-    6b80:	cd e9       	ldi	r28, 0x9D	; 157
+    6b80:	c3 e2       	ldi	r28, 0x23	; 35
 	ldi YH,hi8(sprites_tile_banks)	
-    6b82:	da e0       	ldi	r29, 0x0A	; 10
+    6b82:	db e0       	ldi	r29, 0x0B	; 11
 	clr r0
     6b84:	00 24       	eor	r0, r0
 	add YL,r1
@@ -3185,15 +3129,15 @@ latency_loop:
 	
 	;increment sync pulse counter
 	lds ZL,sync_pulse
-    6c60:	e0 91 ad 0a 	lds	r30, 0x0AAD
+    6c60:	e0 91 33 0b 	lds	r30, 0x0B33
 	dec ZL
     6c64:	ea 95       	dec	r30
 	sts sync_pulse,ZL
-    6c66:	e0 93 ad 0a 	sts	0x0AAD, r30
+    6c66:	e0 93 33 0b 	sts	0x0B33, r30
 
 	;process sync phases
 	lds ZH,sync_phase
-    6c6a:	f0 91 ac 0a 	lds	r31, 0x0AAC
+    6c6a:	f0 91 32 0b 	lds	r31, 0x0B32
 	sbrc ZH,0
     6c6e:	f0 fd       	sbrc	r31, 0
 	rjmp sync_hsync
@@ -3395,7 +3339,7 @@ sync_post_eq_no_sound_update:
 sync_pre_eq_cont:	
 	;check if it's the last vsync pulse
 	lds ZL,sync_pulse
-    6d08:	e0 91 ad 0a 	lds	r30, 0x0AAD
+    6d08:	e0 91 33 0b 	lds	r30, 0x0B33
 	cpi ZL,0
     6d0c:	e0 30       	cpi	r30, 0x00	; 0
 	breq .+2 ;skip rjmp
@@ -3407,11 +3351,11 @@ sync_pre_eq_cont:
 	ldi ZL,SYNC_HSYNC_PULSES
     6d12:	ed ef       	ldi	r30, 0xFD	; 253
 	sts sync_pulse,ZL
-    6d14:	e0 93 ad 0a 	sts	0x0AAD, r30
+    6d14:	e0 93 33 0b 	sts	0x0B33, r30
 	ldi ZL,1
     6d18:	e1 e0       	ldi	r30, 0x01	; 1
 	sts sync_phase,ZL
-    6d1a:	e0 93 ac 0a 	sts	0x0AAC, r30
+    6d1a:	e0 93 32 0b 	sts	0x0B32, r30
 	
 	rjmp sync_end
     6d1e:	6e c0       	rjmp	.+220    	; 0x6dfc <sync_end>
@@ -3447,11 +3391,11 @@ sync_pre_eq_cont:
 	ldi ZH,SYNC_HSYNC_PULSES
     6d38:	fd ef       	ldi	r31, 0xFD	; 253
 	lds r0,first_render_line
-    6d3a:	00 90 b3 0a 	lds	r0, 0x0AB3
+    6d3a:	00 90 39 0b 	lds	r0, 0x0B39
 	sub ZH,r0				
     6d3e:	f0 19       	sub	r31, r0
 	lds ZL,sync_pulse
-    6d40:	e0 91 ad 0a 	lds	r30, 0x0AAD
+    6d40:	e0 91 33 0b 	lds	r30, 0x0B33
 	cp ZL,ZH
     6d44:	ef 17       	cp	r30, r31
 	brsh no_render
@@ -3460,11 +3404,11 @@ sync_pre_eq_cont:
 	ldi ZH,SYNC_HSYNC_PULSES
     6d48:	fd ef       	ldi	r31, 0xFD	; 253
 	lds r0,first_render_line
-    6d4a:	00 90 b3 0a 	lds	r0, 0x0AB3
+    6d4a:	00 90 39 0b 	lds	r0, 0x0B39
 	sub ZH,r0				
     6d4e:	f0 19       	sub	r31, r0
 	lds r0,render_lines_count
-    6d50:	00 90 b4 0a 	lds	r0, 0x0AB4
+    6d50:	00 90 3a 0b 	lds	r0, 0x0B3A
 	sub ZH,r0			
     6d54:	f0 19       	sub	r31, r0
 	cp ZL,ZH
@@ -3524,7 +3468,7 @@ no_render:
 	;check if it's the last hsync pulse and we are 
 	;ready for VSYNC
 	lds ZL,sync_pulse
-    6d7c:	e0 91 ad 0a 	lds	r30, 0x0AAD
+    6d7c:	e0 91 33 0b 	lds	r30, 0x0B33
 	cpi ZL,0
     6d80:	e0 30       	cpi	r30, 0x00	; 0
 	breq .+2
@@ -3566,28 +3510,28 @@ no_render:
 	clr ZL
     6d9e:	ee 27       	eor	r30, r30
 	sts sync_phase,ZL
-    6da0:	e0 93 ac 0a 	sts	0x0AAC, r30
+    6da0:	e0 93 32 0b 	sts	0x0B32, r30
 	ldi ZL,SYNC_PRE_EQ_PULSES+SYNC_EQ_PULSES+SYNC_POST_EQ_PULSES
     6da4:	e2 e1       	ldi	r30, 0x12	; 18
 	sts sync_pulse,ZL
-    6da6:	e0 93 ad 0a 	sts	0x0AAD, r30
+    6da6:	e0 93 33 0b 	sts	0x0B33, r30
 
 	;fetch render height registers if they changed	
 	lds ZH,first_render_line_tmp
-    6daa:	f0 91 b5 0a 	lds	r31, 0x0AB5
+    6daa:	f0 91 3b 0b 	lds	r31, 0x0B3B
 	sts first_render_line,ZH
-    6dae:	f0 93 b3 0a 	sts	0x0AB3, r31
+    6dae:	f0 93 39 0b 	sts	0x0B39, r31
 	
 	lds ZH,render_lines_count_tmp
-    6db2:	f0 91 b6 0a 	lds	r31, 0x0AB6
+    6db2:	f0 91 3c 0b 	lds	r31, 0x0B3C
 	sts render_lines_count,ZH
-    6db6:	f0 93 b4 0a 	sts	0x0AB4, r31
+    6db6:	f0 93 3a 0b 	sts	0x0B3A, r31
 
 	;process user pre callback
 	lds ZL,pre_vsync_user_callback+0
-    6dba:	e0 91 af 0a 	lds	r30, 0x0AAF
+    6dba:	e0 91 35 0b 	lds	r30, 0x0B35
 	lds ZH,pre_vsync_user_callback+1
-    6dbe:	f0 91 b0 0a 	lds	r31, 0x0AB0
+    6dbe:	f0 91 36 0b 	lds	r31, 0x0B36
 	cp  ZL,r1
     6dc2:	e1 15       	cp	r30, r1
 	cpc ZH,r1
@@ -3615,9 +3559,9 @@ no_render:
 
 	;process user post callback
 	lds ZL,post_vsync_user_callback+0
-    6dd8:	e0 91 b1 0a 	lds	r30, 0x0AB1
+    6dd8:	e0 91 37 0b 	lds	r30, 0x0B37
 	lds ZH,post_vsync_user_callback+1
-    6ddc:	f0 91 b2 0a 	lds	r31, 0x0AB2
+    6ddc:	f0 91 38 0b 	lds	r31, 0x0B38
 	cp  ZL,r1
     6de0:	e1 15       	cp	r30, r1
 	cpc ZH,r1
@@ -3688,11 +3632,11 @@ hsync_pulse:
     6e10:	0e 94 16 37 	call	0x6e2c	; 0x6e2c <update_sound>
 
 	lds ZL,sync_pulse
-    6e14:	e0 91 ad 0a 	lds	r30, 0x0AAD
+    6e14:	e0 91 33 0b 	lds	r30, 0x0B33
 	dec ZL
     6e18:	ea 95       	dec	r30
 	sts sync_pulse,ZL
-    6e1a:	e0 93 ad 0a 	sts	0x0AAD, r30
+    6e1a:	e0 93 33 0b 	sts	0x0B33, r30
 
 	ret
     6e1e:	08 95       	ret
@@ -3704,7 +3648,7 @@ process_music:
 	
 #if ENABLE_MIXER==1
 	lds ZL,sound_enabled
-    6e20:	e0 91 e1 0a 	lds	r30, 0x0AE1
+    6e20:	e0 91 61 0b 	lds	r30, 0x0B61
 	sbrc ZL,0
     6e24:	e0 fd       	sbrc	r30, 0
  	call ProcessMusic
@@ -3736,27 +3680,27 @@ update_sound:
 
 	;channel 1 
 	lds r16,tr1_step_lo
-    6e38:	00 91 e3 0a 	lds	r16, 0x0AE3
+    6e38:	00 91 63 0b 	lds	r16, 0x0B63
 	lds r17,tr1_pos_frac
-    6e3c:	10 91 e5 0a 	lds	r17, 0x0AE5
+    6e3c:	10 91 65 0b 	lds	r17, 0x0B65
 	add	r17,r16	;add step to fractional part of sample pos
     6e40:	10 0f       	add	r17, r16
 	lds r16,tr1_step_hi	
-    6e42:	00 91 e4 0a 	lds	r16, 0x0AE4
+    6e42:	00 91 64 0b 	lds	r16, 0x0B64
 	lds ZL,tr1_pos_lo
-    6e46:	e0 91 e6 0a 	lds	r30, 0x0AE6
+    6e46:	e0 91 66 0b 	lds	r30, 0x0B66
 	lds ZH,tr1_pos_hi 
-    6e4a:	f0 91 e7 0a 	lds	r31, 0x0AE7
+    6e4a:	f0 91 67 0b 	lds	r31, 0x0B67
 	adc ZL,r16	;add step to low byte of sample pos
     6e4e:	e0 1f       	adc	r30, r16
 	lpm	r16,Z	;load sample
     6e50:	04 91       	lpm	r16, Z
 	sts tr1_pos_lo,ZL
-    6e52:	e0 93 e6 0a 	sts	0x0AE6, r30
+    6e52:	e0 93 66 0b 	sts	0x0B66, r30
 	sts tr1_pos_frac,r17
-    6e56:	10 93 e5 0a 	sts	0x0AE5, r17
+    6e56:	10 93 65 0b 	sts	0x0B65, r17
 	lds r17,tr1_vol
-    6e5a:	10 91 e2 0a 	lds	r17, 0x0AE2
+    6e5a:	10 91 62 0b 	lds	r17, 0x0B62
 	mulsu r16,r17;(sample*mixing vol)
     6e5e:	01 03       	mulsu	r16, r17
 	sbc r0,r0	;sign extend	
@@ -3772,27 +3716,27 @@ update_sound:
 	
 	;channel 2
 	lds r16,tr2_step_lo
-    6e68:	00 91 e9 0a 	lds	r16, 0x0AE9
+    6e68:	00 91 69 0b 	lds	r16, 0x0B69
 	lds r17,tr2_pos_frac
-    6e6c:	10 91 eb 0a 	lds	r17, 0x0AEB
+    6e6c:	10 91 6b 0b 	lds	r17, 0x0B6B
 	add	r17,r16	;add step to fractional part of sample pos
     6e70:	10 0f       	add	r17, r16
 	lds r16,tr2_step_hi	
-    6e72:	00 91 ea 0a 	lds	r16, 0x0AEA
+    6e72:	00 91 6a 0b 	lds	r16, 0x0B6A
 	lds ZL,tr2_pos_lo
-    6e76:	e0 91 ec 0a 	lds	r30, 0x0AEC
+    6e76:	e0 91 6c 0b 	lds	r30, 0x0B6C
 	lds ZH,tr2_pos_hi 
-    6e7a:	f0 91 ed 0a 	lds	r31, 0x0AED
+    6e7a:	f0 91 6d 0b 	lds	r31, 0x0B6D
 	adc ZL,r16	;add step to low byte of sample pos
     6e7e:	e0 1f       	adc	r30, r16
 	lpm	r16,Z	;load sample
     6e80:	04 91       	lpm	r16, Z
 	sts tr2_pos_lo,ZL
-    6e82:	e0 93 ec 0a 	sts	0x0AEC, r30
+    6e82:	e0 93 6c 0b 	sts	0x0B6C, r30
 	sts tr2_pos_frac,r17
-    6e86:	10 93 eb 0a 	sts	0x0AEB, r17
+    6e86:	10 93 6b 0b 	sts	0x0B6B, r17
 	lds r17,tr2_vol
-    6e8a:	10 91 e8 0a 	lds	r17, 0x0AE8
+    6e8a:	10 91 68 0b 	lds	r17, 0x0B68
 
 	;*** Video sync update ***
 	sbrc r18,0								;pre-eq/post-eq sync
@@ -3819,27 +3763,27 @@ update_sound:
 	
 	;channel 3
 	lds r16,tr3_step_lo
-    6ea0:	00 91 ef 0a 	lds	r16, 0x0AEF
+    6ea0:	00 91 6f 0b 	lds	r16, 0x0B6F
 	lds r17,tr3_pos_frac
-    6ea4:	10 91 f1 0a 	lds	r17, 0x0AF1
+    6ea4:	10 91 71 0b 	lds	r17, 0x0B71
 	add	r17,r16				;add step to fractional part of sample pos
     6ea8:	10 0f       	add	r17, r16
 	lds r16,tr3_step_hi	
-    6eaa:	00 91 f0 0a 	lds	r16, 0x0AF0
+    6eaa:	00 91 70 0b 	lds	r16, 0x0B70
 	lds ZL,tr3_pos_lo
-    6eae:	e0 91 f2 0a 	lds	r30, 0x0AF2
+    6eae:	e0 91 72 0b 	lds	r30, 0x0B72
 	lds ZH,tr3_pos_hi 
-    6eb2:	f0 91 f3 0a 	lds	r31, 0x0AF3
+    6eb2:	f0 91 73 0b 	lds	r31, 0x0B73
 	adc ZL,r16				;add step to low byte of sample pos
     6eb6:	e0 1f       	adc	r30, r16
 	lpm	r16,Z				;load sample
     6eb8:	04 91       	lpm	r16, Z
 	sts tr3_pos_lo,ZL
-    6eba:	e0 93 f2 0a 	sts	0x0AF2, r30
+    6eba:	e0 93 72 0b 	sts	0x0B72, r30
 	sts tr3_pos_frac,r17
-    6ebe:	10 93 f1 0a 	sts	0x0AF1, r17
+    6ebe:	10 93 71 0b 	sts	0x0B71, r17
 	lds r17,tr3_vol
-    6ec2:	10 91 ee 0a 	lds	r17, 0x0AEE
+    6ec2:	10 91 6e 0b 	lds	r17, 0x0B6E
 	mulsu r16,r17			;(sample*mixing vol)
     6ec6:	01 03       	mulsu	r16, r17
 	sbc r0,r0				;sign extend
@@ -3852,18 +3796,18 @@ update_sound:
 
 	;channel 4 - 7/15 bit LFSR 
 	lds r16,tr4_barrel_lo
-    6ece:	00 91 f6 0a 	lds	r16, 0x0AF6
+    6ece:	00 91 76 0b 	lds	r16, 0x0B76
 	lds r17,tr4_barrel_hi
-    6ed2:	10 91 f7 0a 	lds	r17, 0x0AF7
+    6ed2:	10 91 77 0b 	lds	r17, 0x0B77
 	lds ZL,tr4_divider
-    6ed6:	e0 91 f8 0a 	lds	r30, 0x0AF8
+    6ed6:	e0 91 78 0b 	lds	r30, 0x0B78
 	dec ZL	
     6eda:	ea 95       	dec	r30
 	brpl ch4_no_shift	
     6edc:	92 f4       	brpl	.+36     	; 0x6f02 <ch4_no_shift>
 
 	lds ZH,tr4_params
-    6ede:	f0 91 f5 0a 	lds	r31, 0x0AF5
+    6ede:	f0 91 75 0b 	lds	r31, 0x0B75
 	mov ZL,ZH
     6ee2:	ef 2f       	mov	r30, r31
 	lsr ZL 			;keep bits7:1
@@ -3889,9 +3833,9 @@ update_sound:
     6ef6:	06 f9       	bld	r16, 6
 
 	sts tr4_barrel_lo,r16
-    6ef8:	00 93 f6 0a 	sts	0x0AF6, r16
+    6ef8:	00 93 76 0b 	sts	0x0B76, r16
 	sts tr4_barrel_hi,r17
-    6efc:	10 93 f7 0a 	sts	0x0AF7, r17
+    6efc:	10 93 77 0b 	sts	0x0B77, r17
 
 	rjmp ch4_end
     6f00:	03 c0       	rjmp	.+6      	; 0x6f08 <ch4_end>
@@ -3911,7 +3855,7 @@ ch4_no_shift:
 ch4_end:
 
 	sts tr4_divider,ZL
-    6f08:	e0 93 f8 0a 	sts	0x0AF8, r30
+    6f08:	e0 93 78 0b 	sts	0x0B78, r30
 	ldi r17,0x80 ;-128
     6f0c:	10 e8       	ldi	r17, 0x80	; 128
 	
@@ -3932,7 +3876,7 @@ ch4_end:
     6f18:	1f e7       	ldi	r17, 0x7F	; 127
 	
 	lds r16,tr4_vol
-    6f1a:	00 91 f4 0a 	lds	r16, 0x0AF4
+    6f1a:	00 91 74 0b 	lds	r16, 0x0B74
 
 	mulsu r17,r16;(sample*mixing vol)
     6f1e:	10 03       	mulsu	r17, r16
@@ -3948,25 +3892,25 @@ ch4_end:
 
 	;add fractional part
 	lds r16,tr5_pos_frac
-    6f26:	00 91 fd 0a 	lds	r16, 0x0AFD
+    6f26:	00 91 7d 0b 	lds	r16, 0x0B7D
 	lds r17,tr5_step_lo 
-    6f2a:	10 91 fb 0a 	lds	r17, 0x0AFB
+    6f2a:	10 91 7b 0b 	lds	r17, 0x0B7B
 	add r16,r17
     6f2e:	01 0f       	add	r16, r17
 	sts tr5_pos_frac,r16
-    6f30:	00 93 fd 0a 	sts	0x0AFD, r16
+    6f30:	00 93 7d 0b 	sts	0x0B7D, r16
 
 	;add lo
 	lds ZL,tr5_pos_lo
-    6f34:	e0 91 fe 0a 	lds	r30, 0x0AFE
+    6f34:	e0 91 7e 0b 	lds	r30, 0x0B7E
 	lds r17,tr5_step_hi 
-    6f38:	10 91 fc 0a 	lds	r17, 0x0AFC
+    6f38:	10 91 7c 0b 	lds	r17, 0x0B7C
 	adc ZL,r17
     6f3c:	e1 1f       	adc	r30, r17
 
 	;add hi
 	lds ZH,tr5_pos_hi
-    6f3e:	f0 91 ff 0a 	lds	r31, 0x0AFF
+    6f3e:	f0 91 7f 0b 	lds	r31, 0x0B7F
 	ldi r16,0
     6f42:	00 e0       	ldi	r16, 0x00	; 0
 	adc ZH,r16
@@ -3975,17 +3919,17 @@ ch4_end:
 	movw r16,ZL
     6f46:	8f 01       	movw	r16, r30
 	lds r0,tr5_loop_len_lo
-    6f48:	00 90 00 0b 	lds	r0, 0x0B00
+    6f48:	00 90 80 0b 	lds	r0, 0x0B80
 	lds r1,tr5_loop_len_hi	
-    6f4c:	10 90 01 0b 	lds	r1, 0x0B01
+    6f4c:	10 90 81 0b 	lds	r1, 0x0B81
 	sub r16,r0
     6f50:	00 19       	sub	r16, r0
 	sbc r17,r1
     6f52:	11 09       	sbc	r17, r1
 	lds r0,tr5_loop_end_lo
-    6f54:	00 90 02 0b 	lds	r0, 0x0B02
+    6f54:	00 90 82 0b 	lds	r0, 0x0B82
 	lds r1,tr5_loop_end_hi
-    6f58:	10 90 03 0b 	lds	r1, 0x0B03
+    6f58:	10 90 83 0b 	lds	r1, 0x0B83
 
 	cp ZL,r0
     6f5c:	e0 15       	cp	r30, r0
@@ -3997,14 +3941,14 @@ ch4_end:
     6f62:	f8 01       	movw	r30, r16
 
 	sts tr5_pos_lo,ZL
-    6f64:	e0 93 fe 0a 	sts	0x0AFE, r30
+    6f64:	e0 93 7e 0b 	sts	0x0B7E, r30
 	sts tr5_pos_hi,ZH
-    6f68:	f0 93 ff 0a 	sts	0x0AFF, r31
+    6f68:	f0 93 7f 0b 	sts	0x0B7F, r31
 
 	lpm	r16,Z	;load sample
     6f6c:	04 91       	lpm	r16, Z
 	lds r17,tr5_vol
-    6f6e:	10 91 fa 0a 	lds	r17, 0x0AFA
+    6f6e:	10 91 7a 0b 	lds	r17, 0x0B7A
 
 	mulsu r16,r17;(sample*mixing vol)
     6f72:	01 03       	mulsu	r16, r17
@@ -4071,9 +4015,9 @@ ch4_end:
 .section .text.SetSpritesTileTable
 SetSpritesTileTable:
 	sts sprites_tile_banks,r24
-    6fa0:	80 93 9d 0a 	sts	0x0A9D, r24
+    6fa0:	80 93 23 0b 	sts	0x0B23, r24
 	sts sprites_tile_banks+1,r25
-    6fa4:	90 93 9e 0a 	sts	0x0A9E, r25
+    6fa4:	90 93 24 0b 	sts	0x0B24, r25
 	ret
     6fa8:	08 95       	ret
 
@@ -4094,7 +4038,7 @@ ClearVram:
     6fb0:	b1 e0       	ldi	r27, 0x01	; 1
 
 	ldi r22,RAM_TILES_COUNT
-    6fb2:	67 e1       	ldi	r22, 0x17	; 23
+    6fb2:	69 e1       	ldi	r22, 0x19	; 25
 
 00006fb4 <fill_vram_loop>:
 
@@ -4119,7 +4063,7 @@ fill_vram_loop:
 .section .text.SetFont
 SetFont:
 	lds r21,font_tile_index
-    6fbe:	50 91 a7 0a 	lds	r21, 0x0AA7
+    6fbe:	50 91 2d 0b 	lds	r21, 0x0B2D
 	add r20,21
     6fc2:	45 0f       	add	r20, r21
 	rjmp SetTile	
@@ -4155,7 +4099,7 @@ SetFont:
     6fd8:	b1 1d       	adc	r27, r1
 	
 	subi r20,~(RAM_TILES_COUNT-1)	
-    6fda:	49 5e       	subi	r20, 0xE9	; 233
+    6fda:	47 5e       	subi	r20, 0xE7	; 231
 	st X,r20
     6fdc:	4c 93       	st	X, r20
 
@@ -4172,7 +4116,7 @@ SetFont:
 .section .text.SetFontTilesIndex
 	SetFontTilesIndex:
 	sts font_tile_index,r24
-    6fe2:	80 93 a7 0a 	sts	0x0AA7, r24
+    6fe2:	80 93 2d 0b 	sts	0x0B2D, r24
 	ret
     6fe6:	08 95       	ret
 
@@ -4183,9 +4127,9 @@ SetFont:
 .section .text.SetTileTable
 SetTileTable:
 	sts tile_table_lo,r24
-    6fe8:	80 93 a5 0a 	sts	0x0AA5, r24
+    6fe8:	80 93 2b 0b 	sts	0x0B2B, r24
 	sts tile_table_hi,r25	
-    6fec:	90 93 a6 0a 	sts	0x0AA6, r25
+    6fec:	90 93 2c 0b 	sts	0x0B2C, r25
 	ret
     6ff0:	08 95       	ret
 
@@ -4196,7 +4140,7 @@ SetTileTable:
 .section .text.GetVsyncFlag
 GetVsyncFlag:
 	lds r24,sync_flags
-    6ff2:	80 91 ae 0a 	lds	r24, 0x0AAE
+    6ff2:	80 91 34 0b 	lds	r24, 0x0B34
 	andi r24,SYNC_FLAG_VSYNC
     6ff6:	81 70       	andi	r24, 0x01	; 1
 	ret
@@ -4209,11 +4153,11 @@ GetVsyncFlag:
 .section .text.ClearVsyncFlag
 ClearVsyncFlag:
 	lds r18,sync_flags
-    6ffa:	20 91 ae 0a 	lds	r18, 0x0AAE
+    6ffa:	20 91 34 0b 	lds	r18, 0x0B34
 	andi r18,~SYNC_FLAG_VSYNC
     6ffe:	2e 7f       	andi	r18, 0xFE	; 254
 	sts sync_flags,r18
-    7000:	20 93 ae 0a 	sts	0x0AAE, r18
+    7000:	20 93 34 0b 	sts	0x0B34, r18
 	ret
     7004:	08 95       	ret
 
@@ -4229,18 +4173,18 @@ ReadJoypad:
     7008:	29 f4       	brne	.+10     	; 0x7014 <rj_p2>
 		
 	lds r24,joypad1_status_lo
-    700a:	80 91 b7 0a 	lds	r24, 0x0AB7
+    700a:	80 91 3d 0b 	lds	r24, 0x0B3D
 	lds r25,joypad1_status_lo+1
-    700e:	90 91 b8 0a 	lds	r25, 0x0AB8
+    700e:	90 91 3e 0b 	lds	r25, 0x0B3E
 	ret
     7012:	08 95       	ret
 
 00007014 <rj_p2>:
 rj_p2:
 	lds r24,joypad2_status_lo
-    7014:	80 91 bb 0a 	lds	r24, 0x0ABB
+    7014:	80 91 41 0b 	lds	r24, 0x0B41
 	lds r25,joypad2_status_lo+1	
-    7018:	90 91 bc 0a 	lds	r25, 0x0ABC
+    7018:	90 91 42 0b 	lds	r25, 0x0B42
 
 	ret
     701c:	08 95       	ret
@@ -4335,7 +4279,7 @@ ReadEeprom:
 		ldi r24,0
     7052:	80 e0       	ldi	r24, 0x00	; 0
 		sts sync_pulse,r24
-    7054:	80 93 ad 0a 	sts	0x0AAD, r24
+    7054:	80 93 33 0b 	sts	0x0B33, r24
 
 		sts _SFR_MEM_ADDR(TCCR1A),r24	
     7058:	80 93 80 00 	sts	0x0080, r24
@@ -4370,7 +4314,7 @@ ReadEeprom:
 		;generate 8 random cycles
 	wait:
 		lds r24,sync_pulse ;using the yet unalocated "sync_pulse" as a temp variable
-    707c:	80 91 ad 0a 	lds	r24, 0x0AAD
+    707c:	80 91 33 0b 	lds	r24, 0x0B33
 		cpi r24,8
     7080:	88 30       	cpi	r24, 0x08	; 8
 		brlo wait
@@ -4386,9 +4330,9 @@ ReadEeprom:
 	.section .text.GetRandomSeed
 	GetRandomSeed:
 		lds r24,random_value
-    7086:	80 91 bf 0a 	lds	r24, 0x0ABF
+    7086:	80 91 45 0b 	lds	r24, 0x0B45
 		lds r25,random_value+1
-    708a:	90 91 c0 0a 	lds	r25, 0x0AC0
+    708a:	90 91 46 0b 	lds	r25, 0x0B46
 		ret
     708e:	08 95       	ret
 
@@ -4409,11 +4353,11 @@ ReadEeprom:
     7096:	0f 93       	push	r16
 
 		lds r16,sync_pulse
-    7098:	00 91 ad 0a 	lds	r16, 0x0AAD
+    7098:	00 91 33 0b 	lds	r16, 0x0B33
 		inc r16
     709c:	03 95       	inc	r16
 		sts sync_pulse,r16
-    709e:	00 93 ad 0a 	sts	0x0AAD, r16
+    709e:	00 93 33 0b 	sts	0x0B33, r16
 
 		;XOR succesive timer1 LSB into a int
 		sbrc r16,0
@@ -4421,24 +4365,24 @@ ReadEeprom:
 		rjmp 1f
     70a4:	08 c0       	rjmp	.+16     	; 0x70b6 <__vector_8+0x26>
 		lds r17,random_value
-    70a6:	10 91 bf 0a 	lds	r17, 0x0ABF
+    70a6:	10 91 45 0b 	lds	r17, 0x0B45
 		lds r16,_SFR_MEM_ADDR(TCNT1L)
     70aa:	00 91 84 00 	lds	r16, 0x0084
 		eor r17,r16
     70ae:	10 27       	eor	r17, r16
 		sts random_value,r17
-    70b0:	10 93 bf 0a 	sts	0x0ABF, r17
+    70b0:	10 93 45 0b 	sts	0x0B45, r17
 		rjmp 2f
     70b4:	07 c0       	rjmp	.+14     	; 0x70c4 <__vector_8+0x34>
 	1:
 		lds r17,random_value+1
-    70b6:	10 91 c0 0a 	lds	r17, 0x0AC0
+    70b6:	10 91 46 0b 	lds	r17, 0x0B46
 		lds r16,_SFR_MEM_ADDR(TCNT1L)
     70ba:	00 91 84 00 	lds	r16, 0x0084
 		eor r17,r16
     70be:	10 27       	eor	r17, r16
 		sts random_value+1,r17
-    70c0:	10 93 c0 0a 	sts	0x0AC0, r17
+    70c0:	10 93 46 0b 	sts	0x0B46, r17
 	2:
 
 		ldi r16,(1<<WDIE)+(1<<WDE)
@@ -4572,23 +4516,23 @@ void ReadButtons(){
 
 	#if JOYSTICK==TYPE_SNES
 		joypad1_status_lo=p1ButtonsLo;
-    7128:	30 93 b8 0a 	sts	0x0AB8, r19
-    712c:	20 93 b7 0a 	sts	0x0AB7, r18
+    7128:	30 93 3e 0b 	sts	0x0B3E, r19
+    712c:	20 93 3d 0b 	sts	0x0B3D, r18
 		joypad2_status_lo=p2ButtonsLo;
-    7130:	90 93 bc 0a 	sts	0x0ABC, r25
-    7134:	80 93 bb 0a 	sts	0x0ABB, r24
+    7130:	90 93 42 0b 	sts	0x0B42, r25
+    7134:	80 93 41 0b 	sts	0x0B41, r24
 	#else
 		joypad1_status_lo=p1ButtonsLo&0xff;
 		joypad2_status_lo=p2ButtonsLo&0xff;	
 	#endif
 
 	if(joypad1_status_lo==(BTN_START+BTN_SELECT+BTN_Y+BTN_B) || joypad2_status_lo==(BTN_START+BTN_SELECT+BTN_Y+BTN_B)){
-    7138:	80 91 b7 0a 	lds	r24, 0x0AB7
-    713c:	90 91 b8 0a 	lds	r25, 0x0AB8
+    7138:	80 91 3d 0b 	lds	r24, 0x0B3D
+    713c:	90 91 3e 0b 	lds	r25, 0x0B3E
     7140:	0f 97       	sbiw	r24, 0x0f	; 15
     7142:	31 f0       	breq	.+12     	; 0x7150 <ReadButtons+0x66>
-    7144:	80 91 bb 0a 	lds	r24, 0x0ABB
-    7148:	90 91 bc 0a 	lds	r25, 0x0ABC
+    7144:	80 91 41 0b 	lds	r24, 0x0B41
+    7148:	90 91 42 0b 	lds	r25, 0x0B42
     714c:	0f 97       	sbiw	r24, 0x0f	; 15
     714e:	11 f4       	brne	.+4      	; 0x7154 <ReadButtons+0x6a>
 		SoftReset();
@@ -4602,18 +4546,18 @@ void ReadControllers(){
 	//when no connector are plugged, the internal AVR pullup will drive the line high
 	//otherwise the controller's shift register will drive the line low.
 	joypadsConnectionStatus=0;
-    7156:	10 92 1c 0b 	sts	0x0B1C, r1
+    7156:	10 92 9c 0b 	sts	0x0B9C, r1
 	if((JOYPAD_IN_PORT&(1<<JOYPAD_DATA1_PIN))==0) joypadsConnectionStatus|=1;
     715a:	00 99       	sbic	0x00, 0	; 0
     715c:	03 c0       	rjmp	.+6      	; 0x7164 <ReadControllers+0xe>
     715e:	81 e0       	ldi	r24, 0x01	; 1
-    7160:	80 93 1c 0b 	sts	0x0B1C, r24
+    7160:	80 93 9c 0b 	sts	0x0B9C, r24
 	if((JOYPAD_IN_PORT&(1<<JOYPAD_DATA2_PIN))==0) joypadsConnectionStatus|=2;
     7164:	01 99       	sbic	0x00, 1	; 0
     7166:	05 c0       	rjmp	.+10     	; 0x7172 <ReadControllers+0x1c>
-    7168:	80 91 1c 0b 	lds	r24, 0x0B1C
+    7168:	80 91 9c 0b 	lds	r24, 0x0B9C
     716c:	82 60       	ori	r24, 0x02	; 2
-    716e:	80 93 1c 0b 	sts	0x0B1C, r24
+    716e:	80 93 9c 0b 	sts	0x0B9C, r24
 			
 	//read the standard buttons
 	ReadButtons();
@@ -5048,8 +4992,8 @@ void PatchCommand00(struct TrackStruct* track,unsigned char trackNo, char param)
 void PatchCommand01(struct TrackStruct* track,unsigned char trackNo, char param){
 	#if MIXER_CHAN4_TYPE == 0
 		mixer.channels.type.noise.barrel=0x0101;
-    735a:	e2 ee       	ldi	r30, 0xE2	; 226
-    735c:	fa e0       	ldi	r31, 0x0A	; 10
+    735a:	e2 e6       	ldi	r30, 0x62	; 98
+    735c:	fb e0       	ldi	r31, 0x0B	; 11
     735e:	81 e0       	ldi	r24, 0x01	; 1
     7360:	91 e0       	ldi	r25, 0x01	; 1
     7362:	95 8b       	std	Z+21, r25	; 0x15
@@ -5159,7 +5103,7 @@ void PatchCommand11(struct TrackStruct* track,unsigned char trackNo, char param)
 	delta=((targetStep-currentStep)/tracks->slideSpeed);
     73c2:	86 1b       	sub	r24, r22
     73c4:	97 0b       	sbc	r25, r23
-    73c6:	60 91 24 0b 	lds	r22, 0x0B24
+    73c6:	60 91 a4 0b 	lds	r22, 0x0BA4
     73ca:	70 e0       	ldi	r23, 0x00	; 0
     73cc:	0e 94 61 5e 	call	0xbcc2	; 0xbcc2 <__divmodhi4>
 	if(delta==0)delta++;
@@ -5174,8 +5118,8 @@ void PatchCommand11(struct TrackStruct* track,unsigned char trackNo, char param)
     73dc:	18 9f       	mul	r17, r24
     73de:	f0 01       	movw	r30, r0
     73e0:	11 24       	eor	r1, r1
-    73e2:	ee 51       	subi	r30, 0x1E	; 30
-    73e4:	f5 4f       	sbci	r31, 0xF5	; 245
+    73e2:	ee 59       	subi	r30, 0x9E	; 158
+    73e4:	f4 4f       	sbci	r31, 0xF4	; 244
     73e6:	81 81       	ldd	r24, Z+1	; 0x01
     73e8:	92 81       	ldd	r25, Z+2	; 0x02
     73ea:	86 0f       	add	r24, r22
@@ -5207,7 +5151,7 @@ void PatchCommand11(struct TrackStruct* track,unsigned char trackNo, char param)
 */
 void PatchCommand12(struct TrackStruct* track,unsigned char trackNo, char param){
 	tracks->slideSpeed=param;
-    740a:	40 93 24 0b 	sts	0x0B24, r20
+    740a:	40 93 a4 0b 	sts	0x0BA4, r20
     740e:	08 95       	ret
 
 00007410 <PatchCommand02>:
@@ -5297,20 +5241,20 @@ const struct PatchStruct *patchPointers;
 void InitMusicPlayer(const struct PatchStruct *patchPointersParam){
 
 	patchPointers=patchPointersParam;
-    746a:	90 93 90 0b 	sts	0x0B90, r25
-    746e:	80 93 8f 0b 	sts	0x0B8F, r24
+    746a:	90 93 10 0c 	sts	0x0C10, r25
+    746e:	80 93 0f 0c 	sts	0x0C0F, r24
 
 	masterVolume=DEFAULT_MASTER_VOL;
     7472:	8f e6       	ldi	r24, 0x6F	; 111
-    7474:	80 93 92 0b 	sts	0x0B92, r24
+    7474:	80 93 12 0c 	sts	0x0C12, r24
 #if MIDI_IN == ENABLED
 	UartInitRxBuffer();
 	lastMidiInStatus=0;
 #endif
 
 	playSong=false;
-    7478:	10 92 e0 0a 	sts	0x0AE0, r1
-    747c:	ed e2       	ldi	r30, 0x2D	; 45
+    7478:	10 92 60 0b 	sts	0x0B60, r1
+    747c:	ed ea       	ldi	r30, 0xAD	; 173
     747e:	fb e0       	ldi	r31, 0x0B	; 11
 
 	//initialize default channels patches			
@@ -5357,8 +5301,8 @@ void InitMusicPlayer(const struct PatchStruct *patchPointersParam){
 
 	//initialize default channels patches			
 	for(unsigned char t=0;t<CHANNELS;t++){		
-    74a4:	3b e0       	ldi	r19, 0x0B	; 11
-    74a6:	eb 39       	cpi	r30, 0x9B	; 155
+    74a4:	3c e0       	ldi	r19, 0x0C	; 12
+    74a6:	eb 31       	cpi	r30, 0x1B	; 27
     74a8:	f3 07       	cpc	r31, r19
     74aa:	69 f7       	brne	.-38     	; 0x7486 <InitMusicPlayer+0x1c>
 		tracks[t].patchNo=DEFAULT_PATCH;
@@ -5458,7 +5402,7 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     7518:	83 9f       	mul	r24, r19
     751a:	f0 01       	movw	r30, r0
     751c:	11 24       	eor	r1, r1
-    751e:	e1 5e       	subi	r30, 0xE1	; 225
+    751e:	e1 56       	subi	r30, 0x61	; 97
     7520:	f4 4f       	sbci	r31, 0xF4	; 244
     7522:	80 81       	ld	r24, Z
     7524:	f8 2e       	mov	r15, r24
@@ -5503,11 +5447,11 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
 			mixer.channels.type.noise.barrel=0x0101;				
     754e:	81 e0       	ldi	r24, 0x01	; 1
     7550:	91 e0       	ldi	r25, 0x01	; 1
-    7552:	90 93 f7 0a 	sts	0x0AF7, r25
-    7556:	80 93 f6 0a 	sts	0x0AF6, r24
+    7552:	90 93 77 0b 	sts	0x0B77, r25
+    7556:	80 93 76 0b 	sts	0x0B76, r24
 			mixer.channels.type.noise.params=1; //default (15bits,no divider)
     755a:	81 e0       	ldi	r24, 0x01	; 1
-    755c:	80 93 f5 0a 	sts	0x0AF5, r24
+    755c:	80 93 75 0b 	sts	0x0B75, r24
     7560:	3c c0       	rjmp	.+120    	; 0x75da <TriggerCommon+0xe0>
 
 		#if SOUND_CHANNEL_5_ENABLE==1		
@@ -5518,10 +5462,10 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     7566:	2f c0       	rjmp	.+94     	; 0x75c6 <TriggerCommon+0xcc>
 				//PCM channel					
 				mixer.channels.type.pcm.positionFrac=0;
-    7568:	10 92 fd 0a 	sts	0x0AFD, r1
+    7568:	10 92 7d 0b 	sts	0x0B7D, r1
 				const char *pos=(const char*)pgm_read_word(&(patchPointers[patch].pcmData));
-    756c:	80 91 8f 0b 	lds	r24, 0x0B8F
-    7570:	90 91 90 0b 	lds	r25, 0x0B90
+    756c:	80 91 0f 0c 	lds	r24, 0x0C0F
+    7570:	90 91 10 0c 	lds	r25, 0x0C10
     7574:	e9 e0       	ldi	r30, 0x09	; 9
     7576:	6e 9f       	mul	r22, r30
     7578:	80 0d       	add	r24, r0
@@ -5532,8 +5476,8 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     7582:	65 91       	lpm	r22, Z+
     7584:	74 91       	lpm	r23, Z
 				mixer.channels.type.pcm.position=pos;				
-    7586:	70 93 ff 0a 	sts	0x0AFF, r23
-    758a:	60 93 fe 0a 	sts	0x0AFE, r22
+    7586:	70 93 7f 0b 	sts	0x0B7F, r23
+    758a:	60 93 7e 0b 	sts	0x0B7E, r22
 				mixer.pcmLoopLenght=pgm_read_word(&(patchPointers[patch].loopEnd))-pgm_read_word(&(patchPointers[patch].loopStart));
     758e:	ac 01       	movw	r20, r24
     7590:	49 5f       	subi	r20, 0xF9	; 249
@@ -5547,16 +5491,16 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     75a0:	94 91       	lpm	r25, Z
     75a2:	a8 1b       	sub	r26, r24
     75a4:	b9 0b       	sbc	r27, r25
-    75a6:	b0 93 01 0b 	sts	0x0B01, r27
-    75aa:	a0 93 00 0b 	sts	0x0B00, r26
+    75a6:	b0 93 81 0b 	sts	0x0B81, r27
+    75aa:	a0 93 80 0b 	sts	0x0B80, r26
 				mixer.pcmLoopEnd=pos+pgm_read_word(&(patchPointers[patch].loopEnd));
     75ae:	fa 01       	movw	r30, r20
     75b0:	85 91       	lpm	r24, Z+
     75b2:	94 91       	lpm	r25, Z
     75b4:	68 0f       	add	r22, r24
     75b6:	79 1f       	adc	r23, r25
-    75b8:	70 93 03 0b 	sts	0x0B03, r23
-    75bc:	60 93 02 0b 	sts	0x0B02, r22
+    75b8:	70 93 83 0b 	sts	0x0B83, r23
+    75bc:	60 93 82 0b 	sts	0x0B82, r22
 				SetMixerNote(channel,note);
     75c0:	62 2f       	mov	r22, r18
     75c2:	84 e0       	ldi	r24, 0x04	; 4
@@ -5587,7 +5531,7 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     75e0:	8d 9d       	mul	r24, r13
     75e2:	f0 0d       	add	r31, r0
     75e4:	11 24       	eor	r1, r1
-    75e6:	e1 5e       	subi	r30, 0xE1	; 225
+    75e6:	e1 56       	subi	r30, 0x61	; 97
     75e8:	f4 4f       	sbci	r31, 0xF4	; 244
 
 		#endif
@@ -5606,8 +5550,8 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
 	}
 
 	const char *pos = (const char*)pgm_read_word(&(patchPointers[patch].cmdStream));
-    75f4:	e0 91 8f 0b 	lds	r30, 0x0B8F
-    75f8:	f0 91 90 0b 	lds	r31, 0x0B90
+    75f4:	e0 91 0f 0c 	lds	r30, 0x0C0F
+    75f8:	f0 91 10 0c 	lds	r31, 0x0C10
     75fc:	39 e0       	ldi	r19, 0x09	; 9
     75fe:	03 9f       	mul	r16, r19
     7600:	e0 0d       	add	r30, r0
@@ -5626,7 +5570,7 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     7616:	8d 9d       	mul	r24, r13
     7618:	f0 0d       	add	r31, r0
     761a:	11 24       	eor	r1, r1
-    761c:	e1 5e       	subi	r30, 0xE1	; 225
+    761c:	e1 56       	subi	r30, 0x61	; 97
     761e:	f4 4f       	sbci	r31, 0xF4	; 244
     7620:	15 8a       	std	Z+21, r1	; 0x15
     7622:	14 8a       	std	Z+20, r1	; 0x14
@@ -5641,7 +5585,7 @@ void TriggerCommon(u8 channel,u8 patch,u8 volume,u8 note){
     7630:	3d 9d       	mul	r19, r13
     7632:	f0 0d       	add	r31, r0
     7634:	11 24       	eor	r1, r1
-    7636:	e1 5e       	subi	r30, 0xE1	; 225
+    7636:	e1 56       	subi	r30, 0x61	; 97
     7638:	f4 4f       	sbci	r31, 0xF4	; 244
     763a:	21 8b       	std	Z+17, r18	; 0x11
     763c:	01 96       	adiw	r24, 0x01	; 1
@@ -5678,7 +5622,7 @@ void TriggerNote(unsigned char channel,unsigned char patch,unsigned char note,un
     765c:	89 9f       	mul	r24, r25
     765e:	f0 01       	movw	r30, r0
     7660:	11 24       	eor	r1, r1
-    7662:	e1 5e       	subi	r30, 0xE1	; 225
+    7662:	e1 56       	subi	r30, 0x61	; 97
     7664:	f4 4f       	sbci	r31, 0xF4	; 244
     7666:	90 81       	ld	r25, Z
     7668:	95 ff       	sbrs	r25, 5
@@ -5699,7 +5643,7 @@ void TriggerNote(unsigned char channel,unsigned char patch,unsigned char note,un
     767a:	8b 9f       	mul	r24, r27
     767c:	f0 0d       	add	r31, r0
     767e:	11 24       	eor	r1, r1
-    7680:	e1 5e       	subi	r30, 0xE1	; 225
+    7680:	e1 56       	subi	r30, 0x61	; 97
     7682:	f4 4f       	sbci	r31, 0xF4	; 244
     7684:	85 85       	ldd	r24, Z+13	; 0x0d
     7686:	81 11       	cpse	r24, r1
@@ -5716,7 +5660,7 @@ void TriggerNote(unsigned char channel,unsigned char patch,unsigned char note,un
     7694:	8b 9f       	mul	r24, r27
     7696:	f0 0d       	add	r31, r0
     7698:	11 24       	eor	r1, r1
-    769a:	e1 5e       	subi	r30, 0xE1	; 225
+    769a:	e1 56       	subi	r30, 0x61	; 97
     769c:	f4 4f       	sbci	r31, 0xF4	; 244
     769e:	9f 7b       	andi	r25, 0xBF	; 191
     76a0:	90 83       	st	Z, r25
@@ -5730,7 +5674,7 @@ void TriggerNote(unsigned char channel,unsigned char patch,unsigned char note,un
     76aa:	2b 9f       	mul	r18, r27
     76ac:	f0 0d       	add	r31, r0
     76ae:	11 24       	eor	r1, r1
-    76b0:	e1 5e       	subi	r30, 0xE1	; 225
+    76b0:	e1 56       	subi	r30, 0x61	; 97
     76b2:	f4 4f       	sbci	r31, 0xF4	; 244
     76b4:	9f 77       	andi	r25, 0x7F	; 127
     76b6:	90 83       	st	Z, r25
@@ -5762,18 +5706,18 @@ void ProcessMusic(void){
     76da:	1f 93       	push	r17
     76dc:	cf 93       	push	r28
     76de:	df 93       	push	r29
-    76e0:	cf e1       	ldi	r28, 0x1F	; 31
+    76e0:	cf e9       	ldi	r28, 0x9F	; 159
     76e2:	db e0       	ldi	r29, 0x0B	; 11
-    76e4:	82 ee       	ldi	r24, 0xE2	; 226
+    76e4:	82 e6       	ldi	r24, 0x62	; 98
     76e6:	e8 2e       	mov	r14, r24
-    76e8:	8a e0       	ldi	r24, 0x0A	; 10
+    76e8:	8b e0       	ldi	r24, 0x0B	; 11
     76ea:	f8 2e       	mov	r15, r24
     76ec:	d7 01       	movw	r26, r14
     76ee:	9e 01       	movw	r18, r28
     76f0:	40 e0       	ldi	r20, 0x00	; 0
     76f2:	50 e0       	ldi	r21, 0x00	; 0
     76f4:	ca 01       	movw	r24, r20
-    76f6:	81 5e       	subi	r24, 0xE1	; 225
+    76f6:	81 56       	subi	r24, 0x61	; 97
     76f8:	94 4f       	sbci	r25, 0xF4	; 244
     76fa:	6c 01       	movw	r12, r24
 	//process patches envelopes & pitch slides
@@ -5889,7 +5833,7 @@ void ProcessMusic(void){
 
 	//Process song MIDI notes
 	if(playSong){
-    7794:	80 91 e0 0a 	lds	r24, 0x0AE0
+    7794:	80 91 60 0b 	lds	r24, 0x0B60
     7798:	88 23       	and	r24, r24
     779a:	09 f4       	brne	.+2      	; 0x779e <ProcessMusic+0xdc>
     779c:	cb c0       	rjmp	.+406    	; 0x7934 <ProcessMusic+0x272>
@@ -5906,23 +5850,23 @@ void ProcessMusic(void){
 
 			//process all simultaneous events
 			while(currDeltaTime==nextDeltaTime){
-    77a0:	80 91 8d 0b 	lds	r24, 0x0B8D
-    77a4:	90 91 8e 0b 	lds	r25, 0x0B8E
-    77a8:	20 91 93 0b 	lds	r18, 0x0B93
-    77ac:	30 91 94 0b 	lds	r19, 0x0B94
+    77a0:	80 91 0d 0c 	lds	r24, 0x0C0D
+    77a4:	90 91 0e 0c 	lds	r25, 0x0C0E
+    77a8:	20 91 13 0c 	lds	r18, 0x0C13
+    77ac:	30 91 14 0c 	lds	r19, 0x0C14
     77b0:	82 17       	cp	r24, r18
     77b2:	93 07       	cpc	r25, r19
     77b4:	09 f0       	breq	.+2      	; 0x77b8 <ProcessMusic+0xf6>
     77b6:	b9 c0       	rjmp	.+370    	; 0x792a <ProcessMusic+0x268>
 
 				c1=pgm_read_byte(songPos++);
-    77b8:	20 91 96 0b 	lds	r18, 0x0B96
-    77bc:	30 91 97 0b 	lds	r19, 0x0B97
+    77b8:	20 91 16 0c 	lds	r18, 0x0C16
+    77bc:	30 91 17 0c 	lds	r19, 0x0C17
     77c0:	b9 01       	movw	r22, r18
     77c2:	6f 5f       	subi	r22, 0xFF	; 255
     77c4:	7f 4f       	sbci	r23, 0xFF	; 255
-    77c6:	70 93 97 0b 	sts	0x0B97, r23
-    77ca:	60 93 96 0b 	sts	0x0B96, r22
+    77c6:	70 93 17 0c 	sts	0x0C17, r23
+    77ca:	60 93 16 0c 	sts	0x0C16, r22
     77ce:	f9 01       	movw	r30, r18
     77d0:	44 91       	lpm	r20, Z
 			
@@ -5934,8 +5878,8 @@ void ProcessMusic(void){
     77d6:	a9 01       	movw	r20, r18
     77d8:	4e 5f       	subi	r20, 0xFE	; 254
     77da:	5f 4f       	sbci	r21, 0xFF	; 255
-    77dc:	50 93 97 0b 	sts	0x0B97, r21
-    77e0:	40 93 96 0b 	sts	0x0B96, r20
+    77dc:	50 93 17 0c 	sts	0x0C17, r21
+    77e0:	40 93 16 0c 	sts	0x0C16, r20
     77e4:	fb 01       	movw	r30, r22
     77e6:	64 91       	lpm	r22, Z
 
@@ -5944,7 +5888,7 @@ void ProcessMusic(void){
     77e8:	6f 32       	cpi	r22, 0x2F	; 47
     77ea:	19 f4       	brne	.+6      	; 0x77f2 <ProcessMusic+0x130>
 						playSong=false;
-    77ec:	10 92 e0 0a 	sts	0x0AE0, r1
+    77ec:	10 92 60 0b 	sts	0x0B60, r1
 						break;	
     77f0:	9c c0       	rjmp	.+312    	; 0x792a <ProcessMusic+0x268>
 					}else if(c1==0x6){ //marker
@@ -5957,8 +5901,8 @@ void ProcessMusic(void){
 						c2=pgm_read_byte(songPos++); //read data
     77fc:	c9 01       	movw	r24, r18
     77fe:	04 96       	adiw	r24, 0x04	; 4
-    7800:	90 93 97 0b 	sts	0x0B97, r25
-    7804:	80 93 96 0b 	sts	0x0B96, r24
+    7800:	90 93 17 0c 	sts	0x0C17, r25
+    7804:	80 93 16 0c 	sts	0x0C16, r24
 				
 					if(c1==0x2f){ //end of song
 						playSong=false;
@@ -5973,18 +5917,18 @@ void ProcessMusic(void){
     780e:	e3 35       	cpi	r30, 0x53	; 83
     7810:	29 f4       	brne	.+10     	; 0x781c <ProcessMusic+0x15a>
 							loopStart=songPos;
-    7812:	90 93 99 0b 	sts	0x0B99, r25
-    7816:	80 93 98 0b 	sts	0x0B98, r24
+    7812:	90 93 19 0c 	sts	0x0C19, r25
+    7816:	80 93 18 0c 	sts	0x0C18, r24
     781a:	7a c0       	rjmp	.+244    	; 0x7910 <ProcessMusic+0x24e>
 						}else if(c2=='E'){//loop end
     781c:	e5 34       	cpi	r30, 0x45	; 69
     781e:	09 f0       	breq	.+2      	; 0x7822 <ProcessMusic+0x160>
     7820:	77 c0       	rjmp	.+238    	; 0x7910 <ProcessMusic+0x24e>
 							songPos=loopStart;
-    7822:	80 91 98 0b 	lds	r24, 0x0B98
-    7826:	90 91 99 0b 	lds	r25, 0x0B99
-    782a:	90 93 97 0b 	sts	0x0B97, r25
-    782e:	80 93 96 0b 	sts	0x0B96, r24
+    7822:	80 91 18 0c 	lds	r24, 0x0C18
+    7826:	90 91 19 0c 	lds	r25, 0x0C19
+    782a:	90 93 17 0c 	sts	0x0C17, r25
+    782e:	80 93 16 0c 	sts	0x0C16, r24
     7832:	6e c0       	rjmp	.+220    	; 0x7910 <ProcessMusic+0x24e>
 					}
 				
@@ -5993,9 +5937,9 @@ void ProcessMusic(void){
 
 					if(c1&0x80) lastStatus=c1;					
     7834:	47 fd       	sbrc	r20, 7
-    7836:	40 93 91 0b 	sts	0x0B91, r20
+    7836:	40 93 11 0c 	sts	0x0C11, r20
 					channel=lastStatus&0x0f;
-    783a:	90 91 91 0b 	lds	r25, 0x0B91
+    783a:	90 91 11 0c 	lds	r25, 0x0C11
     783e:	89 2f       	mov	r24, r25
     7840:	8f 70       	andi	r24, 0x0F	; 15
 				
@@ -6007,8 +5951,8 @@ void ProcessMusic(void){
     7844:	08 c0       	rjmp	.+16     	; 0x7856 <ProcessMusic+0x194>
     7846:	2e 5f       	subi	r18, 0xFE	; 254
     7848:	3f 4f       	sbci	r19, 0xFF	; 255
-    784a:	30 93 97 0b 	sts	0x0B97, r19
-    784e:	20 93 96 0b 	sts	0x0B96, r18
+    784a:	30 93 17 0c 	sts	0x0C17, r19
+    784e:	20 93 16 0c 	sts	0x0C16, r18
     7852:	fb 01       	movw	r30, r22
     7854:	44 91       	lpm	r20, Z
 
@@ -6027,13 +5971,13 @@ void ProcessMusic(void){
 						case 0x90:
 							//c1 = note						
 							c2=pgm_read_byte(songPos++)<<1; //get volume
-    7868:	e0 91 96 0b 	lds	r30, 0x0B96
-    786c:	f0 91 97 0b 	lds	r31, 0x0B97
+    7868:	e0 91 16 0c 	lds	r30, 0x0C16
+    786c:	f0 91 17 0c 	lds	r31, 0x0C17
     7870:	9f 01       	movw	r18, r30
     7872:	2f 5f       	subi	r18, 0xFF	; 255
     7874:	3f 4f       	sbci	r19, 0xFF	; 255
-    7876:	30 93 97 0b 	sts	0x0B97, r19
-    787a:	20 93 96 0b 	sts	0x0B96, r18
+    7876:	30 93 17 0c 	sts	0x0C17, r19
+    787a:	20 93 16 0c 	sts	0x0C16, r18
     787e:	24 91       	lpm	r18, Z
     7880:	22 0f       	add	r18, r18
 						
@@ -6042,7 +5986,7 @@ void ProcessMusic(void){
     7882:	18 9f       	mul	r17, r24
     7884:	f0 01       	movw	r30, r0
     7886:	11 24       	eor	r1, r1
-    7888:	e1 5e       	subi	r30, 0xE1	; 225
+    7888:	e1 56       	subi	r30, 0x61	; 97
     788a:	f4 4f       	sbci	r31, 0xF4	; 244
     788c:	66 85       	ldd	r22, Z+14	; 0x0e
     788e:	0e 94 2a 3b 	call	0x7654	; 0x7654 <TriggerNote>
@@ -6053,13 +5997,13 @@ void ProcessMusic(void){
 						case 0xb0:
 							///c1 = controller #
 							c2=pgm_read_byte(songPos++); //get controller value
-    7894:	e0 91 96 0b 	lds	r30, 0x0B96
-    7898:	f0 91 97 0b 	lds	r31, 0x0B97
+    7894:	e0 91 16 0c 	lds	r30, 0x0C16
+    7898:	f0 91 17 0c 	lds	r31, 0x0C17
     789c:	9f 01       	movw	r18, r30
     789e:	2f 5f       	subi	r18, 0xFF	; 255
     78a0:	3f 4f       	sbci	r19, 0xFF	; 255
-    78a2:	30 93 97 0b 	sts	0x0B97, r19
-    78a6:	20 93 96 0b 	sts	0x0B96, r18
+    78a2:	30 93 17 0c 	sts	0x0C17, r19
+    78a6:	20 93 16 0c 	sts	0x0C16, r18
     78aa:	e4 91       	lpm	r30, Z
 						
 							if(c1==CONTROLER_VOL){
@@ -6069,7 +6013,7 @@ void ProcessMusic(void){
     78b0:	18 9f       	mul	r17, r24
     78b2:	d0 01       	movw	r26, r0
     78b4:	11 24       	eor	r1, r1
-    78b6:	a1 5e       	subi	r26, 0xE1	; 225
+    78b6:	a1 56       	subi	r26, 0x61	; 97
     78b8:	b4 4f       	sbci	r27, 0xF4	; 244
     78ba:	ee 0f       	add	r30, r30
     78bc:	1a 96       	adiw	r26, 0x0a	; 10
@@ -6082,7 +6026,7 @@ void ProcessMusic(void){
     78c6:	18 9f       	mul	r17, r24
     78c8:	d0 01       	movw	r26, r0
     78ca:	11 24       	eor	r1, r1
-    78cc:	a1 5e       	subi	r26, 0xE1	; 225
+    78cc:	a1 56       	subi	r26, 0x61	; 97
     78ce:	b4 4f       	sbci	r27, 0xF4	; 244
     78d0:	ee 0f       	add	r30, r30
     78d2:	19 96       	adiw	r26, 0x09	; 9
@@ -6095,7 +6039,7 @@ void ProcessMusic(void){
     78dc:	18 9f       	mul	r17, r24
     78de:	d0 01       	movw	r26, r0
     78e0:	11 24       	eor	r1, r1
-    78e2:	a1 5e       	subi	r26, 0xE1	; 225
+    78e2:	a1 56       	subi	r26, 0x61	; 97
     78e4:	b4 4f       	sbci	r27, 0xF4	; 244
     78e6:	ee 0f       	add	r30, r30
     78e8:	17 96       	adiw	r26, 0x07	; 7
@@ -6108,7 +6052,7 @@ void ProcessMusic(void){
     78f2:	18 9f       	mul	r17, r24
     78f4:	d0 01       	movw	r26, r0
     78f6:	11 24       	eor	r1, r1
-    78f8:	a1 5e       	subi	r26, 0xE1	; 225
+    78f8:	a1 56       	subi	r26, 0x61	; 97
     78fa:	b4 4f       	sbci	r27, 0xF4	; 244
     78fc:	ee 0f       	add	r30, r30
     78fe:	18 96       	adiw	r26, 0x08	; 8
@@ -6123,7 +6067,7 @@ void ProcessMusic(void){
     7904:	18 9f       	mul	r17, r24
     7906:	f0 01       	movw	r30, r0
     7908:	11 24       	eor	r1, r1
-    790a:	e1 5e       	subi	r30, 0xE1	; 225
+    790a:	e1 56       	subi	r30, 0x61	; 97
     790c:	f4 4f       	sbci	r31, 0xF4	; 244
     790e:	46 87       	std	Z+14, r20	; 0x0e
 
@@ -6132,14 +6076,14 @@ void ProcessMusic(void){
 
 				//read next delta time
 				nextDeltaTime=ReadVarLen(&songPos);			
-    7910:	86 e9       	ldi	r24, 0x96	; 150
-    7912:	9b e0       	ldi	r25, 0x0B	; 11
+    7910:	86 e1       	ldi	r24, 0x16	; 22
+    7912:	9c e0       	ldi	r25, 0x0C	; 12
     7914:	0e 94 57 3a 	call	0x74ae	; 0x74ae <ReadVarLen>
-    7918:	90 93 94 0b 	sts	0x0B94, r25
-    791c:	80 93 93 0b 	sts	0x0B93, r24
+    7918:	90 93 14 0c 	sts	0x0C14, r25
+    791c:	80 93 13 0c 	sts	0x0C13, r24
 				currDeltaTime=0;
-    7920:	10 92 8e 0b 	sts	0x0B8E, r1
-    7924:	10 92 8d 0b 	sts	0x0B8D, r1
+    7920:	10 92 0e 0c 	sts	0x0C0E, r1
+    7924:	10 92 0d 0c 	sts	0x0C0D, r1
     7928:	3b cf       	rjmp	.-394    	; 0x77a0 <ProcessMusic+0xde>
 					}
 				#endif
@@ -6148,19 +6092,19 @@ void ProcessMusic(void){
 		
 			currDeltaTime++;
     792a:	01 96       	adiw	r24, 0x01	; 1
-    792c:	90 93 8e 0b 	sts	0x0B8E, r25
-    7930:	80 93 8d 0b 	sts	0x0B8D, r24
-    7934:	95 e2       	ldi	r25, 0x25	; 37
+    792c:	90 93 0e 0c 	sts	0x0C0E, r25
+    7930:	80 93 0d 0c 	sts	0x0C0D, r24
+    7934:	95 ea       	ldi	r25, 0xA5	; 165
     7936:	a9 2e       	mov	r10, r25
     7938:	9b e0       	ldi	r25, 0x0B	; 11
     793a:	b9 2e       	mov	r11, r25
-    793c:	01 e3       	ldi	r16, 0x31	; 49
+    793c:	01 eb       	ldi	r16, 0xB1	; 177
     793e:	1b e0       	ldi	r17, 0x0B	; 11
-    7940:	20 e3       	ldi	r18, 0x30	; 48
+    7940:	20 eb       	ldi	r18, 0xB0	; 176
     7942:	c2 2e       	mov	r12, r18
     7944:	2b e0       	ldi	r18, 0x0B	; 11
     7946:	d2 2e       	mov	r13, r18
-    7948:	32 e3       	ldi	r19, 0x32	; 50
+    7948:	32 eb       	ldi	r19, 0xB2	; 178
     794a:	83 2e       	mov	r8, r19
     794c:	3b e0       	ldi	r19, 0x0B	; 11
     794e:	93 2e       	mov	r9, r19
@@ -6343,7 +6287,7 @@ void ProcessMusic(void){
     7a1a:	99 23       	and	r25, r25
     7a1c:	09 f4       	brne	.+2      	; 0x7a20 <ProcessMusic+0x35e>
     7a1e:	46 c0       	rjmp	.+140    	; 0x7aac <ProcessMusic+0x3ea>
-    7a20:	40 91 92 0b 	lds	r20, 0x0B92
+    7a20:	40 91 12 0c 	lds	r20, 0x0C12
     7a24:	44 23       	and	r20, r20
     7a26:	09 f4       	brne	.+2      	; 0x7a2a <ProcessMusic+0x368>
     7a28:	41 c0       	rjmp	.+130    	; 0x7aac <ProcessMusic+0x3ea>
@@ -6515,7 +6459,7 @@ void ProcessMusic(void){
 
 void SetMasterVolume(unsigned char vol){
 	masterVolume=vol;
-    7b10:	80 93 92 0b 	sts	0x0B92, r24
+    7b10:	80 93 12 0c 	sts	0x0C12, r24
     7b14:	08 95       	ret
 
 00007b16 <SetMixerNote>:
@@ -6565,9 +6509,9 @@ set_note_waves:
     7b2e:	b4 91       	lpm	r27, Z
 
 	ldi ZL,lo8(mixerStruct)
-    7b30:	e2 ee       	ldi	r30, 0xE2	; 226
+    7b30:	e2 e6       	ldi	r30, 0x62	; 98
 	ldi ZH,hi8(mixerStruct)
-    7b32:	fa e0       	ldi	r31, 0x0A	; 10
+    7b32:	fb e0       	ldi	r31, 0x0B	; 11
 	ldi r18,CHANNEL_STRUCT_SIZE
     7b34:	26 e0       	ldi	r18, 0x06	; 6
 	mul r18,r24
@@ -6601,9 +6545,9 @@ SetMixerWave:
     7b46:	77 27       	eor	r23, r23
 
 	ldi ZL,lo8(mixerStruct)
-    7b48:	e2 ee       	ldi	r30, 0xE2	; 226
+    7b48:	e2 e6       	ldi	r30, 0x62	; 98
 	ldi ZH,hi8(mixerStruct)
-    7b4a:	fa e0       	ldi	r31, 0x0A	; 10
+    7b4a:	fb e0       	ldi	r31, 0x0B	; 11
 	ldi r18,CHANNEL_STRUCT_SIZE
     7b4c:	26 e0       	ldi	r18, 0x06	; 6
 	mul r18,r24	
@@ -6619,11 +6563,11 @@ SetMixerWave:
 	brne smw1
     7b56:	31 f4       	brne	.+12     	; 0x7b64 <smw1>
 	lds r22,tr4_params
-    7b58:	60 91 f5 0a 	lds	r22, 0x0AF5
+    7b58:	60 91 75 0b 	lds	r22, 0x0B75
 	andi r22,0xfe;
     7b5c:	6e 7f       	andi	r22, 0xFE	; 254
 	sts tr4_params,r22
-    7b5e:	60 93 f5 0a 	sts	0x0AF5, r22
+    7b5e:	60 93 75 0b 	sts	0x0B75, r22
 	rjmp esmw	
     7b62:	0b c0       	rjmp	.+22     	; 0x7b7a <esmw>
 
@@ -6634,11 +6578,11 @@ smw1:
 	brne smw2
     7b66:	31 f4       	brne	.+12     	; 0x7b74 <smw2>
 	lds r22,tr4_params
-    7b68:	60 91 f5 0a 	lds	r22, 0x0AF5
+    7b68:	60 91 75 0b 	lds	r22, 0x0B75
 	ori r22,0xfe;
     7b6c:	6e 6f       	ori	r22, 0xFE	; 254
 	sts tr4_params,r22	
-    7b6e:	60 93 f5 0a 	sts	0x0AF5, r22
+    7b6e:	60 93 75 0b 	sts	0x0B75, r22
 	rjmp esmw
     7b72:	03 c0       	rjmp	.+6      	; 0x7b7a <esmw>
 
@@ -6671,7 +6615,7 @@ DisableSoundEngine:
 	ldi r24,0
     7c00:	80 e0       	ldi	r24, 0x00	; 0
 	sts sound_enabled,r24
-    7c02:	80 93 e1 0a 	sts	0x0AE1, r24
+    7c02:	80 93 61 0b 	sts	0x0B61, r24
 	ret
     7c06:	08 95       	ret
 
@@ -8088,8 +8032,8 @@ DisableSoundEngine:
 	void RestoreBackground(){
 		unsigned char i;
 		for(i=0;i<free_tile_index;i++){			
-    8800:	90 91 9d 0b 	lds	r25, 0x0B9D
-    8804:	e8 e5       	ldi	r30, 0x58	; 88
+    8800:	90 91 1d 0c 	lds	r25, 0x0C1D
+    8804:	e8 ed       	ldi	r30, 0xD8	; 216
     8806:	fa e0       	ldi	r31, 0x0A	; 10
     8808:	80 e0       	ldi	r24, 0x00	; 0
     880a:	89 17       	cp	r24, r25
@@ -8157,7 +8101,7 @@ DisableSoundEngine:
 		unsigned int ramPtr,ssx,ssy;
 
 		free_tile_index=0;	
-    8854:	10 92 9d 0b 	sts	0x0B9D, r1
+    8854:	10 92 1d 0c 	sts	0x0C1D, r1
 		if(!spritesOn) return;
     8858:	80 91 00 01 	lds	r24, 0x0100
     885c:	88 23       	and	r24, r24
@@ -8317,10 +8261,10 @@ DisableSoundEngine:
     8900:	80 81       	ld	r24, Z
 
 							if( (bt>=RAM_TILES_COUNT)  && (free_tile_index < RAM_TILES_COUNT) ){
-    8902:	87 31       	cpi	r24, 0x17	; 23
+    8902:	89 31       	cpi	r24, 0x19	; 25
     8904:	e0 f0       	brcs	.+56     	; 0x893e <ProcessSprites+0x116>
-    8906:	60 91 9d 0b 	lds	r22, 0x0B9D
-    890a:	67 31       	cpi	r22, 0x17	; 23
+    8906:	60 91 1d 0c 	lds	r22, 0x0C1D
+    890a:	69 31       	cpi	r22, 0x19	; 25
     890c:	f8 f4       	brcc	.+62     	; 0x894c <ProcessSprites+0x124>
 
 								//tile is mapped to flash. Copy it to next free RAM tile.
@@ -8333,7 +8277,7 @@ DisableSoundEngine:
     8916:	ff 1f       	adc	r31, r31
     8918:	e2 0f       	add	r30, r18
     891a:	f3 1f       	adc	r31, r19
-    891c:	e8 5a       	subi	r30, 0xA8	; 168
+    891c:	e8 52       	subi	r30, 0x28	; 40
     891e:	f5 4f       	sbci	r31, 0xF5	; 245
     8920:	51 83       	std	Z+1, r21	; 0x01
     8922:	40 83       	st	Z, r20
@@ -8344,18 +8288,18 @@ DisableSoundEngine:
     8926:	0e 94 1e 35 	call	0x6a3c	; 0x6a3c <CopyTileToRam>
 
 								vram[ramPtr]=free_tile_index;
-    892a:	80 91 9d 0b 	lds	r24, 0x0B9D
+    892a:	80 91 1d 0c 	lds	r24, 0x0C1D
     892e:	f4 01       	movw	r30, r8
     8930:	80 83       	st	Z, r24
 								bt=free_tile_index;
 								free_tile_index++;										
     8932:	91 e0       	ldi	r25, 0x01	; 1
     8934:	98 0f       	add	r25, r24
-    8936:	90 93 9d 0b 	sts	0x0B9D, r25
+    8936:	90 93 1d 0c 	sts	0x0C1D, r25
 							}
 				
 							if(bt<RAM_TILES_COUNT){				
-    893a:	87 31       	cpi	r24, 0x17	; 23
+    893a:	89 31       	cpi	r24, 0x19	; 25
     893c:	38 f4       	brcc	.+14     	; 0x894c <ProcessSprites+0x124>
 								BlitSprite(i,bt,(y<<8)+x,(dy<<8)+dx);						
     893e:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -9027,18 +8971,18 @@ bool volatile fadeActive;
 
 void doFade(unsigned char speed,bool blocking){
 	fadeSpeed=speed;
-    8c3e:	80 93 9b 0b 	sts	0x0B9B, r24
+    8c3e:	80 93 1b 0c 	sts	0x0C1B, r24
 	currFadeFrame=0;
-    8c42:	10 92 9f 0b 	sts	0x0B9F, r1
+    8c42:	10 92 1f 0c 	sts	0x0C1F, r1
 	fadeActive=true;
     8c46:	81 e0       	ldi	r24, 0x01	; 1
-    8c48:	80 93 9e 0b 	sts	0x0B9E, r24
+    8c48:	80 93 1e 0c 	sts	0x0C1E, r24
 		
 	if(blocking){
     8c4c:	66 23       	and	r22, r22
     8c4e:	21 f0       	breq	.+8      	; 0x8c58 <doFade+0x1a>
 		while(fadeActive==true);
-    8c50:	80 91 9e 0b 	lds	r24, 0x0B9E
+    8c50:	80 91 1e 0c 	lds	r24, 0x0C1E
     8c54:	81 11       	cpse	r24, r1
     8c56:	fc cf       	rjmp	.-8      	; 0x8c50 <doFade+0x12>
     8c58:	08 95       	ret
@@ -9060,9 +9004,9 @@ void FadeIn(unsigned char speed,bool blocking){
 	}
 	fadeStep=1;
     8c64:	91 e0       	ldi	r25, 0x01	; 1
-    8c66:	90 93 a0 0b 	sts	0x0BA0, r25
+    8c66:	90 93 20 0c 	sts	0x0C20, r25
 	fadeDir=1;
-    8c6a:	90 93 9c 0b 	sts	0x0B9C, r25
+    8c6a:	90 93 1c 0c 	sts	0x0C1C, r25
 	doFade(speed,blocking);
     8c6e:	0c 94 1f 46 	jmp	0x8c3e	; 0x8c3e <doFade>
 
@@ -9081,10 +9025,10 @@ void FadeOut(unsigned char speed,bool blocking){
 	
 	fadeStep=FADER_STEPS;
     8c7a:	9c e0       	ldi	r25, 0x0C	; 12
-    8c7c:	90 93 a0 0b 	sts	0x0BA0, r25
+    8c7c:	90 93 20 0c 	sts	0x0C20, r25
 	fadeDir=-1;
     8c80:	9f ef       	ldi	r25, 0xFF	; 255
-    8c82:	90 93 9c 0b 	sts	0x0B9C, r25
+    8c82:	90 93 1c 0c 	sts	0x0C1C, r25
 	doFade(speed,blocking);
     8c86:	0c 94 1f 46 	jmp	0x8c3e	; 0x8c3e <doFade>
 
@@ -9095,41 +9039,41 @@ void FadeOut(unsigned char speed,bool blocking){
 //called by the kernel at each field end
 void ProcessFading(){
 	if(fadeActive==true){
-    8c8a:	80 91 9e 0b 	lds	r24, 0x0B9E
+    8c8a:	80 91 1e 0c 	lds	r24, 0x0C1E
     8c8e:	88 23       	and	r24, r24
     8c90:	01 f1       	breq	.+64     	; 0x8cd2 <ProcessFading+0x48>
 		if(currFadeFrame==0){
-    8c92:	80 91 9f 0b 	lds	r24, 0x0B9F
+    8c92:	80 91 1f 0c 	lds	r24, 0x0C1F
     8c96:	81 11       	cpse	r24, r1
     8c98:	19 c0       	rjmp	.+50     	; 0x8ccc <ProcessFading+0x42>
 			currFadeFrame=fadeSpeed;
-    8c9a:	80 91 9b 0b 	lds	r24, 0x0B9B
-    8c9e:	80 93 9f 0b 	sts	0x0B9F, r24
+    8c9a:	80 91 1b 0c 	lds	r24, 0x0C1B
+    8c9e:	80 93 1f 0c 	sts	0x0C1F, r24
 			DDRC = pgm_read_byte(&(fader[fadeStep-1]));
-    8ca2:	e0 91 a0 0b 	lds	r30, 0x0BA0
+    8ca2:	e0 91 20 0c 	lds	r30, 0x0C20
     8ca6:	f0 e0       	ldi	r31, 0x00	; 0
     8ca8:	e7 51       	subi	r30, 0x17	; 23
     8caa:	ff 4f       	sbci	r31, 0xFF	; 255
     8cac:	e4 91       	lpm	r30, Z
     8cae:	e7 b9       	out	0x07, r30	; 7
 			fadeStep+=fadeDir;
-    8cb0:	90 91 9c 0b 	lds	r25, 0x0B9C
-    8cb4:	80 91 a0 0b 	lds	r24, 0x0BA0
+    8cb0:	90 91 1c 0c 	lds	r25, 0x0C1C
+    8cb4:	80 91 20 0c 	lds	r24, 0x0C20
     8cb8:	89 0f       	add	r24, r25
-    8cba:	80 93 a0 0b 	sts	0x0BA0, r24
+    8cba:	80 93 20 0c 	sts	0x0C20, r24
 			if(fadeStep==0 || fadeStep==(FADER_STEPS+1)){
     8cbe:	88 23       	and	r24, r24
     8cc0:	11 f0       	breq	.+4      	; 0x8cc6 <ProcessFading+0x3c>
     8cc2:	8d 30       	cpi	r24, 0x0D	; 13
     8cc4:	31 f4       	brne	.+12     	; 0x8cd2 <ProcessFading+0x48>
 				fadeActive=false;
-    8cc6:	10 92 9e 0b 	sts	0x0B9E, r1
+    8cc6:	10 92 1e 0c 	sts	0x0C1E, r1
     8cca:	08 95       	ret
 			}
 		}else{
 			currFadeFrame--;
     8ccc:	81 50       	subi	r24, 0x01	; 1
-    8cce:	80 93 9f 0b 	sts	0x0B9F, r24
+    8cce:	80 93 1f 0c 	sts	0x0C1F, r24
     8cd2:	08 95       	ret
 
 00008cd4 <VideoModeVsync>:
@@ -9232,7 +9176,7 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
     8d4e:	df 01       	movw	r26, r30
     8d50:	aa 0f       	add	r26, r26
     8d52:	bb 1f       	adc	r27, r27
-    8d54:	a8 5e       	subi	r26, 0xE8	; 232
+    8d54:	a8 56       	subi	r26, 0x68	; 104
     8d56:	b4 4f       	sbci	r27, 0xF4	; 244
     8d58:	2d 91       	ld	r18, X+
     8d5a:	3c 91       	ld	r19, X
@@ -9257,7 +9201,7 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
 	p->pressed = p->held & (p->held ^ p_prev[index]);
     8d78:	ee 0f       	add	r30, r30
     8d7a:	ff 1f       	adc	r31, r31
-    8d7c:	e8 5e       	subi	r30, 0xE8	; 232
+    8d7c:	e8 56       	subi	r30, 0x68	; 104
     8d7e:	f4 4f       	sbci	r31, 0xF4	; 244
     8d80:	20 81       	ld	r18, Z
     8d82:	31 81       	ldd	r19, Z+1	; 0x01
@@ -9751,19 +9695,19 @@ int LBRandom(unsigned int from, unsigned int to)
     903c:	eb 01       	movw	r28, r22
 	static unsigned int random_seed = 0;
 	if (random_seed == 0) random_seed = GetRandomSeed();
-    903e:	80 91 16 0b 	lds	r24, 0x0B16
-    9042:	90 91 17 0b 	lds	r25, 0x0B17
+    903e:	80 91 96 0b 	lds	r24, 0x0B96
+    9042:	90 91 97 0b 	lds	r25, 0x0B97
     9046:	89 2b       	or	r24, r25
     9048:	31 f4       	brne	.+12     	; 0x9056 <LBRandom+0x24>
     904a:	0e 94 43 38 	call	0x7086	; 0x7086 <GetRandomSeed>
-    904e:	90 93 17 0b 	sts	0x0B17, r25
-    9052:	80 93 16 0b 	sts	0x0B16, r24
+    904e:	90 93 97 0b 	sts	0x0B97, r25
+    9052:	80 93 96 0b 	sts	0x0B96, r24
 	
 	static u8 shift_count = 0;
 	unsigned int shifted = random_seed >> shift_count;
-    9056:	90 91 15 0b 	lds	r25, 0x0B15
-    905a:	20 91 16 0b 	lds	r18, 0x0B16
-    905e:	30 91 17 0b 	lds	r19, 0x0B17
+    9056:	90 91 95 0b 	lds	r25, 0x0B95
+    905a:	20 91 96 0b 	lds	r18, 0x0B96
+    905e:	30 91 97 0b 	lds	r19, 0x0B97
     9062:	09 2e       	mov	r0, r25
     9064:	02 c0       	rjmp	.+4      	; 0x906a <LBRandom+0x38>
     9066:	36 95       	lsr	r19
@@ -9786,10 +9730,10 @@ int LBRandom(unsigned int from, unsigned int to)
 	unsigned int delta = to - from;
 
 	shift_count++;
-    907a:	90 93 15 0b 	sts	0x0B15, r25
+    907a:	90 93 95 0b 	sts	0x0B95, r25
     907e:	02 c0       	rjmp	.+4      	; 0x9084 <LBRandom+0x52>
 	if (shift_count >= 16) shift_count = 0;
-    9080:	10 92 15 0b 	sts	0x0B15, r1
+    9080:	10 92 95 0b 	sts	0x0B95, r1
 
 	return from + ((delta + shifted) % delta);
     9084:	cb 01       	movw	r24, r22
@@ -10259,8 +10203,8 @@ void player_init_shot_state(Player* player)
 void init_game_state()
 {
 	game.current_level = 0;
-    92c4:	e8 ee       	ldi	r30, 0xE8	; 232
-    92c6:	fb e0       	ldi	r31, 0x0B	; 11
+    92c4:	e8 e6       	ldi	r30, 0x68	; 104
+    92c6:	fc e0       	ldi	r31, 0x0C	; 12
     92c8:	11 82       	std	Z+1, r1	; 0x01
 	game.selection = PVCPU;
     92ca:	13 82       	std	Z+3, r1	; 0x03
@@ -10271,7 +10215,7 @@ void init_game_state()
     92d0:	51 e2       	ldi	r21, 0x21	; 33
     92d2:	6f e5       	ldi	r22, 0x5F	; 95
     92d4:	71 e2       	ldi	r23, 0x21	; 33
-    92d6:	85 e0       	ldi	r24, 0x05	; 5
+    92d6:	85 e8       	ldi	r24, 0x85	; 133
     92d8:	9c e0       	ldi	r25, 0x0C	; 12
     92da:	0e 94 e5 48 	call	0x91ca	; 0x91ca <init_player>
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
@@ -10279,8 +10223,8 @@ void init_game_state()
     92e0:	51 e2       	ldi	r21, 0x21	; 33
     92e2:	67 e4       	ldi	r22, 0x47	; 71
     92e4:	71 e2       	ldi	r23, 0x21	; 33
-    92e6:	86 e8       	ldi	r24, 0x86	; 134
-    92e8:	9f e0       	ldi	r25, 0x0F	; 15
+    92e6:	86 e0       	ldi	r24, 0x06	; 6
+    92e8:	90 e1       	ldi	r25, 0x10	; 16
     92ea:	0c 94 e5 48 	jmp	0x91ca	; 0x91ca <init_player>
 
 000092ee <player_spawn>:
@@ -10439,14 +10383,14 @@ void save_score()
 	Player* p_lose = &player2;
 
 	if (player1.score < player2.score)
-    9398:	90 91 13 0c 	lds	r25, 0x0C13
-    939c:	80 91 94 0f 	lds	r24, 0x0F94
+    9398:	90 91 93 0c 	lds	r25, 0x0C93
+    939c:	80 91 14 10 	lds	r24, 0x1014
     93a0:	98 17       	cp	r25, r24
     93a2:	28 f4       	brcc	.+10     	; 0x93ae <save_score+0x34>
 	{
 		p_win = &player2;
 		p_lose = &player1;
-    93a4:	e5 e0       	ldi	r30, 0x05	; 5
+    93a4:	e5 e8       	ldi	r30, 0x85	; 133
     93a6:	fc e0       	ldi	r31, 0x0C	; 12
 	Player* p_win = &player1;
 	Player* p_lose = &player2;
@@ -10454,8 +10398,8 @@ void save_score()
 	if (player1.score < player2.score)
 	{
 		p_win = &player2;
-    93a8:	a6 e8       	ldi	r26, 0x86	; 134
-    93aa:	bf e0       	ldi	r27, 0x0F	; 15
+    93a8:	a6 e0       	ldi	r26, 0x06	; 6
+    93aa:	b0 e1       	ldi	r27, 0x10	; 16
     93ac:	04 c0       	rjmp	.+8      	; 0x93b6 <save_score+0x3c>
 	u8 tmp_score[4];
 	u8 save_score[4];
@@ -10463,15 +10407,15 @@ void save_score()
 	u8 saved = 0;
 	Player* p_win = &player1;
 	Player* p_lose = &player2;
-    93ae:	e6 e8       	ldi	r30, 0x86	; 134
-    93b0:	ff e0       	ldi	r31, 0x0F	; 15
+    93ae:	e6 e0       	ldi	r30, 0x06	; 6
+    93b0:	f0 e1       	ldi	r31, 0x10	; 16
 	u8 cur_delta = 0;
 	u8 tmp_score[4];
 	u8 save_score[4];
 	u8 save_delta = 0;
 	u8 saved = 0;
 	Player* p_win = &player1;
-    93b2:	a5 e0       	ldi	r26, 0x05	; 5
+    93b2:	a5 e8       	ldi	r26, 0x85	; 133
     93b4:	bc e0       	ldi	r27, 0x0C	; 12
 	if (player1.score < player2.score)
 	{
@@ -10514,8 +10458,8 @@ void save_score()
     93d6:	81 11       	cpse	r24, r1
     93d8:	08 c0       	rjmp	.+16     	; 0x93ea <save_score+0x70>
     93da:	f8 01       	movw	r30, r16
-    93dc:	ef 55       	subi	r30, 0x5F	; 95
-    93de:	f4 4f       	sbci	r31, 0xF4	; 244
+    93dc:	ef 5d       	subi	r30, 0xDF	; 223
+    93de:	f3 4f       	sbci	r31, 0xF3	; 243
 			LBCopyChars(&scores.data[i], save_score, 4);
 			LBCopyChars(save_score, tmp_score, 4);
 		}
@@ -10532,8 +10476,8 @@ void save_score()
 				LBCopyChars(tmp_score, &scores.data[i], 4);
     93ea:	44 e0       	ldi	r20, 0x04	; 4
     93ec:	c8 01       	movw	r24, r16
-    93ee:	8d 55       	subi	r24, 0x5D	; 93
-    93f0:	94 4f       	sbci	r25, 0xF4	; 244
+    93ee:	8d 5d       	subi	r24, 0xDD	; 221
+    93f0:	93 4f       	sbci	r25, 0xF3	; 243
     93f2:	6c 01       	movw	r12, r24
     93f4:	bc 01       	movw	r22, r24
     93f6:	ce 01       	movw	r24, r28
@@ -10573,8 +10517,8 @@ void save_eeprom(struct EepromBlockStruct* block)
  */
 {
 	EepromWriteBlock(block);
-    9428:	81 ea       	ldi	r24, 0xA1	; 161
-    942a:	9b e0       	ldi	r25, 0x0B	; 11
+    9428:	81 e2       	ldi	r24, 0x21	; 33
+    942a:	9c e0       	ldi	r25, 0x0C	; 12
     942c:	0e 94 f4 38 	call	0x71e8	; 0x71e8 <EepromWriteBlock>
 				saved = 1;
 			}
@@ -10758,9 +10702,9 @@ void print_level_score(Player* winner, Player* loser)
     953a:	6e e0       	ldi	r22, 0x0E	; 14
     953c:	84 e0       	ldi	r24, 0x04	; 4
     953e:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-	Print(8, 14, strOwns);
-    9542:	44 ea       	ldi	r20, 0xA4	; 164
-    9544:	52 e0       	ldi	r21, 0x02	; 2
+	Print(8, 14, &strMap[strOwns]);
+    9542:	4c ed       	ldi	r20, 0xDC	; 220
+    9544:	51 e0       	ldi	r21, 0x01	; 1
     9546:	6e e0       	ldi	r22, 0x0E	; 14
     9548:	70 e0       	ldi	r23, 0x00	; 0
     954a:	88 e0       	ldi	r24, 0x08	; 8
@@ -10774,9 +10718,9 @@ void print_level_score(Player* winner, Player* loser)
     955a:	6e e0       	ldi	r22, 0x0E	; 14
     955c:	8d e0       	ldi	r24, 0x0D	; 13
     955e:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-	Print(17, 14, strBy);
-    9562:	41 ea       	ldi	r20, 0xA1	; 161
-    9564:	52 e0       	ldi	r21, 0x02	; 2
+	Print(17, 14, &strMap[strBy]);
+    9562:	41 ee       	ldi	r20, 0xE1	; 225
+    9564:	51 e0       	ldi	r21, 0x01	; 1
     9566:	6e e0       	ldi	r22, 0x0E	; 14
     9568:	70 e0       	ldi	r23, 0x00	; 0
     956a:	81 e1       	ldi	r24, 0x11	; 17
@@ -10810,9 +10754,9 @@ void print_level_score(Player* winner, Player* loser)
     95a0:	cf 91       	pop	r28
     95a2:	1f 91       	pop	r17
     95a4:	0f 91       	pop	r16
-	Print(8, 14, strOwns);
+	Print(8, 14, &strMap[strOwns]);
 	LBPrintStr(13, 14, &loser->handle[0], 3);
-	Print(17, 14, strBy);
+	Print(17, 14, &strMap[strBy]);
 	PrintByte(22, 14, winner->level_score ,true);
 	PrintChar(23, 14, '-');
 	PrintByte(26, 14, loser->level_score ,true);
@@ -10829,9 +10773,9 @@ void print_final_score(Player* winner, Player* loser)
     95b0:	df 93       	push	r29
     95b2:	8c 01       	movw	r16, r24
     95b4:	eb 01       	movw	r28, r22
-    Print(9, 13, strFinalScore);
-    95b6:	45 e9       	ldi	r20, 0x95	; 149
-    95b8:	52 e0       	ldi	r21, 0x02	; 2
+    Print(9, 13, &strMap[strFinalScore]);
+    95b6:	44 ee       	ldi	r20, 0xE4	; 228
+    95b8:	51 e0       	ldi	r21, 0x01	; 1
     95ba:	6d e0       	ldi	r22, 0x0D	; 13
     95bc:	70 e0       	ldi	r23, 0x00	; 0
     95be:	89 e0       	ldi	r24, 0x09	; 9
@@ -10845,9 +10789,9 @@ void print_final_score(Player* winner, Player* loser)
     95ce:	6e e0       	ldi	r22, 0x0E	; 14
     95d0:	84 e0       	ldi	r24, 0x04	; 4
     95d2:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-    Print(8, 14, strOwns);
-    95d6:	44 ea       	ldi	r20, 0xA4	; 164
-    95d8:	52 e0       	ldi	r21, 0x02	; 2
+    Print(8, 14, &strMap[strOwns]);
+    95d6:	4c ed       	ldi	r20, 0xDC	; 220
+    95d8:	51 e0       	ldi	r21, 0x01	; 1
     95da:	6e e0       	ldi	r22, 0x0E	; 14
     95dc:	70 e0       	ldi	r23, 0x00	; 0
     95de:	88 e0       	ldi	r24, 0x08	; 8
@@ -10861,9 +10805,9 @@ void print_final_score(Player* winner, Player* loser)
     95ee:	6e e0       	ldi	r22, 0x0E	; 14
     95f0:	8d e0       	ldi	r24, 0x0D	; 13
     95f2:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-    Print(17, 14, strBy);
-    95f6:	41 ea       	ldi	r20, 0xA1	; 161
-    95f8:	52 e0       	ldi	r21, 0x02	; 2
+    Print(17, 14, &strMap[strBy]);
+    95f6:	41 ee       	ldi	r20, 0xE1	; 225
+    95f8:	51 e0       	ldi	r21, 0x01	; 1
     95fa:	6e e0       	ldi	r22, 0x0E	; 14
     95fc:	70 e0       	ldi	r23, 0x00	; 0
     95fe:	81 e1       	ldi	r24, 0x11	; 17
@@ -10897,9 +10841,9 @@ void print_final_score(Player* winner, Player* loser)
     9634:	cf 91       	pop	r28
     9636:	1f 91       	pop	r17
     9638:	0f 91       	pop	r16
-    Print(8, 14, strOwns);
+    Print(8, 14, &strMap[strOwns]);
     LBPrintStr(13, 14, &loser->handle[0], 3);
-    Print(17, 14, strBy);
+    Print(17, 14, &strMap[strBy]);
     PrintByte(22, 14, winner->score ,true);
     PrintChar(23, 14, '-');
     PrintByte(26, 14, loser->score ,true);
@@ -10924,17 +10868,17 @@ void render_hud(Player* player, u8 x)
     964e:	8a e0       	ldi	r24, 0x0A	; 10
     9650:	8c 0f       	add	r24, r28
     9652:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-	Print(x, 0, strScore);
+	Print(x, 0, &strMap[strScore]);
     9656:	d0 e0       	ldi	r29, 0x00	; 0
-    9658:	49 ee       	ldi	r20, 0xE9	; 233
-    965a:	51 e0       	ldi	r21, 0x01	; 1
+    9658:	45 e9       	ldi	r20, 0x95	; 149
+    965a:	52 e0       	ldi	r21, 0x02	; 2
     965c:	60 e0       	ldi	r22, 0x00	; 0
     965e:	70 e0       	ldi	r23, 0x00	; 0
     9660:	ce 01       	movw	r24, r28
     9662:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(x, 1, strTotal);
-    9666:	42 ee       	ldi	r20, 0xE2	; 226
-    9668:	51 e0       	ldi	r21, 0x01	; 1
+	Print(x, 1, &strMap[strTotal]);
+    9666:	4c e9       	ldi	r20, 0x9C	; 156
+    9668:	52 e0       	ldi	r21, 0x02	; 2
     966a:	61 e0       	ldi	r22, 0x01	; 1
     966c:	70 e0       	ldi	r23, 0x00	; 0
     966e:	ce 01       	movw	r24, r28
@@ -10946,8 +10890,8 @@ void render_hud(Player* player, u8 x)
 void render_hud(Player* player, u8 x)
 {	
 	LBPrintStr(x+10, 0, player->handle, 3);
-	Print(x, 0, strScore);
-	Print(x, 1, strTotal);
+	Print(x, 0, &strMap[strScore]);
+	Print(x, 1, &strMap[strTotal]);
     9674:	0c 94 ea 45 	jmp	0x8bd4	; 0x8bd4 <Print>
 
 00009678 <render_score>:
@@ -11011,13 +10955,13 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
     96be:	91 11       	cpse	r25, r1
     96c0:	0c c0       	rjmp	.+24     	; 0x96da <render_banter+0x2a>
 		{
-			Print(banter_x, 2, &banter_map[player->banter_index*15]);
+			Print(banter_x, 2, &strMap[banter_map+player->banter_index*15]);
     96c2:	4d 89       	ldd	r20, Y+21	; 0x15
     96c4:	9f e0       	ldi	r25, 0x0F	; 15
     96c6:	49 9f       	mul	r20, r25
     96c8:	a0 01       	movw	r20, r0
     96ca:	11 24       	eor	r1, r1
-    96cc:	41 50       	subi	r20, 0x01	; 1
+    96cc:	40 51       	subi	r20, 0x10	; 16
     96ce:	5e 4f       	sbci	r21, 0xFE	; 254
     96d0:	62 e0       	ldi	r22, 0x02	; 2
     96d2:	70 e0       	ldi	r23, 0x00	; 0
@@ -11032,7 +10976,7 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
 	{
 		if (player->banter_frame == 0)
 		{
-			Print(banter_x, 2, &banter_map[player->banter_index*15]);
+			Print(banter_x, 2, &strMap[banter_map+player->banter_index*15]);
 		}
 		clear_banter = 1;
     96e0:	41 e0       	ldi	r20, 0x01	; 1
@@ -11043,9 +10987,9 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
     96e4:	44 23       	and	r20, r20
     96e6:	41 f0       	breq	.+16     	; 0x96f8 <render_banter+0x48>
 	{
-		Print(banter_x, 2, strBanterClear);
-    96e8:	40 ef       	ldi	r20, 0xF0	; 240
-    96ea:	51 e0       	ldi	r21, 0x01	; 1
+		Print(banter_x, 2, &strMap[strBanterClear]);
+    96e8:	46 e8       	ldi	r20, 0x86	; 134
+    96ea:	52 e0       	ldi	r21, 0x02	; 2
     96ec:	62 e0       	ldi	r22, 0x02	; 2
     96ee:	70 e0       	ldi	r23, 0x00	; 0
     96f0:	90 e0       	ldi	r25, 0x00	; 0
@@ -11438,7 +11382,7 @@ char tank_map(Player* player, char sprite_index)
     9906:	26 89       	ldd	r18, Z+22	; 0x16
     9908:	28 37       	cpi	r18, 0x78	; 120
     990a:	31 f0       	breq	.+12     	; 0x9918 <tank_map+0xc6>
-    990c:	20 91 14 0b 	lds	r18, 0x0B14
+    990c:	20 91 94 0b 	lds	r18, 0x0B94
     9910:	22 23       	and	r18, r18
     9912:	11 f0       	breq	.+4      	; 0x9918 <tank_map+0xc6>
 		{
@@ -11465,10 +11409,10 @@ char tank_map(Player* player, char sprite_index)
     9926:	24 e1       	ldi	r18, 0x14	; 20
     9928:	20 93 03 01 	sts	0x0103, r18
 			toggle_blank = toggle_blank ^ 1;
-    992c:	30 91 14 0b 	lds	r19, 0x0B14
+    992c:	30 91 94 0b 	lds	r19, 0x0B94
     9930:	21 e0       	ldi	r18, 0x01	; 1
     9932:	23 27       	eor	r18, r19
-    9934:	20 93 14 0b 	sts	0x0B14, r18
+    9934:	20 93 94 0b 	sts	0x0B94, r18
     9938:	01 c0       	rjmp	.+2      	; 0x993c <tank_map+0xea>
 	char looped;
 
@@ -11753,8 +11697,8 @@ void recoil_sprite(SpriteShared* sprite)
 u8 solid_square_tile(int tile_index)
 {
 	u8 tile = level.level_map[tile_index];
-    9ad8:	89 56       	subi	r24, 0x69	; 105
-    9ada:	93 4f       	sbci	r25, 0xF3	; 243
+    9ad8:	89 5e       	subi	r24, 0xE9	; 233
+    9ada:	92 4f       	sbci	r25, 0xF2	; 242
     9adc:	fc 01       	movw	r30, r24
     9ade:	81 81       	ldd	r24, Z+1	; 0x01
 	
@@ -11779,8 +11723,8 @@ u8 solid_square_tile(int tile_index)
 u8 solid_tile(int tile_index)
 {
 	u8 tile = level.level_map[tile_index];
-    9af4:	89 56       	subi	r24, 0x69	; 105
-    9af6:	93 4f       	sbci	r25, 0xF3	; 243
+    9af4:	89 5e       	subi	r24, 0xE9	; 233
+    9af6:	92 4f       	sbci	r25, 0xF2	; 242
     9af8:	fc 01       	movw	r30, r24
     9afa:	81 81       	ldd	r24, Z+1	; 0x01
 	
@@ -11842,8 +11786,8 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
     9b4e:	f2 2e       	mov	r15, r18
 	u8 tile = level.level_map[tile_index];
     9b50:	fc 01       	movw	r30, r24
-    9b52:	e9 56       	subi	r30, 0x69	; 105
-    9b54:	f3 4f       	sbci	r31, 0xF3	; 243
+    9b52:	e9 5e       	subi	r30, 0xE9	; 233
+    9b54:	f2 4f       	sbci	r31, 0xF2	; 242
     9b56:	91 80       	ldd	r9, Z+1	; 0x01
 	u8 tile_x = (tile_index % 30) * 8;
     9b58:	6e e1       	ldi	r22, 0x1E	; 30
@@ -12272,8 +12216,8 @@ void kill_player(Player* player, u8 hud_x)
 		level.level_map[tile_index +30] = L_SPEED;
     9e4e:	87 e0       	ldi	r24, 0x07	; 7
     9e50:	fe 01       	movw	r30, r28
-    9e52:	e9 56       	subi	r30, 0x69	; 105
-    9e54:	f3 4f       	sbci	r31, 0xF3	; 243
+    9e52:	e9 5e       	subi	r30, 0xE9	; 233
+    9e54:	f2 4f       	sbci	r31, 0xF2	; 242
     9e56:	87 8f       	std	Z+31, r24	; 0x1f
 		player->max_speed = MAX_SPEED;
     9e58:	82 e3       	ldi	r24, 0x32	; 50
@@ -12304,8 +12248,8 @@ void kill_player(Player* player, u8 hud_x)
     9e84:	8f 5f       	subi	r24, 0xFF	; 255
     9e86:	0e 94 6a 45 	call	0x8ad4	; 0x8ad4 <DrawMap2>
 		level.level_map[tile_index +31] = L_ROCKET;
-    9e8a:	c9 56       	subi	r28, 0x69	; 105
-    9e8c:	d3 4f       	sbci	r29, 0xF3	; 243
+    9e8a:	c9 5e       	subi	r28, 0xE9	; 233
+    9e8c:	d2 4f       	sbci	r29, 0xF2	; 242
     9e8e:	89 e0       	ldi	r24, 0x09	; 9
     9e90:	88 a3       	std	Y+32, r24	; 0x20
 	}
@@ -12586,29 +12530,29 @@ void collision_detect_shot(Player* player, Shot* shot)
 	/* Player interaction */
 	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG))
     a016:	b4 01       	movw	r22, r8
-    a018:	85 e0       	ldi	r24, 0x05	; 5
+    a018:	85 e8       	ldi	r24, 0x85	; 133
     a01a:	9c e0       	ldi	r25, 0x0C	; 12
     a01c:	0e 94 38 4e 	call	0x9c70	; 0x9c70 <player_shot>
     a020:	88 23       	and	r24, r24
     a022:	b9 f0       	breq	.+46     	; 0xa052 <collision_detect_shot+0xe4>
-    a024:	80 91 18 0c 	lds	r24, 0x0C18
+    a024:	80 91 98 0c 	lds	r24, 0x0C98
     a028:	80 fd       	sbrc	r24, 0
     a02a:	13 c0       	rjmp	.+38     	; 0xa052 <collision_detect_shot+0xe4>
 	{
 		p = &player1;
 		hud_x = 0;
 		player2.level_score++;
-    a02c:	80 91 95 0f 	lds	r24, 0x0F95
+    a02c:	80 91 15 10 	lds	r24, 0x1015
     a030:	8f 5f       	subi	r24, 0xFF	; 255
-    a032:	80 93 95 0f 	sts	0x0F95, r24
+    a032:	80 93 15 10 	sts	0x1015, r24
 		player2.score++;
-    a036:	80 91 94 0f 	lds	r24, 0x0F94
+    a036:	80 91 14 10 	lds	r24, 0x1014
     a03a:	8f 5f       	subi	r24, 0xFF	; 255
-    a03c:	80 93 94 0f 	sts	0x0F94, r24
+    a03c:	80 93 14 10 	sts	0x1014, r24
 		render_score(&player2, 15);
     a040:	6f e0       	ldi	r22, 0x0F	; 15
-    a042:	86 e8       	ldi	r24, 0x86	; 134
-    a044:	9f e0       	ldi	r25, 0x0F	; 15
+    a042:	86 e0       	ldi	r24, 0x06	; 6
+    a044:	90 e1       	ldi	r25, 0x10	; 16
     a046:	0e 94 3c 4b 	call	0x9678	; 0x9678 <render_score>
 	}
 	
@@ -12616,7 +12560,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG))
 	{
 		p = &player1;
-    a04a:	05 e0       	ldi	r16, 0x05	; 5
+    a04a:	05 e8       	ldi	r16, 0x85	; 133
     a04c:	1c e0       	ldi	r17, 0x0C	; 12
 		hud_x = 0;
     a04e:	f1 2c       	mov	r15, r1
@@ -12627,8 +12571,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG))
     a052:	b4 01       	movw	r22, r8
-    a054:	86 e8       	ldi	r24, 0x86	; 134
-    a056:	9f e0       	ldi	r25, 0x0F	; 15
+    a054:	86 e0       	ldi	r24, 0x06	; 6
+    a056:	90 e1       	ldi	r25, 0x10	; 16
     a058:	0e 94 38 4e 	call	0x9c70	; 0x9c70 <player_shot>
     a05c:	81 11       	cpse	r24, r1
     a05e:	08 c0       	rjmp	.+16     	; 0xa070 <collision_detect_shot+0x102>
@@ -12640,23 +12584,23 @@ void collision_detect_shot(Player* player, Shot* shot)
     a06a:	51 2c       	mov	r5, r1
     a06c:	d1 2c       	mov	r13, r1
     a06e:	5b c0       	rjmp	.+182    	; 0xa126 <collision_detect_shot+0x1b8>
-    a070:	80 91 99 0f 	lds	r24, 0x0F99
+    a070:	80 91 19 10 	lds	r24, 0x1019
     a074:	80 fd       	sbrc	r24, 0
     a076:	f4 cf       	rjmp	.-24     	; 0xa060 <collision_detect_shot+0xf2>
 	{
 		p = &player2;
 		hud_x = 15;
 		player1.level_score++;
-    a078:	80 91 14 0c 	lds	r24, 0x0C14
+    a078:	80 91 94 0c 	lds	r24, 0x0C94
     a07c:	8f 5f       	subi	r24, 0xFF	; 255
-    a07e:	80 93 14 0c 	sts	0x0C14, r24
+    a07e:	80 93 94 0c 	sts	0x0C94, r24
 		player1.score++;
-    a082:	80 91 13 0c 	lds	r24, 0x0C13
+    a082:	80 91 93 0c 	lds	r24, 0x0C93
     a086:	8f 5f       	subi	r24, 0xFF	; 255
-    a088:	80 93 13 0c 	sts	0x0C13, r24
+    a088:	80 93 93 0c 	sts	0x0C93, r24
 		render_score(&player1, 0);
     a08c:	60 e0       	ldi	r22, 0x00	; 0
-    a08e:	85 e0       	ldi	r24, 0x05	; 5
+    a08e:	85 e8       	ldi	r24, 0x85	; 133
     a090:	9c e0       	ldi	r25, 0x0C	; 12
     a092:	0e 94 3c 4b 	call	0x9678	; 0x9678 <render_score>
 		player2.score++;
@@ -12665,8 +12609,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG))
 	{
 		p = &player2;
-    a096:	06 e8       	ldi	r16, 0x86	; 134
-    a098:	1f e0       	ldi	r17, 0x0F	; 15
+    a096:	06 e0       	ldi	r16, 0x06	; 6
+    a098:	10 e1       	ldi	r17, 0x10	; 16
 		hud_x = 15;
     a09a:	6f e0       	ldi	r22, 0x0F	; 15
     a09c:	f6 2e       	mov	r15, r22
@@ -12774,8 +12718,8 @@ void collision_detect_shot(Player* player, Shot* shot)
     a12e:	fe 83       	std	Y+6, r31	; 0x06
     a130:	ed 83       	std	Y+5, r30	; 0x05
     a132:	f1 01       	movw	r30, r2
-    a134:	e9 56       	subi	r30, 0x69	; 105
-    a136:	f3 4f       	sbci	r31, 0xF3	; 243
+    a134:	e9 5e       	subi	r30, 0xE9	; 233
+    a136:	f2 4f       	sbci	r31, 0xF2	; 242
     a138:	11 81       	ldd	r17, Z+1	; 0x01
 		if (tile == L_EMPTY) continue;
     a13a:	11 23       	and	r17, r17
@@ -12834,8 +12778,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 		{
 			explode_tile(&tile_animations, tiles[i]);
     a1ae:	b1 01       	movw	r22, r2
-    a1b0:	8c ee       	ldi	r24, 0xEC	; 236
-    a1b2:	9b e0       	ldi	r25, 0x0B	; 11
+    a1b0:	8c e6       	ldi	r24, 0x6C	; 108
+    a1b2:	9c e0       	ldi	r25, 0x0C	; 12
     a1b4:	0e 94 79 4f 	call	0x9ef2	; 0x9ef2 <explode_tile>
 			level.level_map[tiles[i]] = L_EMPTY;
     a1b8:	44 0c       	add	r4, r4
@@ -12849,8 +12793,8 @@ void collision_detect_shot(Player* player, Shot* shot)
     a1c8:	01 90       	ld	r0, Z+
     a1ca:	f0 81       	ld	r31, Z
     a1cc:	e0 2d       	mov	r30, r0
-    a1ce:	e9 56       	subi	r30, 0x69	; 105
-    a1d0:	f3 4f       	sbci	r31, 0xF3	; 243
+    a1ce:	e9 5e       	subi	r30, 0xE9	; 233
+    a1d0:	f2 4f       	sbci	r31, 0xF2	; 242
     a1d2:	11 82       	std	Z+1, r1	; 0x01
 			shot->hit_count--;
     a1d4:	f4 01       	movw	r30, r8
@@ -13382,8 +13326,8 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 		}
 		else if (level.level_map[tiles[i]] == L_SPEED)
     a4d6:	f2 01       	movw	r30, r4
-    a4d8:	e9 56       	subi	r30, 0x69	; 105
-    a4da:	f3 4f       	sbci	r31, 0xF3	; 243
+    a4d8:	e9 5e       	subi	r30, 0xE9	; 233
+    a4da:	f2 4f       	sbci	r31, 0xF2	; 242
     a4dc:	81 81       	ldd	r24, Z+1	; 0x01
     a4de:	87 30       	cpi	r24, 0x07	; 7
     a4e0:	51 f4       	brne	.+20     	; 0xa4f6 <collision_detect_player+0x1aa>
@@ -13568,8 +13512,8 @@ void load_level_tiles(u8 blank)
     a5ee:	51 e2       	ldi	r21, 0x21	; 33
     a5f0:	11 c0       	rjmp	.+34     	; 0xa614 <load_level_tiles+0x52>
     a5f2:	fe 01       	movw	r30, r28
-    a5f4:	e9 56       	subi	r30, 0x69	; 105
-    a5f6:	f3 4f       	sbci	r31, 0xF3	; 243
+    a5f4:	e9 5e       	subi	r30, 0xE9	; 233
+    a5f6:	f2 4f       	sbci	r31, 0xF2	; 242
 		}
 		else
 		{
@@ -13684,14 +13628,14 @@ void load_level(int level_number)
 
 	game.current_screen = LEVEL;
     a69a:	83 e0       	ldi	r24, 0x03	; 3
-    a69c:	80 93 e8 0b 	sts	0x0BE8, r24
+    a69c:	80 93 68 0c 	sts	0x0C68, r24
 	clear_sprites();
     a6a0:	0e 94 b0 49 	call	0x9360	; 0x9360 <clear_sprites>
 	game.current_level = level_number;
-    a6a4:	c0 93 e9 0b 	sts	0x0BE9, r28
-    a6a8:	88 e9       	ldi	r24, 0x98	; 152
+    a6a4:	c0 93 69 0c 	sts	0x0C69, r28
+    a6a8:	88 e1       	ldi	r24, 0x18	; 24
     a6aa:	c8 2e       	mov	r12, r24
-    a6ac:	8c e0       	ldi	r24, 0x0C	; 12
+    a6ac:	8d e0       	ldi	r24, 0x0D	; 13
     a6ae:	d8 2e       	mov	r13, r24
 	for (int i = 0; i < 30*25; i++)
     a6b0:	c0 e0       	ldi	r28, 0x00	; 0
@@ -13736,28 +13680,28 @@ void load_level(int level_number)
     a6da:	88 0f       	add	r24, r24
     a6dc:	88 0f       	add	r24, r24
     a6de:	88 0f       	add	r24, r24
-    a6e0:	80 93 16 0c 	sts	0x0C16, r24
+    a6e0:	80 93 96 0c 	sts	0x0C96, r24
 			player1.spawn_y = (i / 30) * 8 + 3*8;
     a6e4:	6d 5f       	subi	r22, 0xFD	; 253
     a6e6:	7f 4f       	sbci	r23, 0xFF	; 255
     a6e8:	66 0f       	add	r22, r22
     a6ea:	66 0f       	add	r22, r22
     a6ec:	66 0f       	add	r22, r22
-    a6ee:	60 93 17 0c 	sts	0x0C17, r22
+    a6ee:	60 93 97 0c 	sts	0x0C97, r22
 			player1.level_score = 0;
-    a6f2:	10 92 14 0c 	sts	0x0C14, r1
+    a6f2:	10 92 94 0c 	sts	0x0C94, r1
 			player1.has_over_speed = false;
-    a6f6:	10 92 1e 0c 	sts	0x0C1E, r1
+    a6f6:	10 92 9e 0c 	sts	0x0C9E, r1
 			player1.has_rocket = false;
-    a6fa:	10 92 1d 0c 	sts	0x0C1D, r1
+    a6fa:	10 92 9d 0c 	sts	0x0C9D, r1
 			player1.max_speed = MAX_SPEED;
-    a6fe:	90 92 1c 0c 	sts	0x0C1C, r9
+    a6fe:	90 92 9c 0c 	sts	0x0C9C, r9
 			player_init_shot_state(&player1);
-    a702:	85 e0       	ldi	r24, 0x05	; 5
+    a702:	85 e8       	ldi	r24, 0x85	; 133
     a704:	9c e0       	ldi	r25, 0x0C	; 12
     a706:	0e 94 52 49 	call	0x92a4	; 0x92a4 <player_init_shot_state>
 			player_spawn(&player1);
-    a70a:	85 e0       	ldi	r24, 0x05	; 5
+    a70a:	85 e8       	ldi	r24, 0x85	; 133
     a70c:	9c e0       	ldi	r25, 0x0C	; 12
     a70e:	0e 94 77 49 	call	0x92ee	; 0x92ee <player_spawn>
     a712:	bf ef       	ldi	r27, 0xFF	; 255
@@ -13777,29 +13721,29 @@ void load_level(int level_number)
     a728:	88 0f       	add	r24, r24
     a72a:	88 0f       	add	r24, r24
     a72c:	88 0f       	add	r24, r24
-    a72e:	80 93 97 0f 	sts	0x0F97, r24
+    a72e:	80 93 17 10 	sts	0x1017, r24
 			player2.spawn_y = (i / 30) * 8 + 3*8;
     a732:	6d 5f       	subi	r22, 0xFD	; 253
     a734:	7f 4f       	sbci	r23, 0xFF	; 255
     a736:	66 0f       	add	r22, r22
     a738:	66 0f       	add	r22, r22
     a73a:	66 0f       	add	r22, r22
-    a73c:	60 93 98 0f 	sts	0x0F98, r22
+    a73c:	60 93 18 10 	sts	0x1018, r22
 			player2.level_score = 0;
-    a740:	10 92 95 0f 	sts	0x0F95, r1
+    a740:	10 92 15 10 	sts	0x1015, r1
 			player2.has_over_speed = false;
-    a744:	10 92 9f 0f 	sts	0x0F9F, r1
+    a744:	10 92 1f 10 	sts	0x101F, r1
 			player2.has_rocket = false;
-    a748:	10 92 9e 0f 	sts	0x0F9E, r1
+    a748:	10 92 1e 10 	sts	0x101E, r1
 			player2.max_speed = MAX_SPEED;
-    a74c:	90 92 9d 0f 	sts	0x0F9D, r9
+    a74c:	90 92 1d 10 	sts	0x101D, r9
 			player_init_shot_state(&player2);
-    a750:	86 e8       	ldi	r24, 0x86	; 134
-    a752:	9f e0       	ldi	r25, 0x0F	; 15
+    a750:	86 e0       	ldi	r24, 0x06	; 6
+    a752:	90 e1       	ldi	r25, 0x10	; 16
     a754:	0e 94 52 49 	call	0x92a4	; 0x92a4 <player_init_shot_state>
 			player_spawn(&player2);
-    a758:	86 e8       	ldi	r24, 0x86	; 134
-    a75a:	9f e0       	ldi	r25, 0x0F	; 15
+    a758:	86 e0       	ldi	r24, 0x06	; 6
+    a75a:	90 e1       	ldi	r25, 0x10	; 16
     a75c:	0e 94 77 49 	call	0x92ee	; 0x92ee <player_spawn>
     int level_start = level_number*30*25;
 
@@ -13820,43 +13764,43 @@ void load_level(int level_number)
 	}
 	render_hud(&player1, 0);
     a76c:	60 e0       	ldi	r22, 0x00	; 0
-    a76e:	85 e0       	ldi	r24, 0x05	; 5
+    a76e:	85 e8       	ldi	r24, 0x85	; 133
     a770:	9c e0       	ldi	r25, 0x0C	; 12
     a772:	0e 94 1f 4b 	call	0x963e	; 0x963e <render_hud>
 	render_hud(&player2, 15);
     a776:	6f e0       	ldi	r22, 0x0F	; 15
-    a778:	86 e8       	ldi	r24, 0x86	; 134
-    a77a:	9f e0       	ldi	r25, 0x0F	; 15
+    a778:	86 e0       	ldi	r24, 0x06	; 6
+    a77a:	90 e1       	ldi	r25, 0x10	; 16
     a77c:	0e 94 1f 4b 	call	0x963e	; 0x963e <render_hud>
 	render_score(&player1, 0);
     a780:	60 e0       	ldi	r22, 0x00	; 0
-    a782:	85 e0       	ldi	r24, 0x05	; 5
+    a782:	85 e8       	ldi	r24, 0x85	; 133
     a784:	9c e0       	ldi	r25, 0x0C	; 12
     a786:	0e 94 3c 4b 	call	0x9678	; 0x9678 <render_score>
 	render_score(&player2, 15);
     a78a:	6f e0       	ldi	r22, 0x0F	; 15
-    a78c:	86 e8       	ldi	r24, 0x86	; 134
-    a78e:	9f e0       	ldi	r25, 0x0F	; 15
+    a78c:	86 e0       	ldi	r24, 0x06	; 6
+    a78e:	90 e1       	ldi	r25, 0x10	; 16
     a790:	0e 94 3c 4b 	call	0x9678	; 0x9678 <render_score>
-	Print(14, 0, strVertSep);
-    a794:	49 ef       	ldi	r20, 0xF9	; 249
-    a796:	52 e0       	ldi	r21, 0x02	; 2
+	Print(14, 0, &strMap[strVertSep]);
+    a794:	4a e8       	ldi	r20, 0x8A	; 138
+    a796:	51 e0       	ldi	r21, 0x01	; 1
     a798:	60 e0       	ldi	r22, 0x00	; 0
     a79a:	70 e0       	ldi	r23, 0x00	; 0
     a79c:	8e e0       	ldi	r24, 0x0E	; 14
     a79e:	90 e0       	ldi	r25, 0x00	; 0
     a7a0:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(14, 1, strVertSep);
-    a7a4:	49 ef       	ldi	r20, 0xF9	; 249
-    a7a6:	52 e0       	ldi	r21, 0x02	; 2
+	Print(14, 1, &strMap[strVertSep]);
+    a7a4:	4a e8       	ldi	r20, 0x8A	; 138
+    a7a6:	51 e0       	ldi	r21, 0x01	; 1
     a7a8:	61 e0       	ldi	r22, 0x01	; 1
     a7aa:	70 e0       	ldi	r23, 0x00	; 0
     a7ac:	8e e0       	ldi	r24, 0x0E	; 14
     a7ae:	90 e0       	ldi	r25, 0x00	; 0
     a7b0:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(14, 2, strVertSep);
-    a7b4:	49 ef       	ldi	r20, 0xF9	; 249
-    a7b6:	52 e0       	ldi	r21, 0x02	; 2
+	Print(14, 2, &strMap[strVertSep]);
+    a7b4:	4a e8       	ldi	r20, 0x8A	; 138
+    a7b6:	51 e0       	ldi	r21, 0x01	; 1
     a7b8:	62 e0       	ldi	r22, 0x02	; 2
     a7ba:	70 e0       	ldi	r23, 0x00	; 0
     a7bc:	8e e0       	ldi	r24, 0x0E	; 14
@@ -13883,9 +13827,9 @@ void load_level(int level_number)
     a7e4:	af 90       	pop	r10
     a7e6:	9f 90       	pop	r9
 	render_score(&player2, 15);
-	Print(14, 0, strVertSep);
-	Print(14, 1, strVertSep);
-	Print(14, 2, strVertSep);
+	Print(14, 0, &strMap[strVertSep]);
+	Print(14, 1, &strMap[strVertSep]);
+	Print(14, 2, &strMap[strVertSep]);
 	load_level_tiles(false);
 	SFX_LEVEL_START;
     a7e8:	0c 94 2a 3b 	jmp	0x7654	; 0x7654 <TriggerNote>
@@ -13908,7 +13852,7 @@ void level_transition(u8 index)
     a7fa:	0e 94 d5 37 	call	0x6faa	; 0x6faa <ClearVram>
 	clear_sprites();
     a7fe:	0e 94 b0 49 	call	0x9360	; 0x9360 <clear_sprites>
-	Print(8, 12, &strLevels[index*16]);
+	Print(8, 12, &strMap[strLevels+index*16]);
     a802:	d0 e0       	ldi	r29, 0x00	; 0
     a804:	ae 01       	movw	r20, r28
     a806:	84 e0       	ldi	r24, 0x04	; 4
@@ -13916,8 +13860,8 @@ void level_transition(u8 index)
     a80a:	55 1f       	adc	r21, r21
     a80c:	8a 95       	dec	r24
     a80e:	e1 f7       	brne	.-8      	; 0xa808 <level_transition+0x1c>
-    a810:	4e 5c       	subi	r20, 0xCE	; 206
-    a812:	5e 4f       	sbci	r21, 0xFE	; 254
+    a810:	4d 54       	subi	r20, 0x4D	; 77
+    a812:	5d 4f       	sbci	r21, 0xFD	; 253
     a814:	6c e0       	ldi	r22, 0x0C	; 12
     a816:	70 e0       	ldi	r23, 0x00	; 0
     a818:	88 e0       	ldi	r24, 0x08	; 8
@@ -13960,36 +13904,36 @@ void level_transition(u8 index)
 void load_splash()
 {
 	game.current_screen = SPLASH;
-    a84c:	10 92 e8 0b 	sts	0x0BE8, r1
+    a84c:	10 92 68 0c 	sts	0x0C68, r1
 	clear_sprites();
     a850:	0e 94 b0 49 	call	0x9360	; 0x9360 <clear_sprites>
-	Print(7, 13, str1Player);
-    a854:	4e e2       	ldi	r20, 0x2E	; 46
-    a856:	53 e0       	ldi	r21, 0x03	; 3
+	Print(7, 13, &strMap[str1Player]);
+    a854:	49 e4       	ldi	r20, 0x49	; 73
+    a856:	51 e0       	ldi	r21, 0x01	; 1
     a858:	6d e0       	ldi	r22, 0x0D	; 13
     a85a:	70 e0       	ldi	r23, 0x00	; 0
     a85c:	87 e0       	ldi	r24, 0x07	; 7
     a85e:	90 e0       	ldi	r25, 0x00	; 0
     a860:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(7, 14, str2Player);
-    a864:	4d e1       	ldi	r20, 0x1D	; 29
-    a866:	53 e0       	ldi	r21, 0x03	; 3
+	Print(7, 14, &strMap[str2Player]);
+    a864:	47 e5       	ldi	r20, 0x57	; 87
+    a866:	51 e0       	ldi	r21, 0x01	; 1
     a868:	6e e0       	ldi	r22, 0x0E	; 14
     a86a:	70 e0       	ldi	r23, 0x00	; 0
     a86c:	87 e0       	ldi	r24, 0x07	; 7
     a86e:	90 e0       	ldi	r25, 0x00	; 0
     a870:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(7, 15, strHighscores);
-    a874:	43 e1       	ldi	r20, 0x13	; 19
-    a876:	53 e0       	ldi	r21, 0x03	; 3
+	Print(7, 15, &strMap[strHighscores]);
+    a874:	48 e6       	ldi	r20, 0x68	; 104
+    a876:	51 e0       	ldi	r21, 0x01	; 1
     a878:	6f e0       	ldi	r22, 0x0F	; 15
     a87a:	70 e0       	ldi	r23, 0x00	; 0
     a87c:	87 e0       	ldi	r24, 0x07	; 7
     a87e:	90 e0       	ldi	r25, 0x00	; 0
     a880:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(4, 26, strCopyright);
-    a884:	4c e3       	ldi	r20, 0x3C	; 60
-    a886:	53 e0       	ldi	r21, 0x03	; 3
+	Print(4, 26, &strMap[strCopyright]);
+    a884:	42 e3       	ldi	r20, 0x32	; 50
+    a886:	51 e0       	ldi	r21, 0x01	; 1
     a888:	6a e1       	ldi	r22, 0x1A	; 26
     a88a:	70 e0       	ldi	r23, 0x00	; 0
     a88c:	84 e0       	ldi	r24, 0x04	; 4
@@ -14035,7 +13979,7 @@ void load_tank_rank()
 	
 	game.current_screen = TANK_RANK;
     a8ca:	81 e0       	ldi	r24, 0x01	; 1
-    a8cc:	80 93 e8 0b 	sts	0x0BE8, r24
+    a8cc:	80 93 68 0c 	sts	0x0C68, r24
 	clear_sprites();
     a8d0:	0e 94 b0 49 	call	0x9360	; 0x9360 <clear_sprites>
 	MapSprite2(0, map_tank1_up_0, 0);
@@ -14063,16 +14007,16 @@ void load_tank_rank()
     a8fe:	60 ea       	ldi	r22, 0xA0	; 160
     a900:	84 e0       	ldi	r24, 0x04	; 4
     a902:	0e 94 3a 45 	call	0x8a74	; 0x8a74 <MoveSprite>
-	Print(10, 2, strHighscores);
-    a906:	43 e1       	ldi	r20, 0x13	; 19
-    a908:	53 e0       	ldi	r21, 0x03	; 3
+	Print(10, 2, &strMap[strHighscores]);
+    a906:	48 e6       	ldi	r20, 0x68	; 104
+    a908:	51 e0       	ldi	r21, 0x01	; 1
     a90a:	62 e0       	ldi	r22, 0x02	; 2
     a90c:	70 e0       	ldi	r23, 0x00	; 0
     a90e:	8a e0       	ldi	r24, 0x0A	; 10
     a910:	90 e0       	ldi	r25, 0x00	; 0
     a912:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-    a916:	06 ea       	ldi	r16, 0xA6	; 166
-    a918:	1b e0       	ldi	r17, 0x0B	; 11
+    a916:	06 e2       	ldi	r16, 0x26	; 38
+    a918:	1c e0       	ldi	r17, 0x0C	; 12
     a91a:	87 e0       	ldi	r24, 0x07	; 7
     a91c:	e8 2e       	mov	r14, r24
     a91e:	f1 2c       	mov	r15, r1
@@ -14085,7 +14029,7 @@ void load_tank_rank()
     a920:	31 e0       	ldi	r19, 0x01	; 1
 	MoveSprite(0, 7*8, 1*8, 2, 2);
 	MoveSprite(4, 20*8, 1*8, 2, 2);
-	Print(10, 2, strHighscores);
+	Print(10, 2, &strMap[strHighscores]);
 	for (u8 i = 0; i < 20; i += 4)
 	{
 		PrintByte(2, y, rank, false);
@@ -14110,15 +14054,15 @@ void load_tank_rank()
     a946:	89 9f       	mul	r24, r25
     a948:	a0 01       	movw	r20, r0
     a94a:	11 24       	eor	r1, r1
-    a94c:	46 53       	subi	r20, 0x36	; 54
-    a94e:	54 4f       	sbci	r21, 0xF4	; 244
+    a94c:	46 5b       	subi	r20, 0xB6	; 182
+    a94e:	53 4f       	sbci	r21, 0xF3	; 243
     a950:	23 e0       	ldi	r18, 0x03	; 3
     a952:	6e 2d       	mov	r22, r14
     a954:	85 e0       	ldi	r24, 0x05	; 5
     a956:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-		Print(9, y, strOwns);
-    a95a:	44 ea       	ldi	r20, 0xA4	; 164
-    a95c:	52 e0       	ldi	r21, 0x02	; 2
+		Print(9, y, &strMap[strOwns]);
+    a95a:	4c ed       	ldi	r20, 0xDC	; 220
+    a95c:	51 e0       	ldi	r21, 0x01	; 1
     a95e:	b7 01       	movw	r22, r14
     a960:	89 e0       	ldi	r24, 0x09	; 9
     a962:	90 e0       	ldi	r25, 0x00	; 0
@@ -14131,15 +14075,15 @@ void load_tank_rank()
     a970:	8e 9f       	mul	r24, r30
     a972:	a0 01       	movw	r20, r0
     a974:	11 24       	eor	r1, r1
-    a976:	46 53       	subi	r20, 0x36	; 54
-    a978:	54 4f       	sbci	r21, 0xF4	; 244
+    a976:	46 5b       	subi	r20, 0xB6	; 182
+    a978:	53 4f       	sbci	r21, 0xF3	; 243
     a97a:	23 e0       	ldi	r18, 0x03	; 3
     a97c:	6e 2d       	mov	r22, r14
     a97e:	8e e0       	ldi	r24, 0x0E	; 14
     a980:	0e 94 e8 46 	call	0x8dd0	; 0x8dd0 <LBPrintStr>
-		Print(18, y, strBy);
-    a984:	41 ea       	ldi	r20, 0xA1	; 161
-    a986:	52 e0       	ldi	r21, 0x02	; 2
+		Print(18, y, &strMap[strBy]);
+    a984:	41 ee       	ldi	r20, 0xE1	; 225
+    a986:	51 e0       	ldi	r21, 0x01	; 1
     a988:	b7 01       	movw	r22, r14
     a98a:	82 e1       	ldi	r24, 0x12	; 18
     a98c:	90 e0       	ldi	r25, 0x00	; 0
@@ -14180,7 +14124,7 @@ void load_tank_rank()
 	MapSprite2(4, map_tank2_up_0, 0);
 	MoveSprite(0, 7*8, 1*8, 2, 2);
 	MoveSprite(4, 20*8, 1*8, 2, 2);
-	Print(10, 2, strHighscores);
+	Print(10, 2, &strMap[strHighscores]);
 	for (u8 i = 0; i < 20; i += 4)
     a9ce:	36 30       	cpi	r19, 0x06	; 6
     a9d0:	09 f0       	breq	.+2      	; 0xa9d4 <load_tank_rank+0x11c>
@@ -14190,17 +14134,17 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
-	Print(3, 22, strReset);
-    a9d4:	48 eb       	ldi	r20, 0xB8	; 184
-    a9d6:	52 e0       	ldi	r21, 0x02	; 2
+	Print(3, 22, &strMap[strReset]);
+    a9d4:	44 eb       	ldi	r20, 0xB4	; 180
+    a9d6:	51 e0       	ldi	r21, 0x01	; 1
     a9d8:	66 e1       	ldi	r22, 0x16	; 22
     a9da:	70 e0       	ldi	r23, 0x00	; 0
     a9dc:	83 e0       	ldi	r24, 0x03	; 3
     a9de:	90 e0       	ldi	r25, 0x00	; 0
     a9e0:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(10, 24, strCancelHandle);
-    a9e4:	41 ed       	ldi	r20, 0xD1	; 209
-    a9e6:	52 e0       	ldi	r21, 0x02	; 2
+	Print(10, 24, &strMap[strCancelHandle]);
+    a9e4:	49 ea       	ldi	r20, 0xA9	; 169
+    a9e6:	51 e0       	ldi	r21, 0x01	; 1
     a9e8:	68 e1       	ldi	r22, 0x18	; 24
     a9ea:	70 e0       	ldi	r23, 0x00	; 0
     a9ec:	8a e0       	ldi	r24, 0x0A	; 10
@@ -14217,8 +14161,8 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
-	Print(3, 22, strReset);
-	Print(10, 24, strCancelHandle);
+	Print(3, 22, &strMap[strReset]);
+	Print(10, 24, &strMap[strCancelHandle]);
     a9fe:	0c 94 ea 45 	jmp	0x8bd4	; 0x8bd4 <Print>
 
 0000aa02 <exit_game>:
@@ -14283,16 +14227,16 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
     aa4e:	84 e0       	ldi	r24, 0x04	; 4
     aa50:	0e 94 2a 3b 	call	0x7654	; 0x7654 <TriggerNote>
 		game.paused = game.paused ^ 1;
-    aa54:	90 91 ea 0b 	lds	r25, 0x0BEA
+    aa54:	90 91 6a 0c 	lds	r25, 0x0C6A
     aa58:	81 e0       	ldi	r24, 0x01	; 1
     aa5a:	89 27       	eor	r24, r25
-    aa5c:	80 93 ea 0b 	sts	0x0BEA, r24
+    aa5c:	80 93 6a 0c 	sts	0x0C6A, r24
 		load_level_tiles(false);
     aa60:	80 e0       	ldi	r24, 0x00	; 0
     aa62:	0e 94 e1 52 	call	0xa5c2	; 0xa5c2 <load_level_tiles>
 	}
 	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
-    aa66:	20 91 ea 0b 	lds	r18, 0x0BEA
+    aa66:	20 91 6a 0c 	lds	r18, 0x0C6A
     aa6a:	f8 01       	movw	r30, r16
     aa6c:	80 81       	ld	r24, Z
     aa6e:	91 81       	ldd	r25, Z+1	; 0x01
@@ -14800,7 +14744,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
     adb6:	5a c0       	rjmp	.+180    	; 0xae6c <update_level_helper+0x454>
 	{
 	    next_level = game.current_level + 1;
-    adb8:	10 91 e9 0b 	lds	r17, 0x0BE9
+    adb8:	10 91 69 0c 	lds	r17, 0x0C69
     adbc:	1f 5f       	subi	r17, 0xFF	; 255
 
 	    // Tie breaker
@@ -14970,7 +14914,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 
 	// Render
 	if (game.paused)
-    aea2:	80 91 ea 0b 	lds	r24, 0x0BEA
+    aea2:	80 91 6a 0c 	lds	r24, 0x0C6A
     aea6:	88 23       	and	r24, r24
     aea8:	d1 f0       	breq	.+52     	; 0xaede <update_level+0x4e>
 	{
@@ -14983,17 +14927,17 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     aeb4:	6c e0       	ldi	r22, 0x0C	; 12
     aeb6:	88 e0       	ldi	r24, 0x08	; 8
     aeb8:	0e 94 6a 45 	call	0x8ad4	; 0x8ad4 <DrawMap2>
-		Print(12, 13, strPaused);
-    aebc:	42 ed       	ldi	r20, 0xD2	; 210
-    aebe:	51 e0       	ldi	r21, 0x01	; 1
+		Print(12, 13, &strMap[strPaused]);
+    aebc:	4c ea       	ldi	r20, 0xAC	; 172
+    aebe:	52 e0       	ldi	r21, 0x02	; 2
     aec0:	6d e0       	ldi	r22, 0x0D	; 13
     aec2:	70 e0       	ldi	r23, 0x00	; 0
     aec4:	8c e0       	ldi	r24, 0x0C	; 12
     aec6:	90 e0       	ldi	r25, 0x00	; 0
     aec8:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-		Print(11, 14, strExit);
-    aecc:	49 ed       	ldi	r20, 0xD9	; 217
-    aece:	51 e0       	ldi	r21, 0x01	; 1
+		Print(11, 14, &strMap[strExit]);
+    aecc:	43 ea       	ldi	r20, 0xA3	; 163
+    aece:	52 e0       	ldi	r21, 0x02	; 2
     aed0:	6e e0       	ldi	r22, 0x0E	; 14
     aed2:	70 e0       	ldi	r23, 0x00	; 0
     aed4:	8b e0       	ldi	r24, 0x0B	; 11
@@ -15008,112 +14952,112 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     aee0:	0e 94 11 44 	call	0x8822	; 0x8822 <SetSpriteVisibility>
 		p2_index = tank_map(&player1, p1_index);
     aee4:	60 e0       	ldi	r22, 0x00	; 0
-    aee6:	85 e0       	ldi	r24, 0x05	; 5
+    aee6:	85 e8       	ldi	r24, 0x85	; 133
     aee8:	9c e0       	ldi	r25, 0x0C	; 12
     aeea:	0e 94 29 4c 	call	0x9852	; 0x9852 <tank_map>
     aeee:	18 2f       	mov	r17, r24
 		p1_shot_index = tank_map(&player2, p2_index);
     aef0:	68 2f       	mov	r22, r24
-    aef2:	86 e8       	ldi	r24, 0x86	; 134
-    aef4:	9f e0       	ldi	r25, 0x0F	; 15
+    aef2:	86 e0       	ldi	r24, 0x06	; 6
+    aef4:	90 e1       	ldi	r25, 0x10	; 16
     aef6:	0e 94 29 4c 	call	0x9852	; 0x9852 <tank_map>
     aefa:	d8 2f       	mov	r29, r24
 		p2_shot_index = shot_map(&player1, p1_shot_index);
     aefc:	68 2f       	mov	r22, r24
-    aefe:	85 e0       	ldi	r24, 0x05	; 5
+    aefe:	85 e8       	ldi	r24, 0x85	; 133
     af00:	9c e0       	ldi	r25, 0x0C	; 12
     af02:	0e 94 ab 4c 	call	0x9956	; 0x9956 <shot_map>
     af06:	c8 2f       	mov	r28, r24
 		shot_map(&player2, p2_shot_index);
     af08:	68 2f       	mov	r22, r24
-    af0a:	86 e8       	ldi	r24, 0x86	; 134
-    af0c:	9f e0       	ldi	r25, 0x0F	; 15
+    af0a:	86 e0       	ldi	r24, 0x06	; 6
+    af0c:	90 e1       	ldi	r25, 0x10	; 16
     af0e:	0e 94 ab 4c 	call	0x9956	; 0x9956 <shot_map>
 		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
     af12:	40 91 02 01 	lds	r20, 0x0102
     af16:	6f e0       	ldi	r22, 0x0F	; 15
-    af18:	85 e0       	ldi	r24, 0x05	; 5
+    af18:	85 e8       	ldi	r24, 0x85	; 133
     af1a:	9c e0       	ldi	r25, 0x0C	; 12
     af1c:	0e 94 58 4b 	call	0x96b0	; 0x96b0 <render_banter>
     af20:	80 93 02 01 	sts	0x0102, r24
 		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
     af24:	40 91 01 01 	lds	r20, 0x0101
     af28:	60 e0       	ldi	r22, 0x00	; 0
-    af2a:	86 e8       	ldi	r24, 0x86	; 134
-    af2c:	9f e0       	ldi	r25, 0x0F	; 15
+    af2a:	86 e0       	ldi	r24, 0x06	; 6
+    af2c:	90 e1       	ldi	r25, 0x10	; 16
     af2e:	0e 94 58 4b 	call	0x96b0	; 0x96b0 <render_banter>
     af32:	80 93 01 01 	sts	0x0101, r24
 		render_player(&player1, p1_index);
     af36:	60 e0       	ldi	r22, 0x00	; 0
-    af38:	85 e0       	ldi	r24, 0x05	; 5
+    af38:	85 e8       	ldi	r24, 0x85	; 133
     af3a:	9c e0       	ldi	r25, 0x0C	; 12
     af3c:	0e 94 80 4b 	call	0x9700	; 0x9700 <render_player>
 		render_player(&player2, p2_index);
     af40:	61 2f       	mov	r22, r17
-    af42:	86 e8       	ldi	r24, 0x86	; 134
-    af44:	9f e0       	ldi	r25, 0x0F	; 15
+    af42:	86 e0       	ldi	r24, 0x06	; 6
+    af44:	90 e1       	ldi	r25, 0x10	; 16
     af46:	0e 94 80 4b 	call	0x9700	; 0x9700 <render_player>
 		render_shot(&player1, p1_shot_index);
     af4a:	6d 2f       	mov	r22, r29
-    af4c:	85 e0       	ldi	r24, 0x05	; 5
+    af4c:	85 e8       	ldi	r24, 0x85	; 133
     af4e:	9c e0       	ldi	r25, 0x0C	; 12
     af50:	0e 94 a9 4b 	call	0x9752	; 0x9752 <render_shot>
 		render_shot(&player2, p2_shot_index);
     af54:	6c 2f       	mov	r22, r28
-    af56:	86 e8       	ldi	r24, 0x86	; 134
-    af58:	9f e0       	ldi	r25, 0x0F	; 15
+    af56:	86 e0       	ldi	r24, 0x06	; 6
+    af58:	90 e1       	ldi	r25, 0x10	; 16
     af5a:	0e 94 a9 4b 	call	0x9752	; 0x9752 <render_shot>
 		render_tile_explosions(&tile_animations);
-    af5e:	8c ee       	ldi	r24, 0xEC	; 236
-    af60:	9b e0       	ldi	r25, 0x0B	; 11
+    af5e:	8c e6       	ldi	r24, 0x6C	; 108
+    af60:	9c e0       	ldi	r25, 0x0C	; 12
     af62:	0e 94 e4 4b 	call	0x97c8	; 0x97c8 <render_tile_explosions>
 	}
 
 	// Update
 	update_level_helper(p1, &player1, &player2, 15);
     af66:	2f e0       	ldi	r18, 0x0F	; 15
-    af68:	46 e8       	ldi	r20, 0x86	; 134
-    af6a:	5f e0       	ldi	r21, 0x0F	; 15
-    af6c:	65 e0       	ldi	r22, 0x05	; 5
+    af68:	46 e0       	ldi	r20, 0x06	; 6
+    af6a:	50 e1       	ldi	r21, 0x10	; 16
+    af6c:	65 e8       	ldi	r22, 0x85	; 133
     af6e:	7c e0       	ldi	r23, 0x0C	; 12
     af70:	c6 01       	movw	r24, r12
     af72:	0e 94 0c 55 	call	0xaa18	; 0xaa18 <update_level_helper>
 	update_level_helper(p2, &player2, &player1, 0);
     af76:	20 e0       	ldi	r18, 0x00	; 0
-    af78:	45 e0       	ldi	r20, 0x05	; 5
+    af78:	45 e8       	ldi	r20, 0x85	; 133
     af7a:	5c e0       	ldi	r21, 0x0C	; 12
-    af7c:	66 e8       	ldi	r22, 0x86	; 134
-    af7e:	7f e0       	ldi	r23, 0x0F	; 15
+    af7c:	66 e0       	ldi	r22, 0x06	; 6
+    af7e:	70 e1       	ldi	r23, 0x10	; 16
     af80:	c7 01       	movw	r24, r14
     af82:	0e 94 0c 55 	call	0xaa18	; 0xaa18 <update_level_helper>
 	collision_detect_player(&player1, &player2, 0, 15);
     af86:	2f e0       	ldi	r18, 0x0F	; 15
     af88:	40 e0       	ldi	r20, 0x00	; 0
-    af8a:	66 e8       	ldi	r22, 0x86	; 134
-    af8c:	7f e0       	ldi	r23, 0x0F	; 15
-    af8e:	85 e0       	ldi	r24, 0x05	; 5
+    af8a:	66 e0       	ldi	r22, 0x06	; 6
+    af8c:	70 e1       	ldi	r23, 0x10	; 16
+    af8e:	85 e8       	ldi	r24, 0x85	; 133
     af90:	9c e0       	ldi	r25, 0x0C	; 12
     af92:	0e 94 a6 51 	call	0xa34c	; 0xa34c <collision_detect_player>
 	collision_detect_player(&player2, &player1, 15, 0);
     af96:	20 e0       	ldi	r18, 0x00	; 0
     af98:	4f e0       	ldi	r20, 0x0F	; 15
-    af9a:	65 e0       	ldi	r22, 0x05	; 5
+    af9a:	65 e8       	ldi	r22, 0x85	; 133
     af9c:	7c e0       	ldi	r23, 0x0C	; 12
-    af9e:	86 e8       	ldi	r24, 0x86	; 134
-    afa0:	9f e0       	ldi	r25, 0x0F	; 15
+    af9e:	86 e0       	ldi	r24, 0x06	; 6
+    afa0:	90 e1       	ldi	r25, 0x10	; 16
     afa2:	0e 94 a6 51 	call	0xa34c	; 0xa34c <collision_detect_player>
 	
 	if (game.selection == CPUVCPU) 
-    afa6:	80 91 eb 0b 	lds	r24, 0x0BEB
+    afa6:	80 91 6b 0c 	lds	r24, 0x0C6B
     afaa:	83 30       	cpi	r24, 0x03	; 3
     afac:	69 f4       	brne	.+26     	; 0xafc8 <update_level+0x138>
 	{
 		demo_counter++;
-    afae:	80 91 12 0b 	lds	r24, 0x0B12
-    afb2:	90 91 13 0b 	lds	r25, 0x0B13
+    afae:	80 91 92 0b 	lds	r24, 0x0B92
+    afb2:	90 91 93 0b 	lds	r25, 0x0B93
     afb6:	01 96       	adiw	r24, 0x01	; 1
-    afb8:	90 93 13 0b 	sts	0x0B13, r25
-    afbc:	80 93 12 0b 	sts	0x0B12, r24
+    afb8:	90 93 93 0b 	sts	0x0B93, r25
+    afbc:	80 93 92 0b 	sts	0x0B92, r24
 		held = ReadJoypad(0);
     afc0:	80 e0       	ldi	r24, 0x00	; 0
     afc2:	0e 94 03 38 	call	0x7006	; 0x7006 <ReadJoypad>
@@ -15132,7 +15076,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		held = ReadJoypad(0);
 	}
 	if (game.selection == CPUVCPU &&
-    afcc:	20 91 eb 0b 	lds	r18, 0x0BEB
+    afcc:	20 91 6b 0c 	lds	r18, 0x0C6B
     afd0:	23 30       	cpi	r18, 0x03	; 3
     afd2:	e1 f4       	brne	.+56     	; 0xb00c <update_level+0x17c>
     afd4:	8f 70       	andi	r24, 0x0F	; 15
@@ -15146,8 +15090,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     afd8:	89 2b       	or	r24, r25
     afda:	39 f4       	brne	.+14     	; 0xafea <update_level+0x15a>
 		 (held & BTN_B)) ||
-    afdc:	80 91 12 0b 	lds	r24, 0x0B12
-    afe0:	90 91 13 0b 	lds	r25, 0x0B13
+    afdc:	80 91 92 0b 	lds	r24, 0x0B92
+    afe0:	90 91 93 0b 	lds	r25, 0x0B93
     afe4:	88 30       	cpi	r24, 0x08	; 8
     afe6:	97 40       	sbci	r25, 0x07	; 7
     afe8:	88 f0       	brcs	.+34     	; 0xb00c <update_level+0x17c>
@@ -15155,8 +15099,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		)
 	{
 		demo_counter = 0;
-    afea:	10 92 13 0b 	sts	0x0B13, r1
-    afee:	10 92 12 0b 	sts	0x0B12, r1
+    afea:	10 92 93 0b 	sts	0x0B93, r1
+    afee:	10 92 92 0b 	sts	0x0B92, r1
 		fade_through();
     aff2:	0e 94 a6 49 	call	0x934c	; 0x934c <fade_through>
 		init_game_state();
@@ -15190,8 +15134,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     b01a:	08 95       	ret
 
 0000b01c <update_tank_rank>:
-	Print(3, 22, strReset);
-	Print(10, 24, strCancelHandle);
+	Print(3, 22, &strMap[strReset]);
+	Print(10, 24, &strMap[strCancelHandle]);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
@@ -15233,12 +15177,12 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
     b052:	84 e0       	ldi	r24, 0x04	; 4
     b054:	0e 94 2a 3b 	call	0x7654	; 0x7654 <TriggerNote>
 	    init_scores(&scores);
-    b058:	81 ea       	ldi	r24, 0xA1	; 161
-    b05a:	9b e0       	ldi	r25, 0x0B	; 11
+    b058:	81 e2       	ldi	r24, 0x21	; 33
+    b05a:	9c e0       	ldi	r25, 0x0C	; 12
     b05c:	0e 94 5d 48 	call	0x90ba	; 0x90ba <init_scores>
 	    init_handles(&handles);
-    b060:	88 ec       	ldi	r24, 0xC8	; 200
-    b062:	9b e0       	ldi	r25, 0x0B	; 11
+    b060:	88 e4       	ldi	r24, 0x48	; 72
+    b062:	9c e0       	ldi	r25, 0x0C	; 12
     b064:	0e 94 69 48 	call	0x90d2	; 0x90d2 <init_handles>
 void save_eeprom(struct EepromBlockStruct* block)
 /*
@@ -15246,11 +15190,11 @@ void save_eeprom(struct EepromBlockStruct* block)
  */
 {
 	EepromWriteBlock(block);
-    b068:	81 ea       	ldi	r24, 0xA1	; 161
-    b06a:	9b e0       	ldi	r25, 0x0B	; 11
+    b068:	81 e2       	ldi	r24, 0x21	; 33
+    b06a:	9c e0       	ldi	r25, 0x0C	; 12
     b06c:	0e 94 f4 38 	call	0x71e8	; 0x71e8 <EepromWriteBlock>
-    b070:	88 ec       	ldi	r24, 0xC8	; 200
-    b072:	9b e0       	ldi	r25, 0x0B	; 11
+    b070:	88 e4       	ldi	r24, 0x48	; 72
+    b072:	9c e0       	ldi	r25, 0x0C	; 12
     b074:	0e 94 f4 38 	call	0x71e8	; 0x71e8 <EepromWriteBlock>
 	    init_handles(&handles);
 	    save_eeprom(&scores);
@@ -15347,8 +15291,8 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
     b0ea:	6f 02       	muls	r22, r31
     b0ec:	b0 01       	movw	r22, r0
     b0ee:	11 24       	eor	r1, r1
-    b0f0:	66 53       	subi	r22, 0x36	; 54
-    b0f2:	74 4f       	sbci	r23, 0xF4	; 244
+    b0f0:	66 5b       	subi	r22, 0xB6	; 182
+    b0f2:	73 4f       	sbci	r23, 0xF3	; 243
     b0f4:	43 e0       	ldi	r20, 0x03	; 3
     b0f6:	ce 01       	movw	r24, r28
     b0f8:	0e 94 dc 46 	call	0x8db8	; 0x8db8 <LBCopyChars>
@@ -15506,8 +15450,8 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
     b1aa:	11 24       	eor	r1, r1
     b1ac:	43 e0       	ldi	r20, 0x03	; 3
     b1ae:	b8 01       	movw	r22, r16
-    b1b0:	86 53       	subi	r24, 0x36	; 54
-    b1b2:	94 4f       	sbci	r25, 0xF4	; 244
+    b1b0:	86 5b       	subi	r24, 0xB6	; 182
+    b1b2:	93 4f       	sbci	r25, 0xF3	; 243
     b1b4:	0e 94 dc 46 	call	0x8db8	; 0x8db8 <LBCopyChars>
 		SFX_NAVIGATE;
     b1b8:	2f ef       	ldi	r18, 0xFF	; 255
@@ -15521,8 +15465,8 @@ void save_eeprom(struct EepromBlockStruct* block)
  */
 {
 	EepromWriteBlock(block);
-    b1c4:	88 ec       	ldi	r24, 0xC8	; 200
-    b1c6:	9b e0       	ldi	r25, 0x0B	; 11
+    b1c4:	88 e4       	ldi	r24, 0x48	; 72
+    b1c6:	9c e0       	ldi	r25, 0x0C	; 12
     b1c8:	0e 94 f4 38 	call	0x71e8	; 0x71e8 <EepromWriteBlock>
 		player->handle_id = ps->handle_id;
 		LBCopyChars(player->handle, ps->handle, 3);
@@ -15812,7 +15756,7 @@ void load_handle_select()
     b3a2:	df 93       	push	r29
 	game.current_screen = HANDLE_SELECT;
     b3a4:	82 e0       	ldi	r24, 0x02	; 2
-    b3a6:	80 93 e8 0b 	sts	0x0BE8, r24
+    b3a6:	80 93 68 0c 	sts	0x0C68, r24
 	clear_sprites();
     b3aa:	0e 94 b0 49 	call	0x9360	; 0x9360 <clear_sprites>
 	MapSprite2(0, map_tank1_up_0, 0);
@@ -15840,33 +15784,33 @@ void load_handle_select()
     b3d8:	60 ea       	ldi	r22, 0xA0	; 160
     b3da:	84 e0       	ldi	r24, 0x04	; 4
     b3dc:	0e 94 3a 45 	call	0x8a74	; 0x8a74 <MoveSprite>
-	Print(9, 1, strHandlesTitle);
-    b3e0:	47 e0       	ldi	r20, 0x07	; 7
-    b3e2:	53 e0       	ldi	r21, 0x03	; 3
+	Print(9, 1, &strMap[strHandlesTitle]);
+    b3e0:	42 e7       	ldi	r20, 0x72	; 114
+    b3e2:	51 e0       	ldi	r21, 0x01	; 1
     b3e4:	61 e0       	ldi	r22, 0x01	; 1
     b3e6:	70 e0       	ldi	r23, 0x00	; 0
     b3e8:	89 e0       	ldi	r24, 0x09	; 9
     b3ea:	90 e0       	ldi	r25, 0x00	; 0
     b3ec:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(6, 5, strPlayer1);
-    b3f0:	46 ef       	ldi	r20, 0xF6	; 246
-    b3f2:	52 e0       	ldi	r21, 0x02	; 2
+	Print(6, 5, &strMap[strPlayer1]);
+    b3f0:	4c e8       	ldi	r20, 0x8C	; 140
+    b3f2:	51 e0       	ldi	r21, 0x01	; 1
     b3f4:	65 e0       	ldi	r22, 0x05	; 5
     b3f6:	70 e0       	ldi	r23, 0x00	; 0
     b3f8:	86 e0       	ldi	r24, 0x06	; 6
     b3fa:	90 e0       	ldi	r25, 0x00	; 0
     b3fc:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(23, 5, strPlayer2);
-    b400:	43 ef       	ldi	r20, 0xF3	; 243
-    b402:	52 e0       	ldi	r21, 0x02	; 2
+	Print(23, 5, &strMap[strPlayer2]);
+    b400:	4f e8       	ldi	r20, 0x8F	; 143
+    b402:	51 e0       	ldi	r21, 0x01	; 1
     b404:	65 e0       	ldi	r22, 0x05	; 5
     b406:	70 e0       	ldi	r23, 0x00	; 0
     b408:	87 e1       	ldi	r24, 0x17	; 23
     b40a:	90 e0       	ldi	r25, 0x00	; 0
     b40c:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-    b410:	8a ec       	ldi	r24, 0xCA	; 202
+    b410:	8a e4       	ldi	r24, 0x4A	; 74
     b412:	e8 2e       	mov	r14, r24
-    b414:	8b e0       	ldi	r24, 0x0B	; 11
+    b414:	8c e0       	ldi	r24, 0x0C	; 12
     b416:	f8 2e       	mov	r15, r24
 	for (int i = 0; i < 27; i += 1)
     b418:	c0 e0       	ldi	r28, 0x00	; 0
@@ -15899,9 +15843,9 @@ void load_handle_select()
     b44c:	0e 94 05 46 	call	0x8c0a	; 0x8c0a <PrintChar>
 	MoveSprite(0, 3*8, 4*8, 2, 2);
 	MoveSprite(4, 20*8, 4*8, 2, 2);
-	Print(9, 1, strHandlesTitle);
-	Print(6, 5, strPlayer1);
-	Print(23, 5, strPlayer2);
+	Print(9, 1, &strMap[strHandlesTitle]);
+	Print(6, 5, &strMap[strPlayer1]);
+	Print(23, 5, &strMap[strPlayer2]);
 	for (int i = 0; i < 27; i += 1)
     b450:	21 96       	adiw	r28, 0x01	; 1
     b452:	cb 31       	cpi	r28, 0x1B	; 27
@@ -15911,33 +15855,33 @@ void load_handle_select()
 		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, strSelectHandle);
-    b458:	48 ee       	ldi	r20, 0xE8	; 232
-    b45a:	52 e0       	ldi	r21, 0x02	; 2
+	Print(8, 21, &strMap[strSelectHandle]);
+    b458:	42 e9       	ldi	r20, 0x92	; 146
+    b45a:	51 e0       	ldi	r21, 0x01	; 1
     b45c:	65 e1       	ldi	r22, 0x15	; 21
     b45e:	70 e0       	ldi	r23, 0x00	; 0
     b460:	88 e0       	ldi	r24, 0x08	; 8
     b462:	90 e0       	ldi	r25, 0x00	; 0
     b464:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(8, 22, strConfirmHandle);
-    b468:	4c ed       	ldi	r20, 0xDC	; 220
-    b46a:	52 e0       	ldi	r21, 0x02	; 2
+	Print(8, 22, &strMap[strConfirmHandle]);
+    b468:	4d e9       	ldi	r20, 0x9D	; 157
+    b46a:	51 e0       	ldi	r21, 0x01	; 1
     b46c:	66 e1       	ldi	r22, 0x16	; 22
     b46e:	70 e0       	ldi	r23, 0x00	; 0
     b470:	88 e0       	ldi	r24, 0x08	; 8
     b472:	90 e0       	ldi	r25, 0x00	; 0
     b474:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(8, 23, strCancelHandle);
-    b478:	41 ed       	ldi	r20, 0xD1	; 209
-    b47a:	52 e0       	ldi	r21, 0x02	; 2
+	Print(8, 23, &strMap[strCancelHandle]);
+    b478:	49 ea       	ldi	r20, 0xA9	; 169
+    b47a:	51 e0       	ldi	r21, 0x01	; 1
     b47c:	67 e1       	ldi	r22, 0x17	; 23
     b47e:	70 e0       	ldi	r23, 0x00	; 0
     b480:	88 e0       	ldi	r24, 0x08	; 8
     b482:	90 e0       	ldi	r25, 0x00	; 0
     b484:	0e 94 ea 45 	call	0x8bd4	; 0x8bd4 <Print>
-	Print(8, 24, strChangeHandle);
-    b488:	49 ea       	ldi	r20, 0xA9	; 169
-    b48a:	52 e0       	ldi	r21, 0x02	; 2
+	Print(8, 24, &strMap[strChangeHandle]);
+    b488:	4d ec       	ldi	r20, 0xCD	; 205
+    b48a:	51 e0       	ldi	r21, 0x01	; 1
     b48c:	68 e1       	ldi	r22, 0x18	; 24
     b48e:	70 e0       	ldi	r23, 0x00	; 0
     b490:	88 e0       	ldi	r24, 0x08	; 8
@@ -15957,10 +15901,10 @@ void load_handle_select()
     b4aa:	8f 90       	pop	r8
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, strSelectHandle);
-	Print(8, 22, strConfirmHandle);
-	Print(8, 23, strCancelHandle);
-	Print(8, 24, strChangeHandle);
+	Print(8, 21, &strMap[strSelectHandle]);
+	Print(8, 22, &strMap[strConfirmHandle]);
+	Print(8, 23, &strMap[strCancelHandle]);
+	Print(8, 24, &strMap[strChangeHandle]);
     b4ac:	0c 94 ea 45 	jmp	0x8bd4	; 0x8bd4 <Print>
 
 0000b4b0 <update_splash>:
@@ -15978,7 +15922,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	
 	// Render
 	switch (game.selection)
-    b4b8:	90 91 eb 0b 	lds	r25, 0x0BEB
+    b4b8:	90 91 6b 0c 	lds	r25, 0x0C6B
     b4bc:	91 30       	cpi	r25, 0x01	; 1
     b4be:	41 f0       	breq	.+16     	; 0xb4d0 <update_splash+0x20>
     b4c0:	92 30       	cpi	r25, 0x02	; 2
@@ -16010,9 +15954,9 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     b4e2:	0e 94 3a 45 	call	0x8a74	; 0x8a74 <MoveSprite>
 			break;
 	}
-	Print(9, 21, strSelectHandle);
-    b4e6:	48 ee       	ldi	r20, 0xE8	; 232
-    b4e8:	52 e0       	ldi	r21, 0x02	; 2
+	Print(9, 21, &strMap[strSelectHandle]);
+    b4e6:	42 e9       	ldi	r20, 0x92	; 146
+    b4e8:	51 e0       	ldi	r21, 0x01	; 1
     b4ea:	65 e1       	ldi	r22, 0x15	; 21
     b4ec:	70 e0       	ldi	r23, 0x00	; 0
     b4ee:	89 e0       	ldi	r24, 0x09	; 9
@@ -16025,20 +15969,20 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     b4f8:	99 81       	ldd	r25, Y+1	; 0x01
     b4fa:	00 97       	sbiw	r24, 0x00	; 0
     b4fc:	21 f0       	breq	.+8      	; 0xb506 <update_splash+0x56>
-    b4fe:	10 92 11 0b 	sts	0x0B11, r1
-    b502:	10 92 10 0b 	sts	0x0B10, r1
+    b4fe:	10 92 91 0b 	sts	0x0B91, r1
+    b502:	10 92 90 0b 	sts	0x0B90, r1
 	
 	if (p1->pressed & BTN_UP)
     b506:	84 ff       	sbrs	r24, 4
     b508:	0e c0       	rjmp	.+28     	; 0xb526 <update_splash+0x76>
 	{
 		game.selection--;
-    b50a:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b50a:	80 91 6b 0c 	lds	r24, 0x0C6B
     b50e:	81 50       	subi	r24, 0x01	; 1
 		if (game.selection < PVCPU) game.selection = PVCPU;
     b510:	87 ff       	sbrs	r24, 7
     b512:	11 c0       	rjmp	.+34     	; 0xb536 <update_splash+0x86>
-    b514:	10 92 eb 0b 	sts	0x0BEB, r1
+    b514:	10 92 6b 0c 	sts	0x0C6B, r1
 		SFX_NAVIGATE;
     b518:	2f ef       	ldi	r18, 0xFF	; 255
     b51a:	47 e1       	ldi	r20, 0x17	; 23
@@ -16052,27 +15996,27 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     b528:	09 c0       	rjmp	.+18     	; 0xb53c <update_splash+0x8c>
 	{
 		game.selection++;
-    b52a:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b52a:	80 91 6b 0c 	lds	r24, 0x0C6B
     b52e:	8f 5f       	subi	r24, 0xFF	; 255
 		if (game.selection > TR) game.selection = TR;
     b530:	83 30       	cpi	r24, 0x03	; 3
     b532:	0c f0       	brlt	.+2      	; 0xb536 <update_splash+0x86>
     b534:	82 e0       	ldi	r24, 0x02	; 2
-    b536:	80 93 eb 0b 	sts	0x0BEB, r24
+    b536:	80 93 6b 0c 	sts	0x0C6B, r24
     b53a:	ee cf       	rjmp	.-36     	; 0xb518 <update_splash+0x68>
 		SFX_NAVIGATE;
 	}
 	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
     b53c:	90 ff       	sbrs	r25, 0
     b53e:	2c c0       	rjmp	.+88     	; 0xb598 <update_splash+0xe8>
-    b540:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b540:	80 91 6b 0c 	lds	r24, 0x0C6B
     b544:	82 30       	cpi	r24, 0x02	; 2
     b546:	a8 f4       	brcc	.+42     	; 0xb572 <update_splash+0xc2>
 	{
 		p1s.select_state = SELECTING;
-    b548:	10 92 0f 0b 	sts	0x0B0F, r1
+    b548:	10 92 8f 0b 	sts	0x0B8F, r1
 		p2s.select_state = SELECTING;
-    b54c:	10 92 09 0b 	sts	0x0B09, r1
+    b54c:	10 92 89 0b 	sts	0x0B89, r1
 		SFX_NAVIGATE;
     b550:	2f ef       	ldi	r18, 0xFF	; 255
     b552:	47 e1       	ldi	r20, 0x17	; 23
@@ -16082,8 +16026,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		fade_through();
     b55c:	0e 94 a6 49 	call	0x934c	; 0x934c <fade_through>
 		load_eeprom(&handles);
-    b560:	88 ec       	ldi	r24, 0xC8	; 200
-    b562:	9b e0       	ldi	r25, 0x0B	; 11
+    b560:	88 e4       	ldi	r24, 0x48	; 72
+    b562:	9c e0       	ldi	r25, 0x0C	; 12
     b564:	0e 94 94 49 	call	0x9328	; 0x9328 <load_eeprom>
 		level_transition(LBRandom(0, 9));
 		return;
@@ -16116,8 +16060,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		fade_through();
     b582:	0e 94 a6 49 	call	0x934c	; 0x934c <fade_through>
 		load_eeprom(&scores);
-    b586:	81 ea       	ldi	r24, 0xA1	; 161
-    b588:	9b e0       	ldi	r25, 0x0B	; 11
+    b586:	81 e2       	ldi	r24, 0x21	; 33
+    b588:	9c e0       	ldi	r25, 0x0C	; 12
     b58a:	0e 94 94 49 	call	0x9328	; 0x9328 <load_eeprom>
 		level_transition(LBRandom(0, 9));
 		return;
@@ -16138,36 +16082,36 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		return;
 	}
 	else if (demo_counter >= DEMO_WAIT)
-    b598:	80 91 10 0b 	lds	r24, 0x0B10
-    b59c:	90 91 11 0b 	lds	r25, 0x0B11
+    b598:	80 91 90 0b 	lds	r24, 0x0B90
+    b59c:	90 91 91 0b 	lds	r25, 0x0B91
     b5a0:	88 35       	cpi	r24, 0x58	; 88
     b5a2:	92 40       	sbci	r25, 0x02	; 2
     b5a4:	78 f1       	brcs	.+94     	; 0xb604 <update_splash+0x154>
 	{
 		demo_counter = 0;
-    b5a6:	10 92 11 0b 	sts	0x0B11, r1
-    b5aa:	10 92 10 0b 	sts	0x0B10, r1
+    b5a6:	10 92 91 0b 	sts	0x0B91, r1
+    b5aa:	10 92 90 0b 	sts	0x0B90, r1
 		game.selection = CPUVCPU;
     b5ae:	83 e0       	ldi	r24, 0x03	; 3
-    b5b0:	80 93 eb 0b 	sts	0x0BEB, r24
+    b5b0:	80 93 6b 0c 	sts	0x0C6B, r24
 		player1.handle_id = 9;
     b5b4:	c9 e0       	ldi	r28, 0x09	; 9
-    b5b6:	c0 93 0f 0c 	sts	0x0C0F, r28
+    b5b6:	c0 93 8f 0c 	sts	0x0C8F, r28
 		LBCopyChars(player1.handle, &handles.data[9*3], 3);
     b5ba:	43 e0       	ldi	r20, 0x03	; 3
-    b5bc:	65 ee       	ldi	r22, 0xE5	; 229
-    b5be:	7b e0       	ldi	r23, 0x0B	; 11
-    b5c0:	80 e1       	ldi	r24, 0x10	; 16
+    b5bc:	65 e6       	ldi	r22, 0x65	; 101
+    b5be:	7c e0       	ldi	r23, 0x0C	; 12
+    b5c0:	80 e9       	ldi	r24, 0x90	; 144
     b5c2:	9c e0       	ldi	r25, 0x0C	; 12
     b5c4:	0e 94 dc 46 	call	0x8db8	; 0x8db8 <LBCopyChars>
 		player2.handle_id = 9;
-    b5c8:	c0 93 90 0f 	sts	0x0F90, r28
+    b5c8:	c0 93 10 10 	sts	0x1010, r28
 		LBCopyChars(player2.handle, &handles.data[9*3], 3);
     b5cc:	43 e0       	ldi	r20, 0x03	; 3
-    b5ce:	65 ee       	ldi	r22, 0xE5	; 229
-    b5d0:	7b e0       	ldi	r23, 0x0B	; 11
-    b5d2:	81 e9       	ldi	r24, 0x91	; 145
-    b5d4:	9f e0       	ldi	r25, 0x0F	; 15
+    b5ce:	65 e6       	ldi	r22, 0x65	; 101
+    b5d0:	7c e0       	ldi	r23, 0x0C	; 12
+    b5d2:	81 e1       	ldi	r24, 0x11	; 17
+    b5d4:	90 e1       	ldi	r25, 0x10	; 16
     b5d6:	0e 94 dc 46 	call	0x8db8	; 0x8db8 <LBCopyChars>
 		SFX_NAVIGATE;
     b5da:	2f ef       	ldi	r18, 0xFF	; 255
@@ -16204,11 +16148,11 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		
 	}
 	demo_counter++;
-    b604:	80 91 10 0b 	lds	r24, 0x0B10
-    b608:	90 91 11 0b 	lds	r25, 0x0B11
+    b604:	80 91 90 0b 	lds	r24, 0x0B90
+    b608:	90 91 91 0b 	lds	r25, 0x0B91
     b60c:	01 96       	adiw	r24, 0x01	; 1
-    b60e:	90 93 11 0b 	sts	0x0B11, r25
-    b612:	80 93 10 0b 	sts	0x0B10, r24
+    b60e:	90 93 91 0b 	sts	0x0B91, r25
+    b612:	80 93 90 0b 	sts	0x0B90, r24
 }
     b616:	df 91       	pop	r29
     b618:	cf 91       	pop	r28
@@ -16216,8 +16160,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     b61c:	08 95       	ret
 
 0000b61e <update_handle_select>:
-	Print(8, 23, strCancelHandle);
-	Print(8, 24, strChangeHandle);
+	Print(8, 23, &strMap[strCancelHandle]);
+	Print(8, 24, &strMap[strChangeHandle]);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -16235,11 +16179,11 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
     b62a:	28 e0       	ldi	r18, 0x08	; 8
     b62c:	42 e0       	ldi	r20, 0x02	; 2
     b62e:	bc 01       	movw	r22, r24
-    b630:	8a e0       	ldi	r24, 0x0A	; 10
+    b630:	8a e8       	ldi	r24, 0x8A	; 138
     b632:	9b e0       	ldi	r25, 0x0B	; 11
     b634:	0e 94 08 59 	call	0xb210	; 0xb210 <_handle_select_render_helper>
 	if (game.selection == PVP)
-    b638:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b638:	80 91 6b 0c 	lds	r24, 0x0C6B
     b63c:	81 30       	cpi	r24, 0x01	; 1
     b63e:	39 f4       	brne	.+14     	; 0xb64e <update_handle_select+0x30>
 	{
@@ -16247,23 +16191,23 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
     b640:	2a e0       	ldi	r18, 0x0A	; 10
     b642:	43 e1       	ldi	r20, 0x13	; 19
     b644:	be 01       	movw	r22, r28
-    b646:	84 e0       	ldi	r24, 0x04	; 4
+    b646:	84 e8       	ldi	r24, 0x84	; 132
     b648:	9b e0       	ldi	r25, 0x0B	; 11
     b64a:	0e 94 08 59 	call	0xb210	; 0xb210 <_handle_select_render_helper>
 	}
 
 	// Update
 	_handle_select_helper(&p1s, p1, &player1);
-    b64e:	45 e0       	ldi	r20, 0x05	; 5
+    b64e:	45 e8       	ldi	r20, 0x85	; 133
     b650:	5c e0       	ldi	r21, 0x0C	; 12
     b652:	b8 01       	movw	r22, r16
-    b654:	8a e0       	ldi	r24, 0x0A	; 10
+    b654:	8a e8       	ldi	r24, 0x8A	; 138
     b656:	9b e0       	ldi	r25, 0x0B	; 11
     b658:	0e 94 43 58 	call	0xb086	; 0xb086 <_handle_select_helper>
 	if (p1s.select_state == CONFIRMED) start_game = 1;
-    b65c:	10 91 0f 0b 	lds	r17, 0x0B0F
+    b65c:	10 91 8f 0b 	lds	r17, 0x0B8F
 	if (game.selection == PVP)
-    b660:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b660:	80 91 6b 0c 	lds	r24, 0x0C6B
     b664:	81 30       	cpi	r24, 0x01	; 1
     b666:	19 f0       	breq	.+6      	; 0xb66e <update_handle_select+0x50>
 	{
@@ -16280,14 +16224,14 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	if (game.selection == PVP)
 	{
 		_handle_select_helper(&p2s, p2, &player2);
-    b66e:	46 e8       	ldi	r20, 0x86	; 134
-    b670:	5f e0       	ldi	r21, 0x0F	; 15
+    b66e:	46 e0       	ldi	r20, 0x06	; 6
+    b670:	50 e1       	ldi	r21, 0x10	; 16
     b672:	be 01       	movw	r22, r28
-    b674:	84 e0       	ldi	r24, 0x04	; 4
+    b674:	84 e8       	ldi	r24, 0x84	; 132
     b676:	9b e0       	ldi	r25, 0x0B	; 11
     b678:	0e 94 43 58 	call	0xb086	; 0xb086 <_handle_select_helper>
 		if (p2s.select_state != CONFIRMED) start_game = 0;
-    b67c:	80 91 09 0b 	lds	r24, 0x0B09
+    b67c:	80 91 89 0b 	lds	r24, 0x0B89
     b680:	82 30       	cpi	r24, 0x02	; 2
     b682:	b1 f4       	brne	.+44     	; 0xb6b0 <update_handle_select+0x92>
     b684:	f1 cf       	rjmp	.-30     	; 0xb668 <update_handle_select+0x4a>
@@ -16295,19 +16239,19 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	if (start_game)
 	{
 		if (game.selection == PVCPU)
-    b686:	80 91 eb 0b 	lds	r24, 0x0BEB
+    b686:	80 91 6b 0c 	lds	r24, 0x0C6B
     b68a:	81 11       	cpse	r24, r1
     b68c:	0a c0       	rjmp	.+20     	; 0xb6a2 <update_handle_select+0x84>
 		{
 			player2.handle_id = 9;
     b68e:	89 e0       	ldi	r24, 0x09	; 9
-    b690:	80 93 90 0f 	sts	0x0F90, r24
+    b690:	80 93 10 10 	sts	0x1010, r24
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
     b694:	43 e0       	ldi	r20, 0x03	; 3
-    b696:	65 ee       	ldi	r22, 0xE5	; 229
-    b698:	7b e0       	ldi	r23, 0x0B	; 11
-    b69a:	81 e9       	ldi	r24, 0x91	; 145
-    b69c:	9f e0       	ldi	r25, 0x0F	; 15
+    b696:	65 e6       	ldi	r22, 0x65	; 101
+    b698:	7c e0       	ldi	r23, 0x0C	; 12
+    b69a:	81 e1       	ldi	r24, 0x11	; 17
+    b69c:	90 e1       	ldi	r25, 0x10	; 16
     b69e:	0e 94 dc 46 	call	0x8db8	; 0x8db8 <LBCopyChars>
 		}
 		level_transition(0);
@@ -17105,18 +17049,18 @@ int main()
 	ClearVram();
     bb82:	0e 94 d5 37 	call	0x6faa	; 0x6faa <ClearVram>
 	init_scores(&scores);
-    bb86:	81 ea       	ldi	r24, 0xA1	; 161
-    bb88:	9b e0       	ldi	r25, 0x0B	; 11
+    bb86:	81 e2       	ldi	r24, 0x21	; 33
+    bb88:	9c e0       	ldi	r25, 0x0C	; 12
     bb8a:	0e 94 5d 48 	call	0x90ba	; 0x90ba <init_scores>
 	init_handles(&handles);
-    bb8e:	88 ec       	ldi	r24, 0xC8	; 200
-    bb90:	9b e0       	ldi	r25, 0x0B	; 11
+    bb8e:	88 e4       	ldi	r24, 0x48	; 72
+    bb90:	9c e0       	ldi	r25, 0x0C	; 12
     bb92:	0e 94 69 48 	call	0x90d2	; 0x90d2 <init_handles>
 	init_game_state();
     bb96:	0e 94 62 49 	call	0x92c4	; 0x92c4 <init_game_state>
 	init_tile_animations(&tile_animations);
-    bb9a:	8c ee       	ldi	r24, 0xEC	; 236
-    bb9c:	9b e0       	ldi	r25, 0x0B	; 11
+    bb9a:	8c e6       	ldi	r24, 0x6C	; 108
+    bb9c:	9c e0       	ldi	r25, 0x0C	; 12
     bb9e:	0e 94 75 48 	call	0x90ea	; 0x90ea <init_tile_animations>
 	load_splash();
     bba2:	0e 94 26 54 	call	0xa84c	; 0xa84c <load_splash>
@@ -17128,7 +17072,7 @@ int main()
     bba8:	90 e0       	ldi	r25, 0x00	; 0
     bbaa:	0e 94 08 46 	call	0x8c10	; 0x8c10 <WaitVsync>
 		switch (game.current_screen)
-    bbae:	80 91 e8 0b 	lds	r24, 0x0BE8
+    bbae:	80 91 68 0c 	lds	r24, 0x0C68
     bbb2:	81 30       	cpi	r24, 0x01	; 1
     bbb4:	91 f0       	breq	.+36     	; 0xbbda <main+0x84>
     bbb6:	28 f0       	brcs	.+10     	; 0xbbc2 <main+0x6c>
@@ -17141,60 +17085,60 @@ int main()
 			case SPLASH:
 				LBGetJoyPadState(&p1, 0);
     bbc2:	60 e0       	ldi	r22, 0x00	; 0
-    bbc4:	80 e9       	ldi	r24, 0x90	; 144
-    bbc6:	9c e0       	ldi	r25, 0x0C	; 12
+    bbc4:	80 e1       	ldi	r24, 0x10	; 16
+    bbc6:	9d e0       	ldi	r25, 0x0D	; 13
     bbc8:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 				update_splash(&p1, &p2);
-    bbcc:	61 ec       	ldi	r22, 0xC1	; 193
-    bbce:	7b e0       	ldi	r23, 0x0B	; 11
-    bbd0:	80 e9       	ldi	r24, 0x90	; 144
-    bbd2:	9c e0       	ldi	r25, 0x0C	; 12
+    bbcc:	61 e4       	ldi	r22, 0x41	; 65
+    bbce:	7c e0       	ldi	r23, 0x0C	; 12
+    bbd0:	80 e1       	ldi	r24, 0x10	; 16
+    bbd2:	9d e0       	ldi	r25, 0x0D	; 13
     bbd4:	0e 94 58 5a 	call	0xb4b0	; 0xb4b0 <update_splash>
 				break;
     bbd8:	4a c0       	rjmp	.+148    	; 0xbc6e <main+0x118>
 			case TANK_RANK:
 				LBGetJoyPadState(&p1, 0);
     bbda:	60 e0       	ldi	r22, 0x00	; 0
-    bbdc:	80 e9       	ldi	r24, 0x90	; 144
-    bbde:	9c e0       	ldi	r25, 0x0C	; 12
+    bbdc:	80 e1       	ldi	r24, 0x10	; 16
+    bbde:	9d e0       	ldi	r25, 0x0D	; 13
     bbe0:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 				update_tank_rank(&p1, &p2);
-    bbe4:	61 ec       	ldi	r22, 0xC1	; 193
-    bbe6:	7b e0       	ldi	r23, 0x0B	; 11
-    bbe8:	80 e9       	ldi	r24, 0x90	; 144
-    bbea:	9c e0       	ldi	r25, 0x0C	; 12
+    bbe4:	61 e4       	ldi	r22, 0x41	; 65
+    bbe6:	7c e0       	ldi	r23, 0x0C	; 12
+    bbe8:	80 e1       	ldi	r24, 0x10	; 16
+    bbea:	9d e0       	ldi	r25, 0x0D	; 13
     bbec:	0e 94 0e 58 	call	0xb01c	; 0xb01c <update_tank_rank>
 				break;
     bbf0:	3e c0       	rjmp	.+124    	; 0xbc6e <main+0x118>
 			case HANDLE_SELECT:
 				LBGetJoyPadState(&p1, 0);
     bbf2:	60 e0       	ldi	r22, 0x00	; 0
-    bbf4:	80 e9       	ldi	r24, 0x90	; 144
-    bbf6:	9c e0       	ldi	r25, 0x0C	; 12
+    bbf4:	80 e1       	ldi	r24, 0x10	; 16
+    bbf6:	9d e0       	ldi	r25, 0x0D	; 13
     bbf8:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 				LBGetJoyPadState(&p2, 1);
     bbfc:	61 e0       	ldi	r22, 0x01	; 1
-    bbfe:	81 ec       	ldi	r24, 0xC1	; 193
-    bc00:	9b e0       	ldi	r25, 0x0B	; 11
+    bbfe:	81 e4       	ldi	r24, 0x41	; 65
+    bc00:	9c e0       	ldi	r25, 0x0C	; 12
     bc02:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 				update_handle_select(&p1, &p2);
-    bc06:	61 ec       	ldi	r22, 0xC1	; 193
-    bc08:	7b e0       	ldi	r23, 0x0B	; 11
-    bc0a:	80 e9       	ldi	r24, 0x90	; 144
-    bc0c:	9c e0       	ldi	r25, 0x0C	; 12
+    bc06:	61 e4       	ldi	r22, 0x41	; 65
+    bc08:	7c e0       	ldi	r23, 0x0C	; 12
+    bc0a:	80 e1       	ldi	r24, 0x10	; 16
+    bc0c:	9d e0       	ldi	r25, 0x0D	; 13
     bc0e:	0e 94 0f 5b 	call	0xb61e	; 0xb61e <update_handle_select>
 				break;
     bc12:	2d c0       	rjmp	.+90     	; 0xbc6e <main+0x118>
 			case LEVEL:
 				if (game.selection == PVCPU)
-    bc14:	80 91 eb 0b 	lds	r24, 0x0BEB
+    bc14:	80 91 6b 0c 	lds	r24, 0x0C6B
     bc18:	81 11       	cpse	r24, r1
     bc1a:	06 c0       	rjmp	.+12     	; 0xbc28 <main+0xd2>
 				{
 					LBGetJoyPadState(&p1, 0);
     bc1c:	60 e0       	ldi	r22, 0x00	; 0
-    bc1e:	80 e9       	ldi	r24, 0x90	; 144
-    bc20:	9c e0       	ldi	r25, 0x0C	; 12
+    bc1e:	80 e1       	ldi	r24, 0x10	; 16
+    bc20:	9d e0       	ldi	r25, 0x0D	; 13
     bc22:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
     bc26:	0a c0       	rjmp	.+20     	; 0xbc3c <main+0xe6>
 					get_cpu_joypad_state(&player2, &player1, &p2);
@@ -17204,20 +17148,20 @@ int main()
     bc2a:	89 f4       	brne	.+34     	; 0xbc4e <main+0xf8>
 				{
 					get_cpu_joypad_state(&player1, &player2, &p1);
-    bc2c:	40 e9       	ldi	r20, 0x90	; 144
-    bc2e:	5c e0       	ldi	r21, 0x0C	; 12
-    bc30:	66 e8       	ldi	r22, 0x86	; 134
-    bc32:	7f e0       	ldi	r23, 0x0F	; 15
-    bc34:	85 e0       	ldi	r24, 0x05	; 5
+    bc2c:	40 e1       	ldi	r20, 0x10	; 16
+    bc2e:	5d e0       	ldi	r21, 0x0D	; 13
+    bc30:	66 e0       	ldi	r22, 0x06	; 6
+    bc32:	70 e1       	ldi	r23, 0x10	; 16
+    bc34:	85 e8       	ldi	r24, 0x85	; 133
     bc36:	9c e0       	ldi	r25, 0x0C	; 12
     bc38:	0e 94 99 5c 	call	0xb932	; 0xb932 <get_cpu_joypad_state>
 					get_cpu_joypad_state(&player2, &player1, &p2);
-    bc3c:	41 ec       	ldi	r20, 0xC1	; 193
-    bc3e:	5b e0       	ldi	r21, 0x0B	; 11
-    bc40:	65 e0       	ldi	r22, 0x05	; 5
+    bc3c:	41 e4       	ldi	r20, 0x41	; 65
+    bc3e:	5c e0       	ldi	r21, 0x0C	; 12
+    bc40:	65 e8       	ldi	r22, 0x85	; 133
     bc42:	7c e0       	ldi	r23, 0x0C	; 12
-    bc44:	86 e8       	ldi	r24, 0x86	; 134
-    bc46:	9f e0       	ldi	r25, 0x0F	; 15
+    bc44:	86 e0       	ldi	r24, 0x06	; 6
+    bc46:	90 e1       	ldi	r25, 0x10	; 16
     bc48:	0e 94 99 5c 	call	0xb932	; 0xb932 <get_cpu_joypad_state>
     bc4c:	0a c0       	rjmp	.+20     	; 0xbc62 <main+0x10c>
 				}
@@ -17225,20 +17169,20 @@ int main()
 				{
 					LBGetJoyPadState(&p1, 0);
     bc4e:	60 e0       	ldi	r22, 0x00	; 0
-    bc50:	80 e9       	ldi	r24, 0x90	; 144
-    bc52:	9c e0       	ldi	r25, 0x0C	; 12
+    bc50:	80 e1       	ldi	r24, 0x10	; 16
+    bc52:	9d e0       	ldi	r25, 0x0D	; 13
     bc54:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 					LBGetJoyPadState(&p2, 1);
     bc58:	61 e0       	ldi	r22, 0x01	; 1
-    bc5a:	81 ec       	ldi	r24, 0xC1	; 193
-    bc5c:	9b e0       	ldi	r25, 0x0B	; 11
+    bc5a:	81 e4       	ldi	r24, 0x41	; 65
+    bc5c:	9c e0       	ldi	r25, 0x0C	; 12
     bc5e:	0e 94 91 46 	call	0x8d22	; 0x8d22 <LBGetJoyPadState>
 				}
 				update_level(&p1, &p2);
-    bc62:	61 ec       	ldi	r22, 0xC1	; 193
-    bc64:	7b e0       	ldi	r23, 0x0B	; 11
-    bc66:	80 e9       	ldi	r24, 0x90	; 144
-    bc68:	9c e0       	ldi	r25, 0x0C	; 12
+    bc62:	61 e4       	ldi	r22, 0x41	; 65
+    bc64:	7c e0       	ldi	r23, 0x0C	; 12
+    bc66:	80 e1       	ldi	r24, 0x10	; 16
+    bc68:	9d e0       	ldi	r25, 0x0D	; 13
     bc6a:	0e 94 48 57 	call	0xae90	; 0xae90 <update_level>
 				break;
 			default:

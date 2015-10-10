@@ -19,55 +19,77 @@
 #ifndef LB_STRINGS_H
 #define LB_STRINGS_H
 
-// Menus
-const char strCopyright [] PROGMEM="2015 - Lawrence Brooks";
-const char str1Player [] PROGMEM="Player vs CPU";
-const char str2Player [] PROGMEM="Player vs Player";
-const char strHighscores [] PROGMEM="Tank Rank";
-const char strHandlesTitle [] PROGMEM="Edit Handle";
-const char strUnderline[] PROGMEM="___________";
-const char strVertSep[] PROGMEM="|";
-const char strPlayer1 [] PROGMEM="P1";
-const char strPlayer2 [] PROGMEM="P2";
-const char strSelectHandle [] PROGMEM= "Select - A";
-const char strConfirmHandle [] PROGMEM="Confirm - A";
-const char strCancelHandle [] PROGMEM= "Cancel - X";
-const char strReset [] PROGMEM= "Reset Defaults - SL (5s)";
-const char strChangeHandle [] PROGMEM= "Edit - UP/DOWN";
-const char strOwns [] PROGMEM = "Pwns";
-const char strBy [] PROGMEM = "By";
-const char strFinalScore [] PROGMEM="Final Score";
 
-// Banter
-const char banter_map[] PROGMEM="You suck bro  \0"
-	"LOL           \0"
-	"Broken button?\0"
-	"Try at least  \0"
-	"Too easy      \0"
-	"*YAWN*        \0"
-	"A turkey shoot\0"
-	"That's it?    \0"
-	"Need help?    \0"
-	"RTFM!         ";
-const char strBanterClear[] PROGMEM="              ";
+// String indexes
+#define strCopyright 0
+#define str1Player 23
+#define str2Player 37
+#define strHighscores 54
+#define strHandlesTitle 64
+#define strUnderline 76
+#define strVertSep 88
+#define strPlayer1 90
+#define strPlayer2 93
+#define strSelectHandle 96
+#define strConfirmHandle 107
+#define strCancelHandle 119
+#define strReset 130
+#define strChangeHandle 155
+#define strOwns 170
+#define strBy 175
+#define strFinalScore 178
+#define banter_map 190
+#define strBanterClear 340
+#define strScore 355
+#define strTotal 362
+#define strExit 369
+#define strPaused 378
+#define strLevels 385
 
-// In-Game
-const char strScore [] PROGMEM = "Score:";
-const char strTotal [] PROGMEM = "Total:";
-const char strExit [] PROGMEM = "Bail - X";
-const char strPaused [] PROGMEM = "Paused";
 
-// Level names
-const char strLevels[] PROGMEM="   Boot Camp   \0"
-	"   Velocity    \0"
-	"    Digger     \0"
-	"Act 1 They Meet\0"
-	"   Richochet   \0"
-	" The Honey Pot \0"
-	"  Focal Point  \0"
-	"It's Not Fair! \0"
-	"  Much Better  \0"
-	"   Face Off    ";
+// Many strings
+const char strMap [] PROGMEM="2015 - Lawrence Brooks\0"
+"Player vs CPU\0"
+"Player vs Player\0"
+"Tank Rank\0"
+"Edit Handle\0"
+"___________\0"
+"|\0"
+"P1\0"
+"P2\0"
+"Select - A\0"
+"Confirm - A\0"
+"Cancel - X\0"
+"Reset Defaults - SL (5s)\0"
+"Edit - UP/DOWN\0"
+"Pwns\0"
+"By\0"
+"Final Score\0"
+"You suck bro  \0"
+"LOL           \0"
+"Broken button?\0"
+"Try at least  \0"
+"Too easy      \0"
+"*YAWN*        \0"
+"A turkey shoot\0"
+"That's it?    \0"
+"Need help?    \0"
+"RTFM!         \0"
+"              \0"
+"Score:\0"
+"Total:\0"
+"Bail - X\0"
+"Paused\0"
+"   Boot Camp   \0"
+"   Velocity    \0"
+"    Digger     \0"
+"Act 1 They Meet\0"
+"   Richochet   \0"
+" The Honey Pot \0"
+"  Focal Point  \0"
+"It's Not Fair! \0"
+"  Much Better  \0"
+"   Face Off    ";
 
 // Default handles and scores
 const unsigned char default_handles[] PROGMEM = {
