@@ -61,7 +61,7 @@ JoyPadState p1;
 JoyPadState p2;
 Level level;
 TileAnimations tile_animations;
-unsigned int global_frame_counter = 1;
+u16 global_frame_counter = 1;
 
 struct EepromBlockStruct handles;
 struct EepromBlockStruct scores;
@@ -1114,8 +1114,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	char p2_index = 0;
 	char p1_shot_index = 0;
 	char p2_shot_index = 0;
+	u16 held = 0;
 	static u8 clear_banter_1 = 1;
 	static u8 clear_banter_2 = 1;
+	static u16 demo_counter = 0;
 
 	// Render
 	if (game.paused)
@@ -1147,8 +1149,23 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	collision_detect_player(&player1, &player2, 0, 15);
 	collision_detect_player(&player2, &player1, 15, 0);
 	
-	if ((p1->pressed & BTN_START) && game.selection == CPUVCPU)
+	if (game.selection == CPUVCPU) 
 	{
+		demo_counter++;
+		held = ReadJoypad(0);
+	}
+	if (game.selection == CPUVCPU &&
+	    (((held & BTN_X) ||
+		 (held & BTN_START) ||
+		 (held & BTN_SL) ||
+		 (held & BTN_SR) ||
+		 (held & BTN_SELECT) ||
+		 (held & BTN_Y) ||
+		 (held & BTN_B)) ||
+		demo_counter >= DEMO_LENGTH)
+		)
+	{
+		demo_counter = 0;
 		fade_through();
 		init_game_state();
 		load_splash();
@@ -1173,7 +1190,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
  * Splash or title screen
  */
 {
-	static unsigned int demo_counter = 0;
+	static u16 demo_counter = 0;
 	
 	// Render
 	switch (game.selection)
@@ -1223,7 +1240,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		load_tank_rank();
 		return;
 	}
-	else if (demo_counter >= DEMO_FRAMES)
+	else if (demo_counter >= DEMO_WAIT)
 	{
 		demo_counter = 0;
 		game.selection = CPUVCPU;
@@ -1234,7 +1251,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(0);
+		level_transition(LBRandom(0, 9));
 		return;
 		
 	}
@@ -1496,11 +1513,11 @@ char crash_and_turn(char current_x, char current_y, char moved, Player* player, 
 	return 0;
 }
 
-unsigned int get_cpu_goal_direction(char distance_x, char distance_y)
+u16 get_cpu_goal_direction(char distance_x, char distance_y)
 {
 	char abs_distance_x = (distance_x < 0) ? -distance_x : distance_x;
 	char abs_distance_y = (distance_y < 0) ? -distance_y : distance_y;
-	unsigned int direction = BTN_UP;
+	u16 direction = BTN_UP;
 	
 	if (abs_distance_x > abs_distance_y)
 	{
@@ -1514,6 +1531,15 @@ unsigned int get_cpu_goal_direction(char distance_x, char distance_y)
 	}
 	
 	return direction;
+}
+
+u16 button_map(u16 number)
+{
+	if (number == 0) return BTN_UP;
+	if (number == 1) return BTN_DOWN;
+	if (number == 2) return BTN_LEFT;
+	if (number == 3) return BTN_RIGHT;
+	return BTN_UP;
 }
 
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
@@ -1544,27 +1570,24 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	{
 		p->pressed = BTN_A;
 	}
-	
-	// Dont get to close
-	if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2 && (global_frame_counter % CEASE_FIRE_FRAMES == 0))
-	{
-		player->goal_reached = 0;
-		player->goal = LBRandom(5, 18);
-		player->goal_direction = LBRandom(0, 3);
-		if (player->goal_direction == 0) player->goal_direction = BTN_LEFT;
-		if (player->goal_direction == 1) player->goal_direction = BTN_RIGHT;
-		if (player->goal_direction == 2) player->goal_direction = BTN_UP;
-		if (player->goal_direction == 3) player->goal_direction = BTN_DOWN;
-		return;
-	}
 		
 	// Movement
 	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 12 || player->goal_reached)
 	{
 		player->goal_reached = 0;
-		player->goal_direction = get_cpu_goal_direction(distance_x, distance_y);
-		player->goal = goal_x;
-		if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
+		
+		if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2)
+		{
+			// Dont get too close
+			player->goal_direction = button_map(LBRandom(0, 3));
+			player->goal = LBRandom(5, 18);
+		}
+		else
+		{
+			player->goal_direction = get_cpu_goal_direction(distance_x, distance_y);
+			player->goal = goal_x;
+			if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
+		}
 		p->held = player->goal_direction;
 		player->old_x = 0;
 		player->old_y = 0;

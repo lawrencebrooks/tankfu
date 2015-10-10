@@ -70,7 +70,8 @@
 #define TEXT_LINGER 2 // seconds
 #define MAX_LEVEL_SCORE 10
 #define TILE_ANIMATIONS_LENGTH 2
-#define DEMO_FRAMES 300
+#define DEMO_WAIT 600
+#define DEMO_LENGTH 1800
 
 // Flags
 #define EXPLODING_FLAG 1
@@ -95,6 +96,5 @@
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 300
 #define DEFAULT_FRAMES_PER_SHOT 20
-#define CEASE_FIRE_FRAMES 120
 
 #endif

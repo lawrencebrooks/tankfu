@@ -69,7 +69,7 @@ typedef struct sPlayer {
 	u8 has_rocket;
 	u8 has_over_speed;
 	u8 feeling_my_way;
-	unsigned int goal_direction;
+	u16 goal_direction;
 	char goal;
 	char goal_reached;
 	float old_x;
