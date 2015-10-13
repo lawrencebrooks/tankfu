@@ -1386,15 +1386,12 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 	if (ps->select_state == SELECTING)
 	{
 		MapSprite2(idx, map_ball, 0);
-		MapSprite2(idx+1, map_none, 0);
 		MoveSprite(idx, x_offset*8, (8 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
 	{
 		MapSprite2(idx, map_ball, 0);
-		MapSprite2(idx+1, map_ball, 0);
 		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id - 1)*8, 1, 1);
-		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id + 1)*8, 1, 1);
 		LBCopyChars(tmp, ps->handle, 3);
 	}
 	else if (ps->select_state == CONFIRMED)
@@ -1403,7 +1400,6 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 		LBPrintStr(x_offset+7, 5, ps->handle, 3);
 		PrintChar(x_offset+10, 5, ')');
 		MapSprite2(idx, map_none, 0);
-		MapSprite2(idx+1, map_none, 0);
 	}
 	LBPrintStr(x_offset+5, (8 + ps->handle_id), tmp, 3);
 }
@@ -1438,7 +1434,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	_handle_select_render_helper(&p1s, p1, 2, 8);
 	if (game.selection == PVP)
 	{
-		_handle_select_render_helper(&p2s, p2, 19, 10);
+		_handle_select_render_helper(&p2s, p2, 19, 9);
 	}
 
 	// Update

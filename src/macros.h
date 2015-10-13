@@ -60,9 +60,9 @@
 #define BASIC_SHOT_HIT_COUNT 1
 #define ROCKET_SHOT_HIT_COUNT 5
 #define SHOT_REBOUNDS 4
-#define SHOT_SPEED 100
-#define SHOT_OVER_SPEED 150
-#define MAX_SHOTS 2
+#define SHOT_SPEED 120
+#define SHOT_OVER_SPEED 170
+#define MAX_SHOTS 1
 #define DISTANCE_TO_ARM 8
 
 // General macros
