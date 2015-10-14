@@ -1466,24 +1466,24 @@ u16 button_map(u16 number)
 
 char crash_and_turn(char current_x, char current_y, char moved, Player* player, JoyPadState* p)
 /* 
- * Move in the direction of the goal. Randomize direction when hitting a wall
+ * Move in the direction of the goal. Randomize direction along wall when hitting one
  */
 {	
 	if ((p->held & BTN_LEFT) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 4));
+		p->held = button_map(LBRandom(0, 2));
 	}
 	else if ((p->held & BTN_UP) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 4));
+		p->held = button_map(LBRandom(2, 4));
 	}
 	else if ((p->held & BTN_RIGHT) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 4));
+		p->held = button_map(LBRandom(0, 2));
 	}
 	else if ((p->held & BTN_DOWN) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 4));
+		p->held = button_map(LBRandom(2, 4));
 	}
 
 	if ((player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) && current_y == player->goal) return 1;
