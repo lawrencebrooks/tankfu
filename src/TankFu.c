@@ -181,7 +181,6 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	}
 	
 	/* pathfinding variables */
-	p->feeling_my_way = 0;
 	p->goal_direction = 0;
 	p->goal = 0;
 	p->goal_reached = 0;
@@ -1456,51 +1455,35 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
+u16 button_map(u16 number)
+{
+	if (number == 0) return BTN_UP;
+	if (number == 1) return BTN_DOWN;
+	if (number == 2) return BTN_LEFT;
+	if (number == 3) return BTN_RIGHT;
+	return BTN_UP;
+}
+
 char crash_and_turn(char current_x, char current_y, char moved, Player* player, JoyPadState* p)
 /* 
- * Move in the direction of the goal. Use the left/right hand rule to move
- * around objects blocking the way.
+ * Move in the direction of the goal. Randomize direction when hitting a wall
  */
 {	
-	if (player->feeling_my_way)
-	{
-		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
-		{
-			p->held = BTN_LEFT;
-		}
-		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+1) || solid_tile((current_y+2) * 30 + current_x+2)))
-		{
-			p->held = BTN_DOWN;
-		}
-		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile((current_y+1) * 30 + current_x+2) || solid_tile((current_y+2) * 30 + current_x+2)))
-		{
-			p->held = BTN_RIGHT;
-		}
-		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+1) || solid_tile((current_y-1) * 30 + current_x+2)))
-		{
-			p->held = BTN_UP;
-		}
-		if (player->goal_direction & p->held) player->feeling_my_way = 0;
-	}
 	if ((p->held & BTN_LEFT) && !moved)
 	{
-		p->held = BTN_UP;
-		player->feeling_my_way = 1;
+		p->held = button_map(LBRandom(0, 4));
 	}
 	else if ((p->held & BTN_UP) && !moved)
 	{
-		p->held = BTN_RIGHT;
-		player->feeling_my_way = 1;
+		p->held = button_map(LBRandom(0, 4));
 	}
 	else if ((p->held & BTN_RIGHT) && !moved)
 	{
-		p->held = BTN_DOWN;
-		player->feeling_my_way = 1;
+		p->held = button_map(LBRandom(0, 4));
 	}
 	else if ((p->held & BTN_DOWN) && !moved)
 	{
-		p->held = BTN_LEFT;
-		player->feeling_my_way = 1;
+		p->held = button_map(LBRandom(0, 4));
 	}
 
 	if ((player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) && current_y == player->goal) return 1;
@@ -1527,15 +1510,6 @@ u16 get_cpu_goal_direction(char distance_x, char distance_y)
 	}
 	
 	return direction;
-}
-
-u16 button_map(u16 number)
-{
-	if (number == 0) return BTN_UP;
-	if (number == 1) return BTN_DOWN;
-	if (number == 2) return BTN_LEFT;
-	if (number == 3) return BTN_RIGHT;
-	return BTN_UP;
 }
 
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
@@ -1581,7 +1555,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2)
 		{
 			// Dont get too close
-			player->goal_direction = button_map(LBRandom(0, 3));
+			player->goal_direction = button_map(LBRandom(0, 4));
 			player->goal = LBRandom(5, 18);
 		}
 		else
