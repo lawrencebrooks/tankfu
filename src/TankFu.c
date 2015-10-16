@@ -110,6 +110,7 @@ void init_shot_state(Shot* s, u8 shot_type)
 {
 	s->shared.speed = SHOT_SPEED;
 	s->shared.direction = D_UP;
+	s->shared.recoiled = 0;
 	s->active = 0;
 	s->distance = 0;
 	s->shot_type = shot_type;
@@ -144,6 +145,7 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->level_score = 0;
 	p->shared.direction = D_UP;
 	p->shared.speed = 0;
+	p->shared.recoiled = 0;
 	p->max_speed = MAX_SPEED;
 	p->has_over_speed = false;
 	p->has_rocket = false;
@@ -181,6 +183,7 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	}
 	
 	/* pathfinding variables */
+	p->feeling_my_way = 0;
 	p->goal_direction = 0;
 	p->goal = 0;
 	p->goal_reached = 0;
@@ -214,6 +217,7 @@ void player_spawn(Player* player)
 	player->shared.y = player->spawn_y;
 	player->shared.direction = D_UP;
 	player->shared.speed = 0;
+	player->shared.recoiled = 0;
 	
 }
 
@@ -676,22 +680,29 @@ char shot_map(Player* player, char sprite_index)
 /* Collision Detection */
 void recoil_sprite(SpriteShared* sprite)
 {
+	u8 tile;
+	
 	if (sprite->direction == D_UP)
 	{
-		sprite->y += FRAME_TIME * sprite->speed;
+		tile = sprite->y / 8 + 1;
+		sprite->y = tile * 8;
 	}
-	if (sprite->direction == D_RIGHT)
+	else if (sprite->direction == D_RIGHT)
 	{
-		sprite->x -= FRAME_TIME * sprite->speed;
+		tile = sprite->x / 8;
+		sprite->x = tile * 8;
 	}
-	if (sprite->direction == D_DOWN)
+	else if (sprite->direction == D_DOWN)
 	{
-		sprite->y -= FRAME_TIME * sprite->speed;
+		tile = sprite->y / 8;
+		sprite->y = tile * 8;
 	}
-	if (sprite->direction == D_LEFT)
+	else
 	{
-		sprite->x += FRAME_TIME * sprite->speed;
+		tile = sprite->x / 8 + 1;
+		sprite->x = tile * 8;
 	}
+	sprite->recoiled = 1;
 }
 
 u8 solid_square_tile(int tile_index)
@@ -751,8 +762,8 @@ u8 player_shot(Player* p, Shot* shot)
 
 u8 collision_detect_boundries(SpriteShared* sprite)
 {
-	if (sprite->x < 0  || sprite->x + 7 > 240 ||
-	    sprite->y < 24 || sprite->y + 7 > 224)
+	if (sprite->x < 0  || sprite->x + 8 > 240 ||
+	    sprite->y < 24 || sprite->y + 8 > 224)
 	{
 		return 1;
 	}
@@ -1143,6 +1154,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 
 	// Update
+	player1.shared.recoiled = 0;
+	player2.shared.recoiled = 0;
 	update_level_helper(p1, &player1, &player2, 15);
 	update_level_helper(p2, &player2, &player1, 0);
 	collision_detect_player(&player1, &player2, 0, 15);
@@ -1250,7 +1263,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(4, 5));
+		level_transition(LBRandom(0, 10));
 		return;
 		
 	}
@@ -1466,24 +1479,48 @@ u16 button_map(u16 number)
 
 char crash_and_turn(char current_x, char current_y, char moved, Player* player, JoyPadState* p)
 /* 
- * Move in the direction of the goal. Randomize direction along wall when hitting one
+ * Move in the direction of the goal. Move along the wall using left hand rule when hitting one
  */
 {	
+	if (player->feeling_my_way)
+	{
+		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
+		{
+			p->held = BTN_LEFT;
+		}
+		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+1) || solid_tile((current_y+2) * 30 + current_x+2)))
+		{
+			p->held = BTN_DOWN;
+		}
+		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile((current_y+1) * 30 + current_x+2) || solid_tile((current_y+2) * 30 + current_x+2)))
+		{
+			p->held = BTN_RIGHT;
+		}
+		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+1) || solid_tile((current_y-1) * 30 + current_x+2)))
+		{
+			p->held = BTN_UP;
+		}
+		if (player->goal_direction & p->held) player->feeling_my_way = 0;
+	}
 	if ((p->held & BTN_LEFT) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 2));
+		p->held = BTN_UP;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_UP) && !moved)
 	{
-		p->held = button_map(LBRandom(2, 4));
+		p->held = BTN_RIGHT;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_RIGHT) && !moved)
 	{
-		p->held = button_map(LBRandom(0, 2));
+		p->held = BTN_DOWN;
+		player->feeling_my_way = 1;
 	}
 	else if ((p->held & BTN_DOWN) && !moved)
 	{
-		p->held = button_map(LBRandom(2, 4));
+		p->held = BTN_LEFT;
+		player->feeling_my_way = 1;
 	}
 
 	if ((player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) && current_y == player->goal) return 1;
@@ -1516,7 +1553,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
 	// strategies.
-	char moved = 0;
+	char moved = 1;
 	char goal_x;
 	char goal_y;
 	char distance_x;
@@ -1553,6 +1590,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 10 || player->goal_reached)
 	{
 		player->goal_reached = 0;
+		player->feeling_my_way = 0;
 		
 		if (distance_x >= -2 && distance_x <= 2 && distance_y >= -2 && distance_y <= 2)
 		{
@@ -1573,18 +1611,15 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	
 	// Monitor movement
 	if (player->shared.x != player->old_x)
-	{
-		moved = 1;
 		deadlock_count_x = 0;
-	} else deadlock_count_x++;
+	else 
+		deadlock_count_x++;
 	if (player->shared.y != player->old_y)
-	{
-		moved = 1;
 		deadlock_count_y = 0;
-	} else deadlock_count_y++;
+	else
+		deadlock_count_y++;
 	player->old_x = player->shared.x;
 	player->old_y = player->shared.y;
-	
 	
 	// Break tactical deadlock
 	if (deadlock_count_x >= FRAMES_PER_DEADLOCK)
@@ -1597,7 +1632,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		p->held = button_map(LBRandom(2, 4));
 		deadlock_count_y = 0;
 	}
-	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, moved, player, p);
+	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, !player->shared.recoiled, player, p);
 }
 
 int main()

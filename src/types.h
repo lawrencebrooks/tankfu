@@ -36,6 +36,7 @@ typedef struct sLevelState {
 typedef struct sSpriteShared {
 	u8 direction;
 	u8 speed;
+	u8 recoiled;
 	float x;
 	float y;
 } SpriteShared;
@@ -68,6 +69,7 @@ typedef struct sPlayer {
 	u8 max_speed;
 	u8 has_rocket;
 	u8 has_over_speed;
+	u8 feeling_my_way;
 	u16 goal_direction;
 	char goal;
 	char goal_reached;
