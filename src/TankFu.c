@@ -729,7 +729,19 @@ u8 solid_tile(int tile_index)
 	return 0;
 }
 
-u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
+u8 solid_directional_tile(int tile_index)
+{
+	u8 tile = level.level_map[tile_index];
+
+	if (tile == L_TL) return tile;
+	if (tile == L_BR) return tile;
+	if (tile == L_TR) return tile;
+	if (tile == L_BL) return tile;
+	
+	return 0;
+}
+
+u8 collides_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 {
 	u8 tile = level.level_map[tile_index];
 	u8 tile_x = (tile_index % 30) * 8;
@@ -737,17 +749,17 @@ u8 solid_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 
 	if ((tile == L_TL) || (tile == L_BR))
 	{
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	else if ((tile == L_TR) || (tile == L_BL))
 	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	
 	return 0;
@@ -885,21 +897,8 @@ void collision_detect_shot(Player* player, Shot* shot)
 	{
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
-		if (tile == L_BRICK && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
-		{
-			explode_tile(&tile_animations, tiles[i]);
-			level.level_map[tiles[i]] = L_EMPTY;
-			shot->hit_count--;
-			if (shot->hit_count <= 0)
-			{
-				init_shot_state(shot, shot->shot_type);
-				player->active_shots--;
-			}
-			SFX_BRICK_EXPLODE;
-			hit_metal = 0;
-			break;
-		}
-		else if (solid_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
+		
+		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
 		{
 			recoil_sprite(&shot->shared);
 			switch (tile)
@@ -936,6 +935,20 @@ void collision_detect_shot(Player* player, Shot* shot)
 				player->active_shots--;
 			}
 			SFX_METAL;
+			hit_metal = 0;
+			break;
+		}
+		else if (tile == L_BRICK && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		{
+			explode_tile(&tile_animations, tiles[i]);
+			level.level_map[tiles[i]] = L_EMPTY;
+			shot->hit_count--;
+			if (shot->hit_count <= 0)
+			{
+				init_shot_state(shot, shot->shot_type);
+				player->active_shots--;
+			}
+			SFX_BRICK_EXPLODE;
 			hit_metal = 0;
 			break;
 		}
@@ -999,17 +1012,17 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	/* Tile interaction */
 	for (u8 i = 0; i < 3; i++)
 	{
-		if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
 		}
-		else if (solid_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
+		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
 		}
-		else if (level.level_map[tiles[i]] == L_SPEED)
+		else if (level.level_map[tiles[i]] == L_SPEED && !(player->flags & EXPLODING_FLAG))
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
 			player->max_speed = OVER_SPEED;
@@ -1018,7 +1031,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
 			SFX_ITEM;
 		}
-		else if (level.level_map[tiles[i]] == L_ROCKET)
+		else if (level.level_map[tiles[i]] == L_ROCKET && !(player->flags & EXPLODING_FLAG))
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
 			player->has_rocket = true;
@@ -1026,7 +1039,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
 			SFX_ITEM;
 		}
-		else if (level.level_map[tiles[i]] == L_EXPLODE)
+		else if (level.level_map[tiles[i]] == L_EXPLODE && !(player->flags & EXPLODING_FLAG))
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
