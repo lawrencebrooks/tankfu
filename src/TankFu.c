@@ -988,7 +988,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	/* Tile interaction */
 	for (u8 i = 0; i < 3; i++)
 	{
-		if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x+1,player->shared.y+1,14,14,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
@@ -1178,7 +1178,7 @@ void load_splash()
 	Print(7, 13, &strMap[str1Player]);
 	Print(7, 14, &strMap[str2Player]);
 	Print(7, 15, &strMap[strHighscores]);
-	Print(4, 26, &strMap[strCopyright]);
+	Print(3, 26, &strMap[strCopyright]);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_ball, 0);
 	SFX_SPLASH;
@@ -1250,7 +1250,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(0, 10));
+		level_transition(LBRandom(4, 5));
 		return;
 		
 	}
