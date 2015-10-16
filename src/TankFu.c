@@ -1250,7 +1250,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(0, 9));
+		level_transition(LBRandom(0, 10));
 		return;
 		
 	}
@@ -1523,6 +1523,8 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char distance_y;
 	char player_x;
 	char player_y;
+	static unsigned int deadlock_count_x = 0;
+	static unsigned int deadlock_count_y = 0;
 	
 	goal_x = other_player->shared.x / 8;
 	goal_y = other_player->shared.y / 8 - 3;
@@ -1547,8 +1549,8 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		p->pressed = BTN_A;
 	}
 		
-	// Movement
-	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 50 || player->goal_reached)
+	// Determine goal
+	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 10 || player->goal_reached)
 	{
 		player->goal_reached = 0;
 		
@@ -1568,11 +1570,34 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		player->old_x = 0;
 		player->old_y = 0;
 	}
-	if (player->shared.x != player->old_x) moved = 1;
-	if (player->shared.y != player->old_y) moved = 1;
+	
+	// Monitor movement
+	if (player->shared.x != player->old_x)
+	{
+		moved = 1;
+		deadlock_count_x = 0;
+	} else deadlock_count_x++;
+	if (player->shared.y != player->old_y)
+	{
+		moved = 1;
+		deadlock_count_y = 0;
+	} else deadlock_count_y++;
 	player->old_x = player->shared.x;
 	player->old_y = player->shared.y;
-	player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, moved, player, p);
+	
+	
+	// Break tactical deadlock
+	if (deadlock_count_x >= FRAMES_PER_DEADLOCK)
+	{
+		p->held = button_map(LBRandom(0, 2));
+		deadlock_count_x = 0;
+	}
+	else if (deadlock_count_y >= FRAMES_PER_DEADLOCK)
+	{
+		p->held = button_map(LBRandom(2, 4));
+		deadlock_count_y = 0;
+	}
+	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, moved, player, p);
 }
 
 int main()
