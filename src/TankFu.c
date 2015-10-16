@@ -749,17 +749,17 @@ u8 collides_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
 
 	if ((tile == L_TL) || (tile == L_BR))
 	{
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+8, tile_x+8, tile_y, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	else if ((tile == L_TR) || (tile == L_BL))
 	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+8, tile_y+8, x, y+height, x+width, y+height)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	
 	return 0;
