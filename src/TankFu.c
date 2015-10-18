@@ -383,6 +383,7 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	u8 next_level;
 	Player* tmp;
 
+	player->shared.recoiled = 0;
 	if ((p->pressed & BTN_START))
 	{
 		SFX_NAVIGATE;
@@ -1017,7 +1018,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
 		}
-		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
@@ -1167,8 +1168,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 
 	// Update
-	player1.shared.recoiled = 0;
-	player2.shared.recoiled = 0;
 	update_level_helper(p1, &player1, &player2, 15);
 	update_level_helper(p2, &player2, &player1, 0);
 	collision_detect_player(&player1, &player2, 0, 15);
@@ -1490,7 +1489,7 @@ u16 button_map(u16 number)
 	return BTN_UP;
 }
 
-char crash_and_turn(char current_x, char current_y, char moved, Player* player, JoyPadState* p)
+char crash_and_turn(char current_x, char current_y, u8 recoiled, Player* player, JoyPadState* p)
 /* 
  * Move in the direction of the goal. Move along the wall using left hand rule when hitting one
  */
@@ -1500,37 +1499,45 @@ char crash_and_turn(char current_x, char current_y, char moved, Player* player, 
 		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
 		{
 			p->held = BTN_LEFT;
+			recoiled = 0;
 		}
 		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+1) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_DOWN;
+			recoiled = 0;
 		}
 		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile((current_y+1) * 30 + current_x+2) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_RIGHT;
+			recoiled = 0;
 		}
 		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+1) || solid_tile((current_y-1) * 30 + current_x+2)))
 		{
 			p->held = BTN_UP;
+			recoiled = 0;
 		}
-		if (player->goal_direction & p->held) player->feeling_my_way = 0;
+		if (player->goal_direction & p->held)
+		{
+			player->feeling_my_way = 0;
+			recoiled = 0;
+		}
 	}
-	if ((p->held & BTN_LEFT) && !moved)
+	if ((p->held & BTN_LEFT) && recoiled)
 	{
 		p->held = BTN_UP;
 		player->feeling_my_way = 1;
 	}
-	else if ((p->held & BTN_UP) && !moved)
+	else if ((p->held & BTN_UP) && recoiled)
 	{
 		p->held = BTN_RIGHT;
 		player->feeling_my_way = 1;
 	}
-	else if ((p->held & BTN_RIGHT) && !moved)
+	else if ((p->held & BTN_RIGHT) && recoiled)
 	{
 		p->held = BTN_DOWN;
 		player->feeling_my_way = 1;
 	}
-	else if ((p->held & BTN_DOWN) && !moved)
+	else if ((p->held & BTN_DOWN) && recoiled)
 	{
 		p->held = BTN_LEFT;
 		player->feeling_my_way = 1;
@@ -1590,14 +1597,14 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	}
 	
 	// Shot
-	if (p->pressed & BTN_A)
+	/*if (p->pressed & BTN_A)
 	{
 		p->pressed = 0;
 	}
 	if (global_frame_counter % DEFAULT_FRAMES_PER_SHOT == 0 && player->grace_frame > 50)
 	{
 		p->pressed = BTN_A;
-	}
+	}*/
 		
 	// Determine goal
 	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 10 || player->goal_reached)
@@ -1618,8 +1625,8 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 			if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
 		}
 		p->held = player->goal_direction;
-		player->old_x = 0;
-		player->old_y = 0;
+		//player->old_x = 0;
+		//player->old_y = 0;
 	}
 	
 	// Monitor movement
@@ -1645,7 +1652,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		p->held = button_map(LBRandom(2, 4));
 		deadlock_count_y = 0;
 	}
-	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, !player->shared.recoiled, player, p);
+	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, player->shared.recoiled, player, p);
 }
 
 int main()
