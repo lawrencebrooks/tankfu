@@ -1597,14 +1597,14 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	}
 	
 	// Shot
-	/*if (p->pressed & BTN_A)
+	if (p->pressed & BTN_A)
 	{
 		p->pressed = 0;
 	}
 	if (global_frame_counter % DEFAULT_FRAMES_PER_SHOT == 0 && player->grace_frame > 50)
 	{
 		p->pressed = BTN_A;
-	}*/
+	}
 		
 	// Determine goal
 	if ((global_frame_counter % DEFAULT_FRAMES_PER_GOAL == 0) || player->grace_frame == 10 || player->goal_reached)
@@ -1625,8 +1625,6 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 			if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
 		}
 		p->held = player->goal_direction;
-		//player->old_x = 0;
-		//player->old_y = 0;
 	}
 	
 	// Monitor movement
