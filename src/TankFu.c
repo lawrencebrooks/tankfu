@@ -189,6 +189,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->goal_reached = 0;
 	p->old_x = 0;
 	p->old_y = 0;
+	p->deadlock_count_x = 0;
+	p->deadlock_count_y = 0;
 }
 
 void player_init_shot_state(Player* player)
@@ -1632,8 +1634,6 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char distance_y;
 	char player_x;
 	char player_y;
-	static unsigned int deadlock_count_x = 0;
-	static unsigned int deadlock_count_y = 0;
 	
 	goal_x = other_player->shared.x / 8;
 	goal_y = other_player->shared.y / 8 - 3;
@@ -1681,26 +1681,26 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	
 	// Monitor movement
 	if (player->shared.x != player->old_x)
-		deadlock_count_x = 0;
+		player->deadlock_count_x = 0;
 	else 
-		deadlock_count_x++;
+		player->deadlock_count_x++;
 	if (player->shared.y != player->old_y)
-		deadlock_count_y = 0;
+		player->deadlock_count_y = 0;
 	else
-		deadlock_count_y++;
+		player->deadlock_count_y++;
 	player->old_x = player->shared.x;
 	player->old_y = player->shared.y;
 	
 	// Break tactical deadlock
-	if (deadlock_count_x >= FRAMES_PER_DEADLOCK)
-	{
-		p->held = button_map(LBRandom(0, 2));
-		deadlock_count_x = 0;
-	}
-	else if (deadlock_count_y >= FRAMES_PER_DEADLOCK)
+	if (player->deadlock_count_x >= FRAMES_PER_DEADLOCK)
 	{
 		p->held = button_map(LBRandom(2, 4));
-		deadlock_count_y = 0;
+		player->deadlock_count_x = 0;
+	}
+	else if (player->deadlock_count_y >= FRAMES_PER_DEADLOCK)
+	{
+		p->held = button_map(LBRandom(0, 2));
+		player->deadlock_count_y = 0;
 	}
 	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, player->shared.recoiled, player, p);
 }

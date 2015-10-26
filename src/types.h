@@ -71,6 +71,8 @@ typedef struct sPlayer {
 	u8 has_over_speed;
 	u8 feeling_my_way;
 	u16 goal_direction;
+	u16 deadlock_count_x;
+	u16 deadlock_count_y;
 	char goal;
 	char goal_reached;
 	float old_x;
