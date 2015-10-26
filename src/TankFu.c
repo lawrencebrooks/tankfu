@@ -706,6 +706,27 @@ void recoil_sprite(SpriteShared* sprite)
 	sprite->recoiled = 1;
 }
 
+void recoil_sprite_fine(SpriteShared* sprite)
+{	
+	if (sprite->direction == D_UP)
+	{
+		sprite->y += FRAME_TIME * sprite->speed;
+	}
+	else if (sprite->direction == D_RIGHT)
+	{
+		sprite->x -= FRAME_TIME * sprite->speed;
+	}
+	else if (sprite->direction == D_DOWN)
+	{
+		sprite->y -= FRAME_TIME * sprite->speed;
+	}
+	else
+	{
+		sprite->x += FRAME_TIME * sprite->speed;
+	}
+	sprite->recoiled = 1;
+}
+
 u8 solid_square_tile(int tile_index)
 {
 	u8 tile = level.level_map[tile_index];
@@ -901,7 +922,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
 		{
-			recoil_sprite(&shot->shared);
+			recoil_sprite_fine(&shot->shared);
 			switch (tile)
 			{
 				case L_TL:
@@ -1015,7 +1036,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	{
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
-			recoil_sprite(&player->shared);
+			recoil_sprite_fine(&player->shared);
 			player->shared.speed = 0;
 		}
 		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
@@ -1499,21 +1520,25 @@ char crash_and_turn(char current_x, char current_y, u8 recoiled, Player* player,
 		if ((p->held & BTN_UP) && !(solid_tile(current_y * 30 + current_x - 1) || solid_tile((current_y+1) * 30 + current_x - 1) || solid_tile((current_y+2) * 30 + current_x - 1)))
 		{
 			p->held = BTN_LEFT;
+			recoil_sprite(&player->shared);
 			recoiled = 0;
 		}
 		else if ((p->held & BTN_LEFT) && !(solid_tile((current_y+2) * 30 + current_x) || solid_tile((current_y+2) * 30 + current_x+1) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_DOWN;
+			recoil_sprite(&player->shared);
 			recoiled = 0;
 		}
 		else if ((p->held & BTN_DOWN) && !(solid_tile((current_y) * 30 + current_x+2) || solid_tile((current_y+1) * 30 + current_x+2) || solid_tile((current_y+2) * 30 + current_x+2)))
 		{
 			p->held = BTN_RIGHT;
+			recoil_sprite(&player->shared);
 			recoiled = 0;
 		}
 		else if ((p->held & BTN_RIGHT) && !(solid_tile((current_y-1) * 30 + current_x) || solid_tile((current_y-1) * 30 + current_x+1) || solid_tile((current_y-1) * 30 + current_x+2)))
 		{
 			p->held = BTN_UP;
+			recoil_sprite(&player->shared);
 			recoiled = 0;
 		}
 		if (player->goal_direction & p->held)
