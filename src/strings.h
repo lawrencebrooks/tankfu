@@ -89,8 +89,7 @@ const char strMap [] PROGMEM="(c) 2015 Lawrence Brooks\0"
 "  Focal Point  \0"
 "It's Not Fair! \0"
 "  Much Better  \0"
-"   Face Off    \0"
-"   Test Level   ";
+"   Face Off     ";
 
 // Default handles and scores
 const unsigned char default_handles[] PROGMEM = {

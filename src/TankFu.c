@@ -804,6 +804,30 @@ u8 collision_detect_boundries(SpriteShared* sprite)
 	return 0;
 }
 
+void drop_item(int tile_index, const char* map, u8 item_type)
+{
+	if (level.level_map[tile_index] == L_EMPTY)
+	{
+		DrawMap2(tile_index % 30, 3 + tile_index / 30, map);
+		level.level_map[tile_index] = item_type;
+	}
+	else if (level.level_map[tile_index+1] == L_EMPTY)
+	{
+		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30, map);
+		level.level_map[tile_index+1] = item_type;
+	}
+	else if (level.level_map[tile_index+30] == L_EMPTY)
+	{
+		DrawMap2(tile_index % 30, 3 + tile_index / 30 + 1, map);
+		level.level_map[tile_index+30] = item_type;
+	}
+	else
+	{
+		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map);
+		level.level_map[tile_index+31] = item_type;
+	}
+}
+
 void kill_player(Player* player, u8 hud_x)
 {
 	u8 x = player->shared.x / 8;
@@ -813,15 +837,13 @@ void kill_player(Player* player, u8 hud_x)
 	if (player->has_over_speed)
 	{
 		SetTile(hud_x+10, 1, 0);
-		DrawMap2(tile_index % 30, 3 + tile_index / 30 + 1, map_speed_itm);
-		level.level_map[tile_index +30] = L_SPEED;
+		drop_item(tile_index, map_speed_itm, L_SPEED);
 		player->max_speed = MAX_SPEED;
 	}
 	if (player->has_rocket)
 	{
 		SetTile(hud_x+11, 1, 0);
-		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map_rocket_itm);
-		level.level_map[tile_index +31] = L_ROCKET;
+		drop_item(tile_index, map_rocket_itm, L_ROCKET);
 	}
 	player->has_over_speed = false;
 	player->has_rocket = false;
@@ -865,6 +887,37 @@ void explode_tile(TileAnimations* ta, int tile_index)
 	if (ta->next_available == TILE_ANIMATIONS_LENGTH)
 	{
 		ta->next_available = 0;
+	}
+}
+
+void richochet(u8 tile_type, SpriteShared* sprite)
+{	
+	switch (tile_type)
+	{
+		case L_TL:
+			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
+				sprite->direction = D_RIGHT;
+			else
+				sprite->direction = D_DOWN;
+			break;
+		case L_TR:
+			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
+				sprite->direction = D_LEFT;
+			else
+				sprite->direction = D_DOWN;
+			break;
+		case L_BL:
+			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
+				sprite->direction = D_RIGHT;
+			else
+				sprite->direction = D_UP;
+			break;
+		case L_BR:
+			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
+				sprite->direction = D_LEFT;
+			else
+				sprite->direction = D_UP;
+			break;
 	}
 }
 
@@ -923,33 +976,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
 		{
 			recoil_sprite_fine(&shot->shared);
-			switch (tile)
-			{
-				case L_TL:
-					if (shot->shared.direction == D_UP)
-						shot->shared.direction = D_RIGHT;
-					else
-						shot->shared.direction = D_DOWN;
-					break;
-				case L_TR:
-					if (shot->shared.direction == D_UP)
-						shot->shared.direction = D_LEFT;
-					else
-						shot->shared.direction = D_DOWN;
-					break;
-				case L_BL:
-					if (shot->shared.direction == D_DOWN)
-						shot->shared.direction = D_RIGHT;
-					else
-						shot->shared.direction = D_UP;
-					break;
-				case L_BR:
-					if (shot->shared.direction == D_DOWN)
-						shot->shared.direction = D_LEFT;
-					else
-						shot->shared.direction = D_UP;
-					break;
-			}
+			richochet(tile, &shot->shared);
 			shot->rebounds--;
 			if (shot->rebounds <= 0)
 			{
@@ -1036,7 +1063,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	{
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
-			recoil_sprite_fine(&player->shared);
+			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
 		}
 		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
