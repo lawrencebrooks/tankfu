@@ -1074,7 +1074,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	{
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
-			recoil_sprite_fine(&player->shared);
+			(player->handle_id == 9) ? recoil_sprite(&player->shared) : recoil_sprite_fine(&player->shared);
 			player->shared.speed = 0;
 		}
 		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
