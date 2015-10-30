@@ -687,7 +687,7 @@ void recoil_sprite(SpriteShared* sprite)
 	
 	if (sprite->direction == D_UP)
 	{
-		tile = sprite->y / 8 + 1;
+		tile = ((u8) sprite->y / 8) + 1;
 		sprite->y = tile * 8;
 	}
 	else if (sprite->direction == D_RIGHT)
@@ -702,7 +702,7 @@ void recoil_sprite(SpriteShared* sprite)
 	}
 	else
 	{
-		tile = sprite->x / 8 + 1;
+		tile = ((u8) sprite->x / 8) + 1;
 		sprite->x = tile * 8;
 	}
 	sprite->recoiled = 1;
@@ -931,7 +931,9 @@ void collision_detect_shot(Player* player, Shot* shot)
 	u8 tile;
 	u8 hud_x;
 	Player* p = 0;
-    char hit_metal = 0;
+    u8 hit = 0;
+	u8 brick_index = 0;
+	u8 angle_tile = 0;
 	
 	get_interesting_tile_indexes_shot(tiles, x, y, shot->shared.direction);
 	
@@ -977,38 +979,45 @@ void collision_detect_shot(Player* player, Shot* shot)
 		
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
 		{
-			recoil_sprite_fine(&shot->shared);
-			richochet(tile, &shot->shared);
-			shot->rebounds--;
-			if (shot->rebounds <= 0)
-			{
-				init_shot_state(shot, shot->shot_type);
-				player->active_shots--;
-			}
-			SFX_METAL;
-			hit_metal = 0;
-			break;
+			hit = hit | HIT_ANGLE;
+			angle_tile = tile;
 		}
 		else if (tile == L_BRICK && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
 		{
-			explode_tile(&tile_animations, tiles[i]);
-			level.level_map[tiles[i]] = L_EMPTY;
-			shot->hit_count--;
-			if (shot->hit_count <= 0)
-			{
-				init_shot_state(shot, shot->shot_type);
-				player->active_shots--;
-			}
-			SFX_BRICK_EXPLODE;
-			hit_metal = 0;
-			break;
+			hit = hit | HIT_BRICK;
+			brick_index = i;
 		}
 		else if (tile == L_METAL && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
         {
-		    hit_metal = 1;
+		    hit = hit | HIT_METAL;
         }
 	}
-	if (hit_metal)
+	
+	if (hit & HIT_ANGLE)
+	{
+		recoil_sprite_fine(&shot->shared);
+		richochet(angle_tile, &shot->shared);
+		shot->rebounds--;
+		if (shot->rebounds <= 0)
+		{
+			init_shot_state(shot, shot->shot_type);
+			player->active_shots--;
+		}
+		SFX_METAL;
+	}
+	else if (hit & HIT_BRICK)
+	{
+		explode_tile(&tile_animations, tiles[brick_index]);
+		level.level_map[tiles[brick_index]] = L_EMPTY;
+		shot->hit_count--;
+		if (shot->hit_count <= 0)
+		{
+			init_shot_state(shot, shot->shot_type);
+			player->active_shots--;
+		}
+		SFX_BRICK_EXPLODE;
+	}
+	else if (hit & HIT_METAL)
 	{
         init_shot_state(shot, shot->shot_type);
         player->active_shots--;
@@ -1065,7 +1074,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	{
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
-			recoil_sprite(&player->shared);
+			recoil_sprite_fine(&player->shared);
 			player->shared.speed = 0;
 		}
 		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))

@@ -64,6 +64,9 @@
 #define SHOT_OVER_SPEED 170
 #define MAX_SHOTS 1
 #define DISTANCE_TO_ARM 8
+#define HIT_METAL 1
+#define HIT_BRICK 2
+#define HIT_ANGLE 4
 
 // General macros
 #define FRAME_TIME 0.0166666
@@ -94,7 +97,7 @@
 #define SFX_SILENCE TriggerNote(PCM_CHANNEL,PATCH_SILENCE,23,0xff)
 
 // AI Macros
-#define DEFAULT_FRAMES_PER_GOAL 150
+#define DEFAULT_FRAMES_PER_GOAL 180
 #define DEFAULT_FRAMES_PER_SHOT 10
 #define FRAMES_PER_DEADLOCK 320
 
