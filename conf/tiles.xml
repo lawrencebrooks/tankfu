@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="tiles.png" type="png" tile-width="8" tile-height="8" width="168" height="40" />
-    <output file="../src/data/tiles_tmp.inc">
+    <input file="../art/tiles.png" type="png" tile-width="8" tile-height="8" width="184" height="40" />
+    <output file="../src/data/tiles.h">
         <tiles var-name="tiles_data"/>
         <maps pointers-size="8">
             <!-- Title tiles -->
@@ -26,6 +26,15 @@
             <map var-name="map_metal_br" left="10" top="0" width="1" height="1"/>
             <map var-name="map_metal_tr" left="11" top="0" width="1" height="1"/>
             <map var-name="map_metal_bl" left="12" top="0" width="1" height="1"/>
+
+            <!-- Water --> 
+            <map var-name="map_water" left="13" top="0" width="1" height="1"/>
+
+            <!-- Green tank -->
+            <map var-name="map_green_tank" left="21" top="1" width="2" height="2"/>
+
+            <!-- Blue Tank -->
+            <map var-name="map_blue_tank" left="21" top="3" width="2" height="2"/>
         </maps>
     </output>
 </gfx-xform>

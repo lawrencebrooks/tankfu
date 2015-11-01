@@ -1,10 +1,7 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="Atarifont.png" type="png" tile-width="8" tile-height="8" width="128" height="48" />
-    <output file="../src/data/font.inc">
+    <input file="../art/font.png" type="png" tile-width="8" tile-height="8" width="256" height="32" />
+    <output file="../src/data/font.h" remove-duplicate-tiles="false">
         <tiles var-name="font_data"/>
-        <!--<maps pointers-size="8">
-            <map var-name="map_font" left="0" top="0" width="16" height="8"/>
-        </maps>--> 
     </output>
 </gfx-xform>

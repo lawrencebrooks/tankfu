@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="sprites.png" type="png" tile-width="8" tile-height="8" width="112" height="32" />
-    <output file="../src/data/sprites_tmp.inc">
+    <input file="../art/sprites.png" type="png" tile-width="8" tile-height="8" width="112" height="32" />
+    <output file="../src/data/sprites.h">
         <tiles var-name="sprites_data"/>
         
         <maps pointers-size="8">
             <!-- Blank -->
-            <map var-name="map_none" left="8" top="3" width="1" height="1"/>
+            <map var-name="map_none" left="12" top="3" width="1" height="1"/>
+            <map var-name="map_tank_blank" left="12" top="3" width="2" height="2"/>
             <!-- Tank 1 -->
             <map var-name="map_tank1_up_0" left="0" top="0" width="2" height="2"/>
             <map var-name="map_tank1_up_1" left="2" top="0" width="2" height="2"/>
@@ -30,6 +31,12 @@
             <map var-name="map_rocket_up_1" left="10" top="2" width="1" height="1"/>
             <map var-name="map_rocket_right_0" left="11" top="2" width="1" height="1"/>
             <map var-name="map_rocket_right_1" left="12" top="2" width="1" height="1"/>
+
+            <!-- Select arrows -->
+            <map var-name="map_right_arrow" left="8" top="3" width="1" height="1"/>
+            <map var-name="map_left_arrow" left="9" top="3" width="1" height="1"/>
+            <map var-name="map_down_arrow" left="10" top="3" width="1" height="1"/>
+            <map var-name="map_up_arrow" left="11" top="3" width="1" height="1"/>
         </maps>
 
     </output>
