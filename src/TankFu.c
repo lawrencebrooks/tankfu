@@ -1261,7 +1261,7 @@ void load_splash()
 	Print(7, 15, &strMap[strHighscores]);
 	Print(3, 26, &strMap[strCopyright]);
 	DrawMap2(4, 5, (const char*) map_splash);
-	MapSprite2(0, map_ball, 0);
+	MapSprite2(0, map_right_arrow, 0);
 	SFX_SPLASH;
 }
 
@@ -1345,10 +1345,8 @@ void load_tank_rank()
 	
 	game.current_screen = TANK_RANK;
 	clear_sprites();
-	MapSprite2(0, map_tank1_up_0, 0);
-	MapSprite2(4, map_tank2_up_0, 0);
-	MoveSprite(0, 7*8, 1*8, 2, 2);
-	MoveSprite(4, 20*8, 1*8, 2, 2);
+	DrawMap2(7, 1, map_green_tank);
+	DrawMap2(20, 1, map_blue_tank);
 	Print(10, 2, &strMap[strHighscores]);
 	for (u8 i = 0; i < 20; i += 4)
 	{
@@ -1465,13 +1463,16 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 	u8 tmp[3] = {' ', ' ', ' '};
 	if (ps->select_state == SELECTING)
 	{
-		MapSprite2(idx, map_ball, 0);
+		MapSprite2(idx, map_right_arrow, 0);
+		MapSprite2(idx+1, map_none, 0);
 		MoveSprite(idx, x_offset*8, (8 + ps->handle_id)*8, 1, 1);
 	}
 	else if (ps->select_state == EDITING)
 	{
-		MapSprite2(idx, map_ball, 0);
+		MapSprite2(idx, map_down_arrow, 0);
+		MapSprite2(idx+1, map_up_arrow, 0);
 		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id - 1)*8, 1, 1);
+		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id + 1)*8, 1, 1);
 		LBCopyChars(tmp, ps->handle, 3);
 	}
 	else if (ps->select_state == CONFIRMED)
@@ -1480,6 +1481,7 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 		LBPrintStr(x_offset+7, 5, ps->handle, 3);
 		PrintChar(x_offset+10, 5, ')');
 		MapSprite2(idx, map_none, 0);
+		MapSprite2(idx+1, map_none, 0);
 	}
 	LBPrintStr(x_offset+5, (8 + ps->handle_id), tmp, 3);
 }
@@ -1488,10 +1490,8 @@ void load_handle_select()
 {
 	game.current_screen = HANDLE_SELECT;
 	clear_sprites();
-	MapSprite2(0, map_tank1_up_0, 0);
-	MapSprite2(4, map_tank2_up_0, 0);
-	MoveSprite(0, 3*8, 4*8, 2, 2);
-	MoveSprite(4, 20*8, 4*8, 2, 2);
+	DrawMap2(3, 4, map_green_tank);
+	DrawMap2(20, 4, map_blue_tank);
 	Print(9, 1, &strMap[strHandlesTitle]);
 	Print(6, 5, &strMap[strPlayer1]);
 	Print(23, 5, &strMap[strPlayer2]);
@@ -1511,10 +1511,10 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	u8 start_game = 0;
 
 	// Render
-	_handle_select_render_helper(&p1s, p1, 2, 8);
+	_handle_select_render_helper(&p1s, p1, 2, 6);
 	if (game.selection == PVP)
 	{
-		_handle_select_render_helper(&p2s, p2, 19, 9);
+		_handle_select_render_helper(&p2s, p2, 19, 8);
 	}
 
 	// Update
