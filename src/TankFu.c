@@ -19,11 +19,10 @@
 #include <uzebox.h>
 #include <avr/pgmspace.h>
 #include <string.h>
-#include "data/patches.pcm.h"
 #include "data/tiles.h"
 #include "data/sprites.h"
-#include "data/levels.map.h"
-#include "data/patches.map.h"
+#include "data/levels.h"
+#include "data/patches.h"
 #include "types.h"
 #include "strings.h"
 #include "utils.h"
