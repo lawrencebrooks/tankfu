@@ -1259,7 +1259,7 @@ void load_splash()
 	Print(7, 13, &strMap[str1Player]);
 	Print(7, 14, &strMap[str2Player]);
 	Print(7, 15, &strMap[strHighscores]);
-	Print(3, 26, &strMap[strCopyright]);
+	Print(5, 26, &strMap[strCopyright]);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
 	SFX_SPLASH;

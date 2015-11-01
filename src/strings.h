@@ -22,33 +22,33 @@
 
 // String indexes
 #define strCopyright 0
-#define str1Player 25
-#define str2Player 39
-#define strHighscores 56
-#define strHandlesTitle 66
-#define strUnderline 78
-#define strVertSep 90
-#define strPlayer1 92
-#define strPlayer2 95
-#define strSelectHandle 98
-#define strConfirmHandle 109
-#define strCancelHandle 121
-#define strReset 132
-#define strChangeHandle 157
-#define strOwns 172
-#define strBy 177
-#define strFinalScore 180
-#define banter_map 192
-#define strBanterClear 342
-#define strScore 357
-#define strTotal 364
-#define strExit 371
-#define strPaused 380
-#define strLevels 387
+#define str1Player 21
+#define str2Player 35
+#define strHighscores 52
+#define strHandlesTitle 62
+#define strUnderline 74
+#define strVertSep 86
+#define strPlayer1 88
+#define strPlayer2 91
+#define strSelectHandle 94
+#define strConfirmHandle 105
+#define strCancelHandle 117
+#define strReset 128
+#define strChangeHandle 153
+#define strOwns 168
+#define strBy 173
+#define strFinalScore 176
+#define banter_map 188
+#define strBanterClear 338
+#define strScore 353
+#define strTotal 360
+#define strExit 367
+#define strPaused 376
+#define strLevels 383
 
 
 // Many strings
-const char strMap [] PROGMEM="(c) 2015 Lawrence Brooks\0"
+const char strMap [] PROGMEM="2015 Lawrence Brooks\0"
 "Player vs CPU\0"
 "Player vs Player\0"
 "Tank Rank\0"
