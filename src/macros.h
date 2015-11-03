@@ -53,6 +53,7 @@
 #define D_LEFT 3
 #define MAX_SPEED 50
 #define OVER_SPEED 65
+#define WATER_SPEED 25
 
 // Shot
 #define BASIC_SHOT 0
@@ -73,8 +74,8 @@
 #define TEXT_LINGER 2 // seconds
 #define MAX_LEVEL_SCORE 10
 #define TILE_ANIMATIONS_LENGTH 2
-#define DEMO_WAIT 600
-#define DEMO_LENGTH 1800
+#define DEMO_WAIT 100
+#define DEMO_LENGTH 3600
 
 // Flags
 #define EXPLODING_FLAG 1

@@ -402,25 +402,21 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 		{
 			player->shared.direction = D_UP;
 			player->shared.y -= FRAME_TIME * player->shared.speed;
-			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_RIGHT))
 		{
 			player->shared.direction = D_RIGHT;
 			player->shared.x += FRAME_TIME * player->shared.speed;
-			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_DOWN))
 		{
 			player->shared.direction = D_DOWN;
 			player->shared.y += FRAME_TIME * player->shared.speed;
-			//SFX_TRACKS;
 		}
 		else if ((p->held & BTN_LEFT))
 		{
 			player->shared.direction = D_LEFT;
 			player->shared.x -= FRAME_TIME * player->shared.speed;
-			//SFX_TRACKS;
 		}
 		else
 		{
@@ -820,7 +816,7 @@ void drop_item(int tile_index, const char* map, u8 item_type)
 		DrawMap2(tile_index % 30, 3 + tile_index / 30 + 1, map);
 		level.level_map[tile_index+30] = item_type;
 	}
-	else
+	else if (level.level_map[tile_index+31] == L_EMPTY)
 	{
 		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map);
 		level.level_map[tile_index+31] = item_type;
@@ -1055,6 +1051,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	int tiles[3] = {0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
+	u8 hit_water = 0;
 	
 	get_interesting_tile_indexes(tiles, x, y, player->shared.direction);
 	
@@ -1078,6 +1075,11 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 		{
 			recoil_sprite(&player->shared);
 			player->shared.speed = 0;
+		}
+		else if (level.level_map[tiles[i]] == L_WATER && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
+		{
+			player->max_speed = WATER_SPEED;
+			hit_water = 1;
 		}
 		else if (level.level_map[tiles[i]] == L_SPEED && !(player->flags & EXPLODING_FLAG))
 		{
@@ -1109,6 +1111,12 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 				kill_player(other_player, other_player_hud_x);
 			}
 		}
+		
+		if (!hit_water)
+		{
+			player->max_speed = MAX_SPEED;
+			if (player->has_over_speed) player->max_speed = OVER_SPEED;
+		}
 	}
 }
 
@@ -1138,6 +1146,7 @@ void load_level_tiles(u8 blank)
 				case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
 				case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
 				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
+				case L_WATER: DrawMap2(x, y, map_water); break;
 				default : SetTile(x, y, 0); break;
 			}
 		}
@@ -1331,7 +1340,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(0, 10));
+		level_transition(LBRandom(10, 11));
 		return;
 		
 	}
