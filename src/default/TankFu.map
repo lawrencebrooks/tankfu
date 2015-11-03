@@ -480,7 +480,30 @@ END GROUP
  .progmem.data  0x00000000000000e4     0x6b5b TankFu.o
                 0x00000000000000e4                default_scores
                 0x0000000000000102                default_handles
-                0x0000000000000120                strMap
+                0x0000000000000120                strLevels
+                0x00000000000001d0                strPaused
+                0x00000000000001d7                strExit
+                0x00000000000001e0                strTotal
+                0x00000000000001e7                strScore
+                0x00000000000001ee                strBanterClear
+                0x00000000000001fd                banter_map
+                0x0000000000000293                strFinalScore
+                0x000000000000029f                strBy
+                0x00000000000002a2                strOwns
+                0x00000000000002a7                strChangeHandle
+                0x00000000000002b6                strReset
+                0x00000000000002cf                strCancelHandle
+                0x00000000000002da                strConfirmHandle
+                0x00000000000002e6                strSelectHandle
+                0x00000000000002f1                strPlayer2
+                0x00000000000002f4                strPlayer1
+                0x00000000000002f7                strVertSep
+                0x00000000000002f9                strUnderline
+                0x0000000000000305                strHandlesTitle
+                0x0000000000000311                strHighscores
+                0x000000000000031b                str2Player
+                0x000000000000032c                str1Player
+                0x000000000000033a                strCopyright
                 0x000000000000034f                my_patches
                 0x00000000000003c4                ad_silence
                 0x00000000000003c6                ad_tracks
@@ -1290,7 +1313,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x88ad
+.debug_info     0x0000000000000000     0x8b9d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7d uzeboxVideoEngineCore.o
@@ -1298,7 +1321,7 @@ END GROUP
  .debug_info    0x00000000000010f2     0x127a uzeboxSoundEngine.o
  .debug_info    0x000000000000236c       0x74 uzeboxSoundEngineCore.o
  .debug_info    0x00000000000023e0     0x12c5 uzeboxVideoEngine.o
- .debug_info    0x00000000000036a5     0x5208 TankFu.o
+ .debug_info    0x00000000000036a5     0x54f8 TankFu.o
 
 .debug_abbrev   0x0000000000000000     0x152d
  *(.debug_abbrev)
@@ -1327,7 +1350,7 @@ END GROUP
  .debug_frame   0x00000000000003cc      0x4c0 uzeboxVideoEngine.o
  .debug_frame   0x000000000000088c      0xac8 TankFu.o
 
-.debug_str      0x0000000000000000     0x1a28
+.debug_str      0x0000000000000000     0x1b3e
  *(.debug_str)
  .debug_str     0x0000000000000000      0x231 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_str     0x0000000000000231      0x4a4 uzeboxCore.o
@@ -1336,8 +1359,8 @@ END GROUP
                                         0x60c (size before relaxing)
  .debug_str     0x0000000000000a9e      0x286 uzeboxVideoEngine.o
                                         0x401 (size before relaxing)
- .debug_str     0x0000000000000d24      0xd04 TankFu.o
-                                       0x10a7 (size before relaxing)
+ .debug_str     0x0000000000000d24      0xe1a TankFu.o
+                                       0x11bd (size before relaxing)
 
 .debug_loc      0x0000000000000000     0x7e92
  *(.debug_loc)

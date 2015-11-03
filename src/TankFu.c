@@ -251,7 +251,7 @@ void level_transition(u8 index)
 	FadeOut(FRAMES_PER_FADE, true);
 	ClearVram();
 	clear_sprites();
-	Print(8, 12, &strMap[strLevels+index*16]);
+	Print(8, 12, (char*) strLevels+index*16);
 	FadeIn(1, true);
 	LBWaitSeconds(TEXT_LINGER);
 	FadeOut(1, true);
@@ -355,9 +355,9 @@ void position_shot(Player* player, Shot* shot)
 void print_level_score(Player* winner, Player* loser)
 {
 	LBPrintStr(4, 14, &winner->handle[0], 3);
-	Print(8, 14, &strMap[strOwns]);
+	Print(8, 14, (char*) strOwns);
 	LBPrintStr(13, 14, &loser->handle[0], 3);
-	Print(17, 14, &strMap[strBy]);
+	Print(17, 14, (char*) strBy);
 	PrintByte(22, 14, winner->level_score ,true);
 	PrintChar(23, 14, '-');
 	PrintByte(26, 14, loser->level_score ,true);
@@ -365,11 +365,11 @@ void print_level_score(Player* winner, Player* loser)
 
 void print_final_score(Player* winner, Player* loser)
 {
-    Print(9, 13, &strMap[strFinalScore]);
+    Print(9, 13, (char*) strFinalScore);
     LBPrintStr(4, 14, &winner->handle[0], 3);
-    Print(8, 14, &strMap[strOwns]);
+    Print(8, 14, (char*) strOwns);
     LBPrintStr(13, 14, &loser->handle[0], 3);
-    Print(17, 14, &strMap[strBy]);
+    Print(17, 14, (char*) strBy);
     PrintByte(22, 14, winner->score ,true);
     PrintChar(23, 14, '-');
     PrintByte(26, 14, loser->score ,true);
@@ -519,8 +519,8 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 void render_hud(Player* player, u8 x)
 {	
 	LBPrintStr(x+10, 0, player->handle, 3);
-	Print(x, 0, &strMap[strScore]);
-	Print(x, 1, &strMap[strTotal]);
+	Print(x, 0, (char*) strScore);
+	Print(x, 1, (char*) strTotal);
 	
 }
 
@@ -537,14 +537,14 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
 	{
 		if (player->banter_frame == 0)
 		{
-			Print(banter_x, 2, &strMap[banter_map+player->banter_index*15]);
+			Print(banter_x, 2, (char*) banter_map+player->banter_index*15);
 		}
 		clear_banter = 1;
 		player->banter_frame++;
 	}
 	else if (clear_banter)
 	{
-		Print(banter_x, 2, &strMap[strBanterClear]);
+		Print(banter_x, 2, (char*) strBanterClear);
 		clear_banter = 0;
 	}
 	return clear_banter;
@@ -1191,9 +1191,9 @@ void load_level(int level_number)
 	render_hud(&player2, 15);
 	render_score(&player1, 0);
 	render_score(&player2, 15);
-	Print(14, 0, &strMap[strVertSep]);
-	Print(14, 1, &strMap[strVertSep]);
-	Print(14, 2, &strMap[strVertSep]);
+	Print(14, 0, (char*) strVertSep);
+	Print(14, 1, (char*) strVertSep);
+	Print(14, 2, (char*) strVertSep);
 	load_level_tiles(false);
 	SFX_LEVEL_START;
 }
@@ -1214,8 +1214,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		SetSpriteVisibility(false);
 		DrawMap2(8, 12, (const char*) map_pause);
-		Print(12, 13, &strMap[strPaused]);
-		Print(11, 14, &strMap[strExit]);
+		Print(12, 13, (char*) strPaused);
+		Print(11, 14, (char*) strExit);
 	}
 	else
 	{
@@ -1266,10 +1266,10 @@ void load_splash()
 {
 	game.current_screen = SPLASH;
 	clear_sprites();
-	Print(7, 13, &strMap[str1Player]);
-	Print(7, 14, &strMap[str2Player]);
-	Print(7, 15, &strMap[strHighscores]);
-	Print(5, 26, &strMap[strCopyright]);
+	Print(7, 13, (char*) str1Player);
+	Print(7, 14, (char*) str2Player);
+	Print(7, 15, (char*) strHighscores);
+	Print(5, 26, (char*) strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
 	SFX_SPLASH;
@@ -1295,7 +1295,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			MoveSprite(0, 6*8, 15*8, 1, 1);
 			break;
 	}
-	Print(9, 21, &strMap[strSelectHandle]);
+	Print(9, 21, (char*) strSelectHandle);
 
 	// Update
 	if (p1->pressed) demo_counter = 0;
@@ -1357,23 +1357,23 @@ void load_tank_rank()
 	clear_sprites();
 	DrawMap2(7, 1, map_green_tank);
 	DrawMap2(20, 1, map_blue_tank);
-	Print(10, 2, &strMap[strHighscores]);
+	Print(10, 2, (char*) strHighscores);
 	for (u8 i = 0; i < 20; i += 4)
 	{
 		PrintByte(2, y, rank, false);
 		PrintChar(3, y, '.');
 		LBPrintStr(5, y, &handles.data[scores.data[i]*3], 3);
-		Print(9, y, &strMap[strOwns]);
+		Print(9, y, (char*) strOwns);
 		LBPrintStr(14, y, &handles.data[scores.data[i+1]*3], 3);
-		Print(18, y, &strMap[strBy]);
+		Print(18, y, (char*) strBy);
 		PrintByte(23, y, scores.data[i+2] ,true);
 		PrintChar(24, y, '-');
 		PrintByte(27, y, scores.data[i+3] ,true);
 		y += 3;
 		rank += 1;
 	}
-	Print(3, 22, &strMap[strReset]);
-	Print(10, 24, &strMap[strCancelHandle]);
+	Print(3, 22, (char*) strReset);
+	Print(10, 24, (char*) strCancelHandle);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
@@ -1502,18 +1502,18 @@ void load_handle_select()
 	clear_sprites();
 	DrawMap2(3, 4, map_green_tank);
 	DrawMap2(20, 4, map_blue_tank);
-	Print(9, 1, &strMap[strHandlesTitle]);
-	Print(6, 5, &strMap[strPlayer1]);
-	Print(23, 5, &strMap[strPlayer2]);
+	Print(9, 1, (char*) strHandlesTitle);
+	Print(6, 5, (char*) strPlayer1);
+	Print(23, 5, (char*) strPlayer2);
 	for (int i = 0; i < 27; i += 1)
 	{
 		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, &strMap[strSelectHandle]);
-	Print(8, 22, &strMap[strConfirmHandle]);
-	Print(8, 23, &strMap[strCancelHandle]);
-	Print(8, 24, &strMap[strChangeHandle]);
+	Print(8, 21, (char*) strSelectHandle);
+	Print(8, 22, (char*) strConfirmHandle);
+	Print(8, 23, (char*) strCancelHandle);
+	Print(8, 24, (char*) strChangeHandle);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)

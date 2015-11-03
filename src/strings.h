@@ -21,51 +21,24 @@
 
 
 // String indexes
-#define strCopyright 0
-#define str1Player 21
-#define str2Player 35
-#define strHighscores 52
-#define strHandlesTitle 62
-#define strUnderline 74
-#define strVertSep 86
-#define strPlayer1 88
-#define strPlayer2 91
-#define strSelectHandle 94
-#define strConfirmHandle 105
-#define strCancelHandle 117
-#define strReset 128
-#define strChangeHandle 153
-#define strOwns 168
-#define strBy 173
-#define strFinalScore 176
-#define banter_map 188
-#define strBanterClear 338
-#define strScore 353
-#define strTotal 360
-#define strExit 367
-#define strPaused 376
-#define strLevels 383
-
-
-// Many strings
-const char strMap [] PROGMEM="2015 Lawrence Brooks\0"
-"Player vs CPU\0"
-"Player vs Player\0"
-"Tank Rank\0"
-"Edit Handle\0"
-"___________\0"
-"|\0"
-"P1\0"
-"P2\0"
-"Select - A\0"
-"Confirm - A\0"
-"Cancel - X\0"
-"Reset Defaults - SL (5s)\0"
-"Edit - UP/DOWN\0"
-"Owns\0"
-"By\0"
-"Final Score\0"
-"Such Fail     \0"
+const unsigned char strCopyright [] PROGMEM="2015 Lawrence Brooks";
+const unsigned char str1Player [] PROGMEM="Player vs CPU";
+const unsigned char str2Player [] PROGMEM="Player vs Player";
+const unsigned char strHighscores [] PROGMEM="Tank Rank";
+const unsigned char strHandlesTitle [] PROGMEM="Edit Handle";
+const unsigned char strUnderline [] PROGMEM="___________";
+const unsigned char strVertSep [] PROGMEM="|";
+const unsigned char strPlayer1 [] PROGMEM="P1";
+const unsigned char strPlayer2 [] PROGMEM="P2";
+const unsigned char strSelectHandle [] PROGMEM="Select - A";
+const unsigned char strConfirmHandle [] PROGMEM="Confirm - A";
+const unsigned char strCancelHandle [] PROGMEM="Cancel - X";
+const unsigned char strReset [] PROGMEM="Reset Defaults - SL (5s)";
+const unsigned char strChangeHandle [] PROGMEM="Edit - UP/DOWN";
+const unsigned char strOwns [] PROGMEM="Owns";
+const unsigned char strBy [] PROGMEM="By";
+const unsigned char strFinalScore [] PROGMEM="Final Score";
+const unsigned char banter_map [] PROGMEM="Such Fail     \0"
 "LOL           \0"
 "Broken button?\0"
 "Try at least  \0"
@@ -74,13 +47,13 @@ const char strMap [] PROGMEM="2015 Lawrence Brooks\0"
 "Noob          \0"
 "That's it?    \0"
 "Need help?    \0"
-"Pfft          \0"
-"              \0"
-"Score:\0"
-"Total:\0"
-"Bail - X\0"
-"Paused\0"
-"   Boot Camp   \0"
+"Pfft          ";
+const unsigned char strBanterClear [] PROGMEM="              ";
+const unsigned char strScore [] PROGMEM="Score:";
+const unsigned char strTotal [] PROGMEM="Total:";
+const unsigned char strExit [] PROGMEM="Bail - X";
+const unsigned char strPaused [] PROGMEM="Paused";
+const unsigned char strLevels [] PROGMEM="   Boot Camp   \0"
 "   Velocity    \0"
 "   Brickyard   \0"
 "     Maze      \0"

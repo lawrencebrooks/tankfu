@@ -17,19 +17,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   6 .debug_aranges 000005d0  00000000  00000000  0000d200  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   000088ad  00000000  00000000  0000d7d0  2**0
+  7 .debug_info   00008b9d  00000000  00000000  0000d7d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 0000152d  00000000  00000000  0001607d  2**0
+  8 .debug_abbrev 0000152d  00000000  00000000  0001636d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00001ebc  00000000  00000000  000175aa  2**0
+  9 .debug_line   00001ebc  00000000  00000000  0001789a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00001354  00000000  00000000  00019468  2**2
+ 10 .debug_frame  00001354  00000000  00000000  00019758  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00001a28  00000000  00000000  0001a7bc  2**0
+ 11 .debug_str    00001b3e  00000000  00000000  0001aaac  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00007e92  00000000  00000000  0001c1e4  2**0
+ 12 .debug_loc    00007e92  00000000  00000000  0001c5ea  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000688  00000000  00000000  00024078  2**3
+ 13 .debug_ranges 00000688  00000000  00000000  00024480  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -108,42 +108,99 @@ Disassembly of section .text:
      102:	55 5a 45 4c 4a 42 41 41 41 42 42 42 43 43 43 44     UZELJBAAABBBCCCD
      112:	44 44 45 45 45 46 46 46 47 47 47 43 50 55           DDEEEFFFGGGCPU
 
-00000120 <strMap>:
-     120:	32 30 31 35 20 4c 61 77 72 65 6e 63 65 20 42 72     2015 Lawrence Br
-     130:	6f 6f 6b 73 00 50 6c 61 79 65 72 20 76 73 20 43     ooks.Player vs C
-     140:	50 55 00 50 6c 61 79 65 72 20 76 73 20 50 6c 61     PU.Player vs Pla
-     150:	79 65 72 00 54 61 6e 6b 20 52 61 6e 6b 00 45 64     yer.Tank Rank.Ed
-     160:	69 74 20 48 61 6e 64 6c 65 00 5f 5f 5f 5f 5f 5f     it Handle.______
-     170:	5f 5f 5f 5f 5f 00 7c 00 50 31 00 50 32 00 53 65     _____.|.P1.P2.Se
-     180:	6c 65 63 74 20 2d 20 41 00 43 6f 6e 66 69 72 6d     lect - A.Confirm
-     190:	20 2d 20 41 00 43 61 6e 63 65 6c 20 2d 20 58 00      - A.Cancel - X.
-     1a0:	52 65 73 65 74 20 44 65 66 61 75 6c 74 73 20 2d     Reset Defaults -
-     1b0:	20 53 4c 20 28 35 73 29 00 45 64 69 74 20 2d 20      SL (5s).Edit - 
-     1c0:	55 50 2f 44 4f 57 4e 00 4f 77 6e 73 00 42 79 00     UP/DOWN.Owns.By.
-     1d0:	46 69 6e 61 6c 20 53 63 6f 72 65 00 53 75 63 68     Final Score.Such
-     1e0:	20 46 61 69 6c 20 20 20 20 20 00 4c 4f 4c 20 20      Fail     .LOL  
-     1f0:	20 20 20 20 20 20 20 20 20 00 42 72 6f 6b 65 6e              .Broken
-     200:	20 62 75 74 74 6f 6e 3f 00 54 72 79 20 61 74 20      button?.Try at 
-     210:	6c 65 61 73 74 20 20 00 54 6f 6f 20 65 61 73 79     least  .Too easy
-     220:	20 20 20 20 20 20 00 2a 59 41 57 4e 2a 20 20 20           .*YAWN*   
-     230:	20 20 20 20 20 00 4e 6f 6f 62 20 20 20 20 20 20          .Noob      
-     240:	20 20 20 20 00 54 68 61 74 27 73 20 69 74 3f 20         .That's it? 
-     250:	20 20 20 00 4e 65 65 64 20 68 65 6c 70 3f 20 20        .Need help?  
-     260:	20 20 00 50 66 66 74 20 20 20 20 20 20 20 20 20       .Pfft         
-     270:	20 00 20 20 20 20 20 20 20 20 20 20 20 20 20 20      .              
-     280:	00 53 63 6f 72 65 3a 00 54 6f 74 61 6c 3a 00 42     .Score:.Total:.B
-     290:	61 69 6c 20 2d 20 58 00 50 61 75 73 65 64 00 20     ail - X.Paused. 
-     2a0:	20 20 42 6f 6f 74 20 43 61 6d 70 20 20 20 00 20       Boot Camp   . 
-     2b0:	20 20 56 65 6c 6f 63 69 74 79 20 20 20 20 00 20       Velocity    . 
-     2c0:	20 20 42 72 69 63 6b 79 61 72 64 20 20 20 00 20       Brickyard   . 
-     2d0:	20 20 20 20 4d 61 7a 65 20 20 20 20 20 20 00 20         Maze      . 
-     2e0:	20 20 52 69 63 68 6f 63 68 65 74 20 20 20 00 20       Richochet   . 
-     2f0:	54 68 65 20 48 6f 6e 65 79 20 50 6f 74 20 00 20     The Honey Pot . 
-     300:	20 46 6f 63 61 6c 20 50 6f 69 6e 74 20 20 00 49      Focal Point  .I
-     310:	74 27 73 20 4e 6f 74 20 46 61 69 72 21 20 00 20     t's Not Fair! . 
-     320:	20 4d 75 63 68 20 42 65 74 74 65 72 20 20 00 20      Much Better  . 
-     330:	20 20 46 61 63 65 20 4f 66 66 20 20 20 20 00 20       Face Off    . 
-     340:	20 20 20 20 54 65 73 74 20 20 20 20 20 20 00            Test      .
+00000120 <strLevels>:
+     120:	20 20 20 42 6f 6f 74 20 43 61 6d 70 20 20 20 00        Boot Camp   .
+     130:	20 20 20 56 65 6c 6f 63 69 74 79 20 20 20 20 00        Velocity    .
+     140:	20 20 20 42 72 69 63 6b 79 61 72 64 20 20 20 00        Brickyard   .
+     150:	20 20 20 20 20 4d 61 7a 65 20 20 20 20 20 20 00          Maze      .
+     160:	20 20 20 52 69 63 68 6f 63 68 65 74 20 20 20 00        Richochet   .
+     170:	20 54 68 65 20 48 6f 6e 65 79 20 50 6f 74 20 00      The Honey Pot .
+     180:	20 20 46 6f 63 61 6c 20 50 6f 69 6e 74 20 20 00       Focal Point  .
+     190:	49 74 27 73 20 4e 6f 74 20 46 61 69 72 21 20 00     It's Not Fair! .
+     1a0:	20 20 4d 75 63 68 20 42 65 74 74 65 72 20 20 00       Much Better  .
+     1b0:	20 20 20 46 61 63 65 20 4f 66 66 20 20 20 20 00        Face Off    .
+     1c0:	20 20 20 20 20 54 65 73 74 20 20 20 20 20 20 00          Test      .
+
+000001d0 <strPaused>:
+     1d0:	50 61 75 73 65 64 00                                Paused.
+
+000001d7 <strExit>:
+     1d7:	42 61 69 6c 20 2d 20 58 00                          Bail - X.
+
+000001e0 <strTotal>:
+     1e0:	54 6f 74 61 6c 3a 00                                Total:.
+
+000001e7 <strScore>:
+     1e7:	53 63 6f 72 65 3a 00                                Score:.
+
+000001ee <strBanterClear>:
+     1ee:	20 20 20 20 20 20 20 20 20 20 20 20 20 20 00                      .
+
+000001fd <banter_map>:
+     1fd:	53 75 63 68 20 46 61 69 6c 20 20 20 20 20 00 4c     Such Fail     .L
+     20d:	4f 4c 20 20 20 20 20 20 20 20 20 20 20 00 42 72     OL           .Br
+     21d:	6f 6b 65 6e 20 62 75 74 74 6f 6e 3f 00 54 72 79     oken button?.Try
+     22d:	20 61 74 20 6c 65 61 73 74 20 20 00 54 6f 6f 20      at least  .Too 
+     23d:	65 61 73 79 20 20 20 20 20 20 00 2a 59 41 57 4e     easy      .*YAWN
+     24d:	2a 20 20 20 20 20 20 20 20 00 4e 6f 6f 62 20 20     *        .Noob  
+     25d:	20 20 20 20 20 20 20 20 00 54 68 61 74 27 73 20             .That's 
+     26d:	69 74 3f 20 20 20 20 00 4e 65 65 64 20 68 65 6c     it?    .Need hel
+     27d:	70 3f 20 20 20 20 00 50 66 66 74 20 20 20 20 20     p?    .Pfft     
+     28d:	20 20 20 20 20 00                                        .
+
+00000293 <strFinalScore>:
+     293:	46 69 6e 61 6c 20 53 63 6f 72 65 00                 Final Score.
+
+0000029f <strBy>:
+     29f:	42 79 00                                            By.
+
+000002a2 <strOwns>:
+     2a2:	4f 77 6e 73 00                                      Owns.
+
+000002a7 <strChangeHandle>:
+     2a7:	45 64 69 74 20 2d 20 55 50 2f 44 4f 57 4e 00        Edit - UP/DOWN.
+
+000002b6 <strReset>:
+     2b6:	52 65 73 65 74 20 44 65 66 61 75 6c 74 73 20 2d     Reset Defaults -
+     2c6:	20 53 4c 20 28 35 73 29 00                           SL (5s).
+
+000002cf <strCancelHandle>:
+     2cf:	43 61 6e 63 65 6c 20 2d 20 58 00                    Cancel - X.
+
+000002da <strConfirmHandle>:
+     2da:	43 6f 6e 66 69 72 6d 20 2d 20 41 00                 Confirm - A.
+
+000002e6 <strSelectHandle>:
+     2e6:	53 65 6c 65 63 74 20 2d 20 41 00                    Select - A.
+
+000002f1 <strPlayer2>:
+     2f1:	50 32 00                                            P2.
+
+000002f4 <strPlayer1>:
+     2f4:	50 31 00                                            P1.
+
+000002f7 <strVertSep>:
+     2f7:	7c 00                                               |.
+
+000002f9 <strUnderline>:
+     2f9:	5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 00                 ___________.
+
+00000305 <strHandlesTitle>:
+     305:	45 64 69 74 20 48 61 6e 64 6c 65 00                 Edit Handle.
+
+00000311 <strHighscores>:
+     311:	54 61 6e 6b 20 52 61 6e 6b 00                       Tank Rank.
+
+0000031b <str2Player>:
+     31b:	50 6c 61 79 65 72 20 76 73 20 50 6c 61 79 65 72     Player vs Player
+	...
+
+0000032c <str1Player>:
+     32c:	50 6c 61 79 65 72 20 76 73 20 43 50 55 00           Player vs CPU.
+
+0000033a <strCopyright>:
+     33a:	32 30 31 35 20 4c 61 77 72 65 6e 63 65 20 42 72     2015 Lawrence Br
+     34a:	6f 6f 6b 73 00                                      ooks.
 
 0000034f <my_patches>:
      34f:	02 41 12 00 00 4f 07 50 07 02 5c 0b 00 00 e3 06     .A...O.P..\.....
@@ -10761,9 +10818,9 @@ void print_level_score(Player* winner, Player* loser)
     9a20:	6e e0       	ldi	r22, 0x0E	; 14
     9a22:	84 e0       	ldi	r24, 0x04	; 4
     9a24:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-	Print(8, 14, &strMap[strOwns]);
-    9a28:	48 ec       	ldi	r20, 0xC8	; 200
-    9a2a:	51 e0       	ldi	r21, 0x01	; 1
+	Print(8, 14, (char*) strOwns);
+    9a28:	42 ea       	ldi	r20, 0xA2	; 162
+    9a2a:	52 e0       	ldi	r21, 0x02	; 2
     9a2c:	6e e0       	ldi	r22, 0x0E	; 14
     9a2e:	70 e0       	ldi	r23, 0x00	; 0
     9a30:	88 e0       	ldi	r24, 0x08	; 8
@@ -10777,9 +10834,9 @@ void print_level_score(Player* winner, Player* loser)
     9a40:	6e e0       	ldi	r22, 0x0E	; 14
     9a42:	8d e0       	ldi	r24, 0x0D	; 13
     9a44:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-	Print(17, 14, &strMap[strBy]);
-    9a48:	4d ec       	ldi	r20, 0xCD	; 205
-    9a4a:	51 e0       	ldi	r21, 0x01	; 1
+	Print(17, 14, (char*) strBy);
+    9a48:	4f e9       	ldi	r20, 0x9F	; 159
+    9a4a:	52 e0       	ldi	r21, 0x02	; 2
     9a4c:	6e e0       	ldi	r22, 0x0E	; 14
     9a4e:	70 e0       	ldi	r23, 0x00	; 0
     9a50:	81 e1       	ldi	r24, 0x11	; 17
@@ -10813,9 +10870,9 @@ void print_level_score(Player* winner, Player* loser)
     9a86:	cf 91       	pop	r28
     9a88:	1f 91       	pop	r17
     9a8a:	0f 91       	pop	r16
-	Print(8, 14, &strMap[strOwns]);
+	Print(8, 14, (char*) strOwns);
 	LBPrintStr(13, 14, &loser->handle[0], 3);
-	Print(17, 14, &strMap[strBy]);
+	Print(17, 14, (char*) strBy);
 	PrintByte(22, 14, winner->level_score ,true);
 	PrintChar(23, 14, '-');
 	PrintByte(26, 14, loser->level_score ,true);
@@ -10832,9 +10889,9 @@ void print_final_score(Player* winner, Player* loser)
     9a96:	df 93       	push	r29
     9a98:	8c 01       	movw	r16, r24
     9a9a:	eb 01       	movw	r28, r22
-    Print(9, 13, &strMap[strFinalScore]);
-    9a9c:	40 ed       	ldi	r20, 0xD0	; 208
-    9a9e:	51 e0       	ldi	r21, 0x01	; 1
+    Print(9, 13, (char*) strFinalScore);
+    9a9c:	43 e9       	ldi	r20, 0x93	; 147
+    9a9e:	52 e0       	ldi	r21, 0x02	; 2
     9aa0:	6d e0       	ldi	r22, 0x0D	; 13
     9aa2:	70 e0       	ldi	r23, 0x00	; 0
     9aa4:	89 e0       	ldi	r24, 0x09	; 9
@@ -10848,9 +10905,9 @@ void print_final_score(Player* winner, Player* loser)
     9ab4:	6e e0       	ldi	r22, 0x0E	; 14
     9ab6:	84 e0       	ldi	r24, 0x04	; 4
     9ab8:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-    Print(8, 14, &strMap[strOwns]);
-    9abc:	48 ec       	ldi	r20, 0xC8	; 200
-    9abe:	51 e0       	ldi	r21, 0x01	; 1
+    Print(8, 14, (char*) strOwns);
+    9abc:	42 ea       	ldi	r20, 0xA2	; 162
+    9abe:	52 e0       	ldi	r21, 0x02	; 2
     9ac0:	6e e0       	ldi	r22, 0x0E	; 14
     9ac2:	70 e0       	ldi	r23, 0x00	; 0
     9ac4:	88 e0       	ldi	r24, 0x08	; 8
@@ -10864,9 +10921,9 @@ void print_final_score(Player* winner, Player* loser)
     9ad4:	6e e0       	ldi	r22, 0x0E	; 14
     9ad6:	8d e0       	ldi	r24, 0x0D	; 13
     9ad8:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-    Print(17, 14, &strMap[strBy]);
-    9adc:	4d ec       	ldi	r20, 0xCD	; 205
-    9ade:	51 e0       	ldi	r21, 0x01	; 1
+    Print(17, 14, (char*) strBy);
+    9adc:	4f e9       	ldi	r20, 0x9F	; 159
+    9ade:	52 e0       	ldi	r21, 0x02	; 2
     9ae0:	6e e0       	ldi	r22, 0x0E	; 14
     9ae2:	70 e0       	ldi	r23, 0x00	; 0
     9ae4:	81 e1       	ldi	r24, 0x11	; 17
@@ -10900,9 +10957,9 @@ void print_final_score(Player* winner, Player* loser)
     9b1a:	cf 91       	pop	r28
     9b1c:	1f 91       	pop	r17
     9b1e:	0f 91       	pop	r16
-    Print(8, 14, &strMap[strOwns]);
+    Print(8, 14, (char*) strOwns);
     LBPrintStr(13, 14, &loser->handle[0], 3);
-    Print(17, 14, &strMap[strBy]);
+    Print(17, 14, (char*) strBy);
     PrintByte(22, 14, winner->score ,true);
     PrintChar(23, 14, '-');
     PrintByte(26, 14, loser->score ,true);
@@ -10927,17 +10984,17 @@ void render_hud(Player* player, u8 x)
     9b34:	8a e0       	ldi	r24, 0x0A	; 10
     9b36:	8c 0f       	add	r24, r28
     9b38:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-	Print(x, 0, &strMap[strScore]);
+	Print(x, 0, (char*) strScore);
     9b3c:	d0 e0       	ldi	r29, 0x00	; 0
-    9b3e:	41 e8       	ldi	r20, 0x81	; 129
-    9b40:	52 e0       	ldi	r21, 0x02	; 2
+    9b3e:	47 ee       	ldi	r20, 0xE7	; 231
+    9b40:	51 e0       	ldi	r21, 0x01	; 1
     9b42:	60 e0       	ldi	r22, 0x00	; 0
     9b44:	70 e0       	ldi	r23, 0x00	; 0
     9b46:	ce 01       	movw	r24, r28
     9b48:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(x, 1, &strMap[strTotal]);
-    9b4c:	48 e8       	ldi	r20, 0x88	; 136
-    9b4e:	52 e0       	ldi	r21, 0x02	; 2
+	Print(x, 1, (char*) strTotal);
+    9b4c:	40 ee       	ldi	r20, 0xE0	; 224
+    9b4e:	51 e0       	ldi	r21, 0x01	; 1
     9b50:	61 e0       	ldi	r22, 0x01	; 1
     9b52:	70 e0       	ldi	r23, 0x00	; 0
     9b54:	ce 01       	movw	r24, r28
@@ -10949,8 +11006,8 @@ void render_hud(Player* player, u8 x)
 void render_hud(Player* player, u8 x)
 {	
 	LBPrintStr(x+10, 0, player->handle, 3);
-	Print(x, 0, &strMap[strScore]);
-	Print(x, 1, &strMap[strTotal]);
+	Print(x, 0, (char*) strScore);
+	Print(x, 1, (char*) strTotal);
     9b5a:	0c 94 6a 48 	jmp	0x90d4	; 0x90d4 <Print>
 
 00009b5e <render_score>:
@@ -11014,13 +11071,13 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
     9ba4:	91 11       	cpse	r25, r1
     9ba6:	0c c0       	rjmp	.+24     	; 0x9bc0 <render_banter+0x2a>
 		{
-			Print(banter_x, 2, &strMap[banter_map+player->banter_index*15]);
+			Print(banter_x, 2, (char*) banter_map+player->banter_index*15);
     9ba8:	4e 89       	ldd	r20, Y+22	; 0x16
     9baa:	9f e0       	ldi	r25, 0x0F	; 15
     9bac:	49 9f       	mul	r20, r25
     9bae:	a0 01       	movw	r20, r0
     9bb0:	11 24       	eor	r1, r1
-    9bb2:	44 52       	subi	r20, 0x24	; 36
+    9bb2:	43 50       	subi	r20, 0x03	; 3
     9bb4:	5e 4f       	sbci	r21, 0xFE	; 254
     9bb6:	62 e0       	ldi	r22, 0x02	; 2
     9bb8:	70 e0       	ldi	r23, 0x00	; 0
@@ -11035,7 +11092,7 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
 	{
 		if (player->banter_frame == 0)
 		{
-			Print(banter_x, 2, &strMap[banter_map+player->banter_index*15]);
+			Print(banter_x, 2, (char*) banter_map+player->banter_index*15);
 		}
 		clear_banter = 1;
     9bc6:	41 e0       	ldi	r20, 0x01	; 1
@@ -11046,9 +11103,9 @@ u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
     9bca:	44 23       	and	r20, r20
     9bcc:	41 f0       	breq	.+16     	; 0x9bde <render_banter+0x48>
 	{
-		Print(banter_x, 2, &strMap[strBanterClear]);
-    9bce:	42 e7       	ldi	r20, 0x72	; 114
-    9bd0:	52 e0       	ldi	r21, 0x02	; 2
+		Print(banter_x, 2, (char*) strBanterClear);
+    9bce:	4e ee       	ldi	r20, 0xEE	; 238
+    9bd0:	51 e0       	ldi	r21, 0x01	; 1
     9bd2:	62 e0       	ldi	r22, 0x02	; 2
     9bd4:	70 e0       	ldi	r23, 0x00	; 0
     9bd6:	90 e0       	ldi	r25, 0x00	; 0
@@ -14247,25 +14304,25 @@ void load_level(int level_number)
     aeb8:	89 e8       	ldi	r24, 0x89	; 137
     aeba:	9f e0       	ldi	r25, 0x0F	; 15
     aebc:	0e 94 af 4d 	call	0x9b5e	; 0x9b5e <render_score>
-	Print(14, 0, &strMap[strVertSep]);
-    aec0:	46 e7       	ldi	r20, 0x76	; 118
-    aec2:	51 e0       	ldi	r21, 0x01	; 1
+	Print(14, 0, (char*) strVertSep);
+    aec0:	47 ef       	ldi	r20, 0xF7	; 247
+    aec2:	52 e0       	ldi	r21, 0x02	; 2
     aec4:	60 e0       	ldi	r22, 0x00	; 0
     aec6:	70 e0       	ldi	r23, 0x00	; 0
     aec8:	8e e0       	ldi	r24, 0x0E	; 14
     aeca:	90 e0       	ldi	r25, 0x00	; 0
     aecc:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(14, 1, &strMap[strVertSep]);
-    aed0:	46 e7       	ldi	r20, 0x76	; 118
-    aed2:	51 e0       	ldi	r21, 0x01	; 1
+	Print(14, 1, (char*) strVertSep);
+    aed0:	47 ef       	ldi	r20, 0xF7	; 247
+    aed2:	52 e0       	ldi	r21, 0x02	; 2
     aed4:	61 e0       	ldi	r22, 0x01	; 1
     aed6:	70 e0       	ldi	r23, 0x00	; 0
     aed8:	8e e0       	ldi	r24, 0x0E	; 14
     aeda:	90 e0       	ldi	r25, 0x00	; 0
     aedc:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(14, 2, &strMap[strVertSep]);
-    aee0:	46 e7       	ldi	r20, 0x76	; 118
-    aee2:	51 e0       	ldi	r21, 0x01	; 1
+	Print(14, 2, (char*) strVertSep);
+    aee0:	47 ef       	ldi	r20, 0xF7	; 247
+    aee2:	52 e0       	ldi	r21, 0x02	; 2
     aee4:	62 e0       	ldi	r22, 0x02	; 2
     aee6:	70 e0       	ldi	r23, 0x00	; 0
     aee8:	8e e0       	ldi	r24, 0x0E	; 14
@@ -14292,9 +14349,9 @@ void load_level(int level_number)
     af10:	af 90       	pop	r10
     af12:	9f 90       	pop	r9
 	render_score(&player2, 15);
-	Print(14, 0, &strMap[strVertSep]);
-	Print(14, 1, &strMap[strVertSep]);
-	Print(14, 2, &strMap[strVertSep]);
+	Print(14, 0, (char*) strVertSep);
+	Print(14, 1, (char*) strVertSep);
+	Print(14, 2, (char*) strVertSep);
 	load_level_tiles(false);
 	SFX_LEVEL_START;
     af14:	0c 94 6e 3d 	jmp	0x7adc	; 0x7adc <TriggerNote>
@@ -14317,7 +14374,7 @@ void level_transition(u8 index)
     af26:	0e 94 19 3a 	call	0x7432	; 0x7432 <ClearVram>
 	clear_sprites();
     af2a:	0e 94 23 4c 	call	0x9846	; 0x9846 <clear_sprites>
-	Print(8, 12, &strMap[strLevels+index*16]);
+	Print(8, 12, (char*) strLevels+index*16);
     af2e:	d0 e0       	ldi	r29, 0x00	; 0
     af30:	ae 01       	movw	r20, r28
     af32:	84 e0       	ldi	r24, 0x04	; 4
@@ -14325,8 +14382,8 @@ void level_transition(u8 index)
     af36:	55 1f       	adc	r21, r21
     af38:	8a 95       	dec	r24
     af3a:	e1 f7       	brne	.-8      	; 0xaf34 <level_transition+0x1c>
-    af3c:	41 56       	subi	r20, 0x61	; 97
-    af3e:	5d 4f       	sbci	r21, 0xFD	; 253
+    af3c:	40 5e       	subi	r20, 0xE0	; 224
+    af3e:	5e 4f       	sbci	r21, 0xFE	; 254
     af40:	6c e0       	ldi	r22, 0x0C	; 12
     af42:	70 e0       	ldi	r23, 0x00	; 0
     af44:	88 e0       	ldi	r24, 0x08	; 8
@@ -14372,33 +14429,33 @@ void load_splash()
     af78:	10 92 08 0c 	sts	0x0C08, r1
 	clear_sprites();
     af7c:	0e 94 23 4c 	call	0x9846	; 0x9846 <clear_sprites>
-	Print(7, 13, &strMap[str1Player]);
-    af80:	45 e3       	ldi	r20, 0x35	; 53
-    af82:	51 e0       	ldi	r21, 0x01	; 1
+	Print(7, 13, (char*) str1Player);
+    af80:	4c e2       	ldi	r20, 0x2C	; 44
+    af82:	53 e0       	ldi	r21, 0x03	; 3
     af84:	6d e0       	ldi	r22, 0x0D	; 13
     af86:	70 e0       	ldi	r23, 0x00	; 0
     af88:	87 e0       	ldi	r24, 0x07	; 7
     af8a:	90 e0       	ldi	r25, 0x00	; 0
     af8c:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(7, 14, &strMap[str2Player]);
-    af90:	43 e4       	ldi	r20, 0x43	; 67
-    af92:	51 e0       	ldi	r21, 0x01	; 1
+	Print(7, 14, (char*) str2Player);
+    af90:	4b e1       	ldi	r20, 0x1B	; 27
+    af92:	53 e0       	ldi	r21, 0x03	; 3
     af94:	6e e0       	ldi	r22, 0x0E	; 14
     af96:	70 e0       	ldi	r23, 0x00	; 0
     af98:	87 e0       	ldi	r24, 0x07	; 7
     af9a:	90 e0       	ldi	r25, 0x00	; 0
     af9c:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(7, 15, &strMap[strHighscores]);
-    afa0:	44 e5       	ldi	r20, 0x54	; 84
-    afa2:	51 e0       	ldi	r21, 0x01	; 1
+	Print(7, 15, (char*) strHighscores);
+    afa0:	41 e1       	ldi	r20, 0x11	; 17
+    afa2:	53 e0       	ldi	r21, 0x03	; 3
     afa4:	6f e0       	ldi	r22, 0x0F	; 15
     afa6:	70 e0       	ldi	r23, 0x00	; 0
     afa8:	87 e0       	ldi	r24, 0x07	; 7
     afaa:	90 e0       	ldi	r25, 0x00	; 0
     afac:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(5, 26, &strMap[strCopyright]);
-    afb0:	40 e2       	ldi	r20, 0x20	; 32
-    afb2:	51 e0       	ldi	r21, 0x01	; 1
+	Print(5, 26, (char*) strCopyright);
+    afb0:	4a e3       	ldi	r20, 0x3A	; 58
+    afb2:	53 e0       	ldi	r21, 0x03	; 3
     afb4:	6a e1       	ldi	r22, 0x1A	; 26
     afb6:	70 e0       	ldi	r23, 0x00	; 0
     afb8:	85 e0       	ldi	r24, 0x05	; 5
@@ -14459,9 +14516,9 @@ void load_tank_rank()
     b010:	61 e0       	ldi	r22, 0x01	; 1
     b012:	84 e1       	ldi	r24, 0x14	; 20
     b014:	0e 94 ea 47 	call	0x8fd4	; 0x8fd4 <DrawMap2>
-	Print(10, 2, &strMap[strHighscores]);
-    b018:	44 e5       	ldi	r20, 0x54	; 84
-    b01a:	51 e0       	ldi	r21, 0x01	; 1
+	Print(10, 2, (char*) strHighscores);
+    b018:	41 e1       	ldi	r20, 0x11	; 17
+    b01a:	53 e0       	ldi	r21, 0x03	; 3
     b01c:	62 e0       	ldi	r22, 0x02	; 2
     b01e:	70 e0       	ldi	r23, 0x00	; 0
     b020:	8a e0       	ldi	r24, 0x0A	; 10
@@ -14481,7 +14538,7 @@ void load_tank_rank()
     b032:	31 e0       	ldi	r19, 0x01	; 1
 	DrawMap2(7, 1, map_green_tank);
 	DrawMap2(20, 1, map_blue_tank);
-	Print(10, 2, &strMap[strHighscores]);
+	Print(10, 2, (char*) strHighscores);
 	for (u8 i = 0; i < 20; i += 4)
 	{
 		PrintByte(2, y, rank, false);
@@ -14512,9 +14569,9 @@ void load_tank_rank()
     b064:	6e 2d       	mov	r22, r14
     b066:	85 e0       	ldi	r24, 0x05	; 5
     b068:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-		Print(9, y, &strMap[strOwns]);
-    b06c:	48 ec       	ldi	r20, 0xC8	; 200
-    b06e:	51 e0       	ldi	r21, 0x01	; 1
+		Print(9, y, (char*) strOwns);
+    b06c:	42 ea       	ldi	r20, 0xA2	; 162
+    b06e:	52 e0       	ldi	r21, 0x02	; 2
     b070:	b7 01       	movw	r22, r14
     b072:	89 e0       	ldi	r24, 0x09	; 9
     b074:	90 e0       	ldi	r25, 0x00	; 0
@@ -14533,9 +14590,9 @@ void load_tank_rank()
     b08e:	6e 2d       	mov	r22, r14
     b090:	8e e0       	ldi	r24, 0x0E	; 14
     b092:	0e 94 68 49 	call	0x92d0	; 0x92d0 <LBPrintStr>
-		Print(18, y, &strMap[strBy]);
-    b096:	4d ec       	ldi	r20, 0xCD	; 205
-    b098:	51 e0       	ldi	r21, 0x01	; 1
+		Print(18, y, (char*) strBy);
+    b096:	4f e9       	ldi	r20, 0x9F	; 159
+    b098:	52 e0       	ldi	r21, 0x02	; 2
     b09a:	b7 01       	movw	r22, r14
     b09c:	82 e1       	ldi	r24, 0x12	; 18
     b09e:	90 e0       	ldi	r25, 0x00	; 0
@@ -14576,7 +14633,7 @@ void load_tank_rank()
 	clear_sprites();
 	DrawMap2(7, 1, map_green_tank);
 	DrawMap2(20, 1, map_blue_tank);
-	Print(10, 2, &strMap[strHighscores]);
+	Print(10, 2, (char*) strHighscores);
 	for (u8 i = 0; i < 20; i += 4)
     b0e0:	36 30       	cpi	r19, 0x06	; 6
     b0e2:	09 f0       	breq	.+2      	; 0xb0e6 <load_tank_rank+0x102>
@@ -14586,17 +14643,17 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
-	Print(3, 22, &strMap[strReset]);
-    b0e6:	40 ea       	ldi	r20, 0xA0	; 160
-    b0e8:	51 e0       	ldi	r21, 0x01	; 1
+	Print(3, 22, (char*) strReset);
+    b0e6:	46 eb       	ldi	r20, 0xB6	; 182
+    b0e8:	52 e0       	ldi	r21, 0x02	; 2
     b0ea:	66 e1       	ldi	r22, 0x16	; 22
     b0ec:	70 e0       	ldi	r23, 0x00	; 0
     b0ee:	83 e0       	ldi	r24, 0x03	; 3
     b0f0:	90 e0       	ldi	r25, 0x00	; 0
     b0f2:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(10, 24, &strMap[strCancelHandle]);
-    b0f6:	45 e9       	ldi	r20, 0x95	; 149
-    b0f8:	51 e0       	ldi	r21, 0x01	; 1
+	Print(10, 24, (char*) strCancelHandle);
+    b0f6:	4f ec       	ldi	r20, 0xCF	; 207
+    b0f8:	52 e0       	ldi	r21, 0x02	; 2
     b0fa:	68 e1       	ldi	r22, 0x18	; 24
     b0fc:	70 e0       	ldi	r23, 0x00	; 0
     b0fe:	8a e0       	ldi	r24, 0x0A	; 10
@@ -14613,8 +14670,8 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
-	Print(3, 22, &strMap[strReset]);
-	Print(10, 24, &strMap[strCancelHandle]);
+	Print(3, 22, (char*) strReset);
+	Print(10, 24, (char*) strCancelHandle);
     b110:	0c 94 6a 48 	jmp	0x90d4	; 0x90d4 <Print>
 
 0000b114 <exit_game>:
@@ -15323,17 +15380,17 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     b584:	6c e0       	ldi	r22, 0x0C	; 12
     b586:	88 e0       	ldi	r24, 0x08	; 8
     b588:	0e 94 ea 47 	call	0x8fd4	; 0x8fd4 <DrawMap2>
-		Print(12, 13, &strMap[strPaused]);
-    b58c:	48 e9       	ldi	r20, 0x98	; 152
-    b58e:	52 e0       	ldi	r21, 0x02	; 2
+		Print(12, 13, (char*) strPaused);
+    b58c:	40 ed       	ldi	r20, 0xD0	; 208
+    b58e:	51 e0       	ldi	r21, 0x01	; 1
     b590:	6d e0       	ldi	r22, 0x0D	; 13
     b592:	70 e0       	ldi	r23, 0x00	; 0
     b594:	8c e0       	ldi	r24, 0x0C	; 12
     b596:	90 e0       	ldi	r25, 0x00	; 0
     b598:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-		Print(11, 14, &strMap[strExit]);
-    b59c:	4f e8       	ldi	r20, 0x8F	; 143
-    b59e:	52 e0       	ldi	r21, 0x02	; 2
+		Print(11, 14, (char*) strExit);
+    b59c:	47 ed       	ldi	r20, 0xD7	; 215
+    b59e:	51 e0       	ldi	r21, 0x01	; 1
     b5a0:	6e e0       	ldi	r22, 0x0E	; 14
     b5a2:	70 e0       	ldi	r23, 0x00	; 0
     b5a4:	8b e0       	ldi	r24, 0x0B	; 11
@@ -15530,8 +15587,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
     b6ea:	08 95       	ret
 
 0000b6ec <update_tank_rank>:
-	Print(3, 22, &strMap[strReset]);
-	Print(10, 24, &strMap[strCancelHandle]);
+	Print(3, 22, (char*) strReset);
+	Print(10, 24, (char*) strCancelHandle);
 }
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
@@ -16167,25 +16224,25 @@ void load_handle_select()
     ba8e:	64 e0       	ldi	r22, 0x04	; 4
     ba90:	84 e1       	ldi	r24, 0x14	; 20
     ba92:	0e 94 ea 47 	call	0x8fd4	; 0x8fd4 <DrawMap2>
-	Print(9, 1, &strMap[strHandlesTitle]);
-    ba96:	4e e5       	ldi	r20, 0x5E	; 94
-    ba98:	51 e0       	ldi	r21, 0x01	; 1
+	Print(9, 1, (char*) strHandlesTitle);
+    ba96:	45 e0       	ldi	r20, 0x05	; 5
+    ba98:	53 e0       	ldi	r21, 0x03	; 3
     ba9a:	61 e0       	ldi	r22, 0x01	; 1
     ba9c:	70 e0       	ldi	r23, 0x00	; 0
     ba9e:	89 e0       	ldi	r24, 0x09	; 9
     baa0:	90 e0       	ldi	r25, 0x00	; 0
     baa2:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(6, 5, &strMap[strPlayer1]);
-    baa6:	48 e7       	ldi	r20, 0x78	; 120
-    baa8:	51 e0       	ldi	r21, 0x01	; 1
+	Print(6, 5, (char*) strPlayer1);
+    baa6:	44 ef       	ldi	r20, 0xF4	; 244
+    baa8:	52 e0       	ldi	r21, 0x02	; 2
     baaa:	65 e0       	ldi	r22, 0x05	; 5
     baac:	70 e0       	ldi	r23, 0x00	; 0
     baae:	86 e0       	ldi	r24, 0x06	; 6
     bab0:	90 e0       	ldi	r25, 0x00	; 0
     bab2:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(23, 5, &strMap[strPlayer2]);
-    bab6:	4b e7       	ldi	r20, 0x7B	; 123
-    bab8:	51 e0       	ldi	r21, 0x01	; 1
+	Print(23, 5, (char*) strPlayer2);
+    bab6:	41 ef       	ldi	r20, 0xF1	; 241
+    bab8:	52 e0       	ldi	r21, 0x02	; 2
     baba:	65 e0       	ldi	r22, 0x05	; 5
     babc:	70 e0       	ldi	r23, 0x00	; 0
     babe:	87 e1       	ldi	r24, 0x17	; 23
@@ -16226,9 +16283,9 @@ void load_handle_select()
     bb02:	0e 94 85 48 	call	0x910a	; 0x910a <PrintChar>
 	DrawMap2(3, 4, map_green_tank);
 	DrawMap2(20, 4, map_blue_tank);
-	Print(9, 1, &strMap[strHandlesTitle]);
-	Print(6, 5, &strMap[strPlayer1]);
-	Print(23, 5, &strMap[strPlayer2]);
+	Print(9, 1, (char*) strHandlesTitle);
+	Print(6, 5, (char*) strPlayer1);
+	Print(23, 5, (char*) strPlayer2);
 	for (int i = 0; i < 27; i += 1)
     bb06:	21 96       	adiw	r28, 0x01	; 1
     bb08:	cb 31       	cpi	r28, 0x1B	; 27
@@ -16238,33 +16295,33 @@ void load_handle_select()
 		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, &strMap[strSelectHandle]);
-    bb0e:	4e e7       	ldi	r20, 0x7E	; 126
-    bb10:	51 e0       	ldi	r21, 0x01	; 1
+	Print(8, 21, (char*) strSelectHandle);
+    bb0e:	46 ee       	ldi	r20, 0xE6	; 230
+    bb10:	52 e0       	ldi	r21, 0x02	; 2
     bb12:	65 e1       	ldi	r22, 0x15	; 21
     bb14:	70 e0       	ldi	r23, 0x00	; 0
     bb16:	88 e0       	ldi	r24, 0x08	; 8
     bb18:	90 e0       	ldi	r25, 0x00	; 0
     bb1a:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(8, 22, &strMap[strConfirmHandle]);
-    bb1e:	49 e8       	ldi	r20, 0x89	; 137
-    bb20:	51 e0       	ldi	r21, 0x01	; 1
+	Print(8, 22, (char*) strConfirmHandle);
+    bb1e:	4a ed       	ldi	r20, 0xDA	; 218
+    bb20:	52 e0       	ldi	r21, 0x02	; 2
     bb22:	66 e1       	ldi	r22, 0x16	; 22
     bb24:	70 e0       	ldi	r23, 0x00	; 0
     bb26:	88 e0       	ldi	r24, 0x08	; 8
     bb28:	90 e0       	ldi	r25, 0x00	; 0
     bb2a:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(8, 23, &strMap[strCancelHandle]);
-    bb2e:	45 e9       	ldi	r20, 0x95	; 149
-    bb30:	51 e0       	ldi	r21, 0x01	; 1
+	Print(8, 23, (char*) strCancelHandle);
+    bb2e:	4f ec       	ldi	r20, 0xCF	; 207
+    bb30:	52 e0       	ldi	r21, 0x02	; 2
     bb32:	67 e1       	ldi	r22, 0x17	; 23
     bb34:	70 e0       	ldi	r23, 0x00	; 0
     bb36:	88 e0       	ldi	r24, 0x08	; 8
     bb38:	90 e0       	ldi	r25, 0x00	; 0
     bb3a:	0e 94 6a 48 	call	0x90d4	; 0x90d4 <Print>
-	Print(8, 24, &strMap[strChangeHandle]);
-    bb3e:	49 eb       	ldi	r20, 0xB9	; 185
-    bb40:	51 e0       	ldi	r21, 0x01	; 1
+	Print(8, 24, (char*) strChangeHandle);
+    bb3e:	47 ea       	ldi	r20, 0xA7	; 167
+    bb40:	52 e0       	ldi	r21, 0x02	; 2
     bb42:	68 e1       	ldi	r22, 0x18	; 24
     bb44:	70 e0       	ldi	r23, 0x00	; 0
     bb46:	88 e0       	ldi	r24, 0x08	; 8
@@ -16284,10 +16341,10 @@ void load_handle_select()
     bb60:	8f 90       	pop	r8
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, &strMap[strSelectHandle]);
-	Print(8, 22, &strMap[strConfirmHandle]);
-	Print(8, 23, &strMap[strCancelHandle]);
-	Print(8, 24, &strMap[strChangeHandle]);
+	Print(8, 21, (char*) strSelectHandle);
+	Print(8, 22, (char*) strConfirmHandle);
+	Print(8, 23, (char*) strCancelHandle);
+	Print(8, 24, (char*) strChangeHandle);
     bb62:	0c 94 6a 48 	jmp	0x90d4	; 0x90d4 <Print>
 
 0000bb66 <update_splash>:
@@ -16337,9 +16394,9 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     bb98:	0e 94 ba 47 	call	0x8f74	; 0x8f74 <MoveSprite>
 			break;
 	}
-	Print(9, 21, &strMap[strSelectHandle]);
-    bb9c:	4e e7       	ldi	r20, 0x7E	; 126
-    bb9e:	51 e0       	ldi	r21, 0x01	; 1
+	Print(9, 21, (char*) strSelectHandle);
+    bb9c:	46 ee       	ldi	r20, 0xE6	; 230
+    bb9e:	52 e0       	ldi	r21, 0x02	; 2
     bba0:	65 e1       	ldi	r22, 0x15	; 21
     bba2:	70 e0       	ldi	r23, 0x00	; 0
     bba4:	89 e0       	ldi	r24, 0x09	; 9
@@ -16543,8 +16600,8 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
     bcd2:	08 95       	ret
 
 0000bcd4 <update_handle_select>:
-	Print(8, 23, &strMap[strCancelHandle]);
-	Print(8, 24, &strMap[strChangeHandle]);
+	Print(8, 23, (char*) strCancelHandle);
+	Print(8, 24, (char*) strChangeHandle);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
