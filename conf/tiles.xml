@@ -4,6 +4,10 @@
     <output file="../src/data/tiles.h">
         <tiles var-name="tiles_data"/>
         <maps pointers-size="8">
+            <!-- Misc. tiles -->
+            <map var-name="map_tile_none" left="0" top="0" width="1" height="1"/>
+            <map var-name="map_pause" left="0" top="5" width="15" height="4"/>
+
             <!-- Title tiles -->
             <map var-name="map_splash" left="0" top="1" width="21" height="4"/>
             
