@@ -34,6 +34,9 @@
             <!-- Water --> 
             <map var-name="map_water" left="13" top="0" width="1" height="1"/>
 
+            <!-- Turf -->
+            <map var-name="map_turf" left="14" top="0" width="1" height="1"/>
+
             <!-- Green tank -->
             <map var-name="map_green_tank" left="21" top="1" width="2" height="2"/>
 
