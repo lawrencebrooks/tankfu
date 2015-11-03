@@ -54,8 +54,8 @@ const unsigned char strTotal [] PROGMEM="Total:";
 const unsigned char strExit [] PROGMEM="Bail - X";
 const unsigned char strPaused [] PROGMEM="Paused";
 const unsigned char strLevels [] PROGMEM="   Boot Camp   \0"
+" The Brickyard \0"
 "   Velocity    \0"
-"   Brickyard   \0"
 "     Maze      \0"
 "   Richochet   \0"
 " The Honey Pot \0"
