@@ -1146,6 +1146,7 @@ void load_level_tiles(u8 blank)
 				case L_SPEED: DrawMap2(x, y, map_speed_itm); break;
 				case L_EXPLODE: DrawMap2(x, y, map_explode_itm); break;
 				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
+				case L_TURF: DrawMap2(x, y, map_turf); break;
 				case L_WATER: DrawMap2(x, y, map_water); break;
 				default : SetTile(x, y, 0); break;
 			}
@@ -1340,7 +1341,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(10, 11));
+		level_transition(LBRandom(0, 10));
 		return;
 		
 	}

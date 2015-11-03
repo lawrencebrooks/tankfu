@@ -74,8 +74,8 @@
 #define TEXT_LINGER 2 // seconds
 #define MAX_LEVEL_SCORE 10
 #define TILE_ANIMATIONS_LENGTH 2
-#define DEMO_WAIT 100
-#define DEMO_LENGTH 3600
+#define DEMO_WAIT 600
+#define DEMO_LENGTH 1800
 
 // Flags
 #define EXPLODING_FLAG 1
