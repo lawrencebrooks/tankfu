@@ -62,8 +62,7 @@ const unsigned char strLevels [] PROGMEM="   Boot Camp   \0"
 "  Focal Point  \0"
 "It's Not Fair! \0"
 "  Much Better  \0"
-"   Face Off    \0"
-"     Test      ";
+"  The Harbour  ";
 
 // Default handles and scores
 const unsigned char default_handles[] PROGMEM = {

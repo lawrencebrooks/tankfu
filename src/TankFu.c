@@ -1341,7 +1341,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		SFX_NAVIGATE;
 		clear_sprites();
 		fade_through();
-		level_transition(LBRandom(0, 10));
+		level_transition(LBRandom(0, 9));
 		return;
 		
 	}
