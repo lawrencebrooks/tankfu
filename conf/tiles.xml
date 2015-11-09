@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <gfx-xform version="1">
-    <input file="../art/tiles.png" type="png" tile-width="8" tile-height="8" width="184" height="40" />
+    <input file="../art/tiles.png" type="png" tile-width="8" tile-height="8" width="224" height="248" />
     <output file="../src/data/tiles.h">
         <tiles var-name="tiles_data"/>
         <maps pointers-size="8">
@@ -37,11 +37,21 @@
             <!-- Turf -->
             <map var-name="map_turf" left="14" top="0" width="1" height="1"/>
 
+            <!-- Fence -->
+            <map var-name="map_fence" left="15" top="0" width="1" height="1"/>
+
             <!-- Green tank -->
             <map var-name="map_green_tank" left="21" top="1" width="2" height="2"/>
 
             <!-- Blue Tank -->
             <map var-name="map_blue_tank" left="21" top="3" width="2" height="2"/>
+
+            <!-- Submarine -->
+            <map var-name="map_scope_0" left="16" top="0" width="1" height="1"/>
+            <map var-name="map_scope_1" left="17" top="0" width="1" height="1"/>
+            <map var-name="map_scope_2" left="18" top="0" width="1" height="1"/>
+            <map var-name="map_sub" left="0" top="9" width="28" height="11"/>
+            <map var-name="map_sub_emerging" left="0" top="20" width="28" height="11"/>
         </maps>
     </output>
 </gfx-xform>

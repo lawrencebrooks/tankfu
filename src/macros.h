@@ -19,8 +19,8 @@
 #define LB_MACROS_H
 
 // EEPROM ID's
-#define EEPROM_HANDLES_ID 0x87
-#define EEPROM_TANK_RANK_ID 0x88
+#define EEPROM_HANDLES_ID 0x90
+#define EEPROM_TANK_RANK_ID 0x91
 
 // Screens
 #define SPLASH 0

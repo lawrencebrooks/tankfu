@@ -279,8 +279,8 @@ void save_eeprom(struct EepromBlockStruct* block)
 void save_score()
 {
 	u8 cur_delta = 0;
-	u8 tmp_score[4];
-	u8 save_score[4];
+	u8 tmp_score[5];
+	u8 save_score[5];
 	u8 save_delta = 0;
 	u8 saved = 0;
 	Player* p_win = &player1;
@@ -295,24 +295,25 @@ void save_score()
 	save_score[1] = p_lose->handle_id;
 	save_score[2] = p_win->score;
 	save_score[3] = p_lose->score;
+	save_score[4] = 0;
 	save_delta = p_win->score - p_lose->score;
 
 	for (u8 i = 0; i < 28; i += 4)
 	{
 		if (saved)
 		{
-			LBCopyChars(tmp_score, &scores.data[i], 4);
-			LBCopyChars(&scores.data[i], save_score, 4);
-			LBCopyChars(save_score, tmp_score, 4);
+			LBCopyChars(tmp_score, &scores.data[i], 5);
+			LBCopyChars(&scores.data[i], save_score, 5);
+			LBCopyChars(save_score, tmp_score, 5);
 		}
 		else
 		{
 			cur_delta = scores.data[i+2] - scores.data[i+3];
 			if (save_delta > cur_delta)
 			{
-				LBCopyChars(tmp_score, &scores.data[i], 4);
-				LBCopyChars(&scores.data[i], save_score, 4);
-				LBCopyChars(save_score, tmp_score, 4);
+				LBCopyChars(tmp_score, &scores.data[i], 5);
+				LBCopyChars(&scores.data[i], save_score, 5);
+				LBCopyChars(save_score, tmp_score, 5);
 				saved = 1;
 			}
 		}
@@ -1358,7 +1359,7 @@ void load_tank_rank()
 	DrawMap2(7, 1, map_green_tank);
 	DrawMap2(20, 1, map_blue_tank);
 	Print(10, 2, (char*) strHighscores);
-	for (u8 i = 0; i < 20; i += 4)
+	for (u8 i = 0; i < 25; i += 5)
 	{
 		PrintByte(2, y, rank, false);
 		PrintChar(3, y, '.');
