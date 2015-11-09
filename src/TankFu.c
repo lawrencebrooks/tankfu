@@ -1325,6 +1325,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
+		demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
 		SFX_NAVIGATE;
@@ -1335,6 +1336,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if ((p1->pressed & BTN_A) && (game.selection == TR))
 	{
+		demo_counter = 0;
 		SFX_NAVIGATE;
 		fade_through();
 		load_eeprom(&scores);
