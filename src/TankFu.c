@@ -1291,6 +1291,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
  */
 {
 	static u16 demo_counter = 0;
+	static u8 demo_choice = 0;
 	
 	// Render
 	switch (game.selection)
@@ -1343,15 +1344,26 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	else if (demo_counter >= DEMO_WAIT)
 	{
 		demo_counter = 0;
-		game.selection = CPUVCPU;
-		player1.handle_id = 9;
-		LBCopyChars(player1.handle, &handles.data[9*3], 3);
-		player2.handle_id = 9;
-		LBCopyChars(player2.handle, &handles.data[9*3], 3);
-		SFX_NAVIGATE;
-		clear_sprites();
-		fade_through();
-		level_transition(LBRandom(0, 9));
+		if (demo_choice % 2 == 0)
+		{
+			game.selection = CPUVCPU;
+			player1.handle_id = 9;
+			LBCopyChars(player1.handle, &handles.data[9*3], 3);
+			player2.handle_id = 9;
+			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+			SFX_NAVIGATE;
+			clear_sprites();
+			fade_through();
+			level_transition(LBRandom(0, 9));
+		}
+		else
+		{
+			SFX_NAVIGATE;
+			fade_through();
+			load_eeprom(&scores);
+			load_tank_rank();
+		}
+		demo_choice++;
 		return;
 		
 	}
@@ -1388,6 +1400,8 @@ void load_tank_rank()
 
 void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 {
+	static u16 tank_rank_counter = 0;
+	
 	// Update
 	if (p1->pressed & BTN_X)
 	{
@@ -1403,6 +1417,15 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	    save_eeprom(&scores);
 	    save_eeprom(&handles);
 	    load_tank_rank();
+	}
+	
+	tank_rank_counter++;
+	if (tank_rank_counter > TANK_RANK_LENGTH)
+	{
+		tank_rank_counter = 0;
+		SFX_NAVIGATE;
+		fade_through();
+		load_splash();
 	}
 }
 

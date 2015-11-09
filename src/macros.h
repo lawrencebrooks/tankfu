@@ -76,6 +76,7 @@
 #define TILE_ANIMATIONS_LENGTH 2
 #define DEMO_WAIT 600
 #define DEMO_LENGTH 1800
+#define TANK_RANK_LENGTH 900
 
 // Flags
 #define EXPLODING_FLAG 1
