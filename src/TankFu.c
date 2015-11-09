@@ -729,6 +729,7 @@ u8 solid_square_tile(int tile_index)
 	
 	if (tile == L_BRICK) return tile;
 	if (tile == L_METAL) return tile;
+	if (tile == L_FENCE) return tile;
 
 	return 0;
 }
@@ -739,6 +740,7 @@ u8 solid_tile(int tile_index)
 	
 	if (tile == L_BRICK) return tile;
 	if (tile == L_METAL) return tile;
+	if (tile == L_FENCE) return tile;
 	if (tile == L_TL) return tile;
 	if (tile == L_BR) return tile;
 	if (tile == L_TR) return tile;
@@ -1082,6 +1084,11 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
 		}
+		else if (level.level_map[tiles[i]] == L_SCOPE && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
+		{
+			player->max_speed = WATER_SPEED;
+			hit_water = 1;
+		}
 		else if (level.level_map[tiles[i]] == L_SPEED && !(player->flags & EXPLODING_FLAG))
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
@@ -1149,6 +1156,8 @@ void load_level_tiles(u8 blank)
 				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
 				case L_TURF: DrawMap2(x, y, map_turf); break;
 				case L_WATER: DrawMap2(x, y, map_water); break;
+				case L_SCOPE: DrawMap2(x, y, map_water); break;
+				case L_FENCE: DrawMap2(x, y, map_fence); break;
 				default : SetTile(x, y, 0); break;
 			}
 		}

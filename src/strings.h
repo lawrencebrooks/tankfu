@@ -21,48 +21,48 @@
 
 
 // String indexes
-const unsigned char strCopyright [] PROGMEM="2015 Lawrence Brooks";
-const unsigned char str1Player [] PROGMEM="Player vs CPU";
-const unsigned char str2Player [] PROGMEM="Player vs Player";
-const unsigned char strHighscores [] PROGMEM="Tank Rank";
-const unsigned char strHandlesTitle [] PROGMEM="Edit Handle";
+const unsigned char strCopyright [] PROGMEM="2015 LAWRENCE BROOKS";
+const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
+const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
+const unsigned char strHighscores [] PROGMEM="TANK RANK";
+const unsigned char strHandlesTitle [] PROGMEM="EDIT HANDLE";
 const unsigned char strUnderline [] PROGMEM="___________";
-const unsigned char strVertSep [] PROGMEM="|";
+const unsigned char strVertSep [] PROGMEM=";";
 const unsigned char strPlayer1 [] PROGMEM="P1";
 const unsigned char strPlayer2 [] PROGMEM="P2";
-const unsigned char strSelectHandle [] PROGMEM="Select - A";
-const unsigned char strConfirmHandle [] PROGMEM="Confirm - A";
-const unsigned char strCancelHandle [] PROGMEM="Cancel - X";
-const unsigned char strReset [] PROGMEM="Reset Defaults - SL (5s)";
-const unsigned char strChangeHandle [] PROGMEM="Edit - UP/DOWN";
-const unsigned char strOwns [] PROGMEM="Owns";
-const unsigned char strBy [] PROGMEM="By";
-const unsigned char strFinalScore [] PROGMEM="Final Score";
-const unsigned char banter_map [] PROGMEM="Such Fail     \0"
+const unsigned char strSelectHandle [] PROGMEM="SELECT - A";
+const unsigned char strConfirmHandle [] PROGMEM="CONFIRM - A";
+const unsigned char strCancelHandle [] PROGMEM="CANCEL - X";
+const unsigned char strReset [] PROGMEM="RESET DEFAULTS - SL (5S)";
+const unsigned char strChangeHandle [] PROGMEM="EDIT - UP/DOWN";
+const unsigned char strOwns [] PROGMEM="OWNS";
+const unsigned char strBy [] PROGMEM="BY";
+const unsigned char strFinalScore [] PROGMEM="FINAL SCORE";
+const unsigned char banter_map [] PROGMEM="SUCH FAIL     \0"
 "LOL           \0"
-"Broken button?\0"
-"Try at least  \0"
-"Too easy      \0"
-"*YAWN*        \0"
-"Noob          \0"
-"That's it?    \0"
-"Need help?    \0"
-"Pfft          ";
+"BROKEN BUTTON?\0"
+"TRY AT LEAST  \0"
+"TOO EASY      \0"
+"YAWN          \0"
+"NOOB          \0"
+"THAT'S IT?    \0"
+"NEED HELP?    \0"
+"PFFT          ";
 const unsigned char strBanterClear [] PROGMEM="              ";
-const unsigned char strScore [] PROGMEM="Score:";
-const unsigned char strTotal [] PROGMEM="Total:";
-const unsigned char strExit [] PROGMEM="Bail - X";
-const unsigned char strPaused [] PROGMEM="Paused";
-const unsigned char strLevels [] PROGMEM="   Boot Camp   \0"
-" The Brickyard \0"
-"   Velocity    \0"
-"     Maze      \0"
-"   Richochet   \0"
-" The Honey Pot \0"
-"  Focal Point  \0"
-"It's Not Fair! \0"
-"  Much Better  \0"
-"  The Harbour  ";
+const unsigned char strScore [] PROGMEM="SCORE:";
+const unsigned char strTotal [] PROGMEM="TOTAL:";
+const unsigned char strExit [] PROGMEM="BAIL - X";
+const unsigned char strPaused [] PROGMEM="PAUSED";
+const unsigned char strLevels [] PROGMEM="   BOOT CAMP   \0"
+" THE BRICKYARD \0"
+"   VELOCITY    \0"
+"     MAZE      \0"
+"   RICHOCHET   \0"
+" THE HONEY POT \0"
+"  FOCAL POINT  \0"
+"IT'S NOT FAIR! \0"
+"  MUCH BETTER  \0"
+"  THE HARBOUR  ";
 
 // Default handles and scores
 const unsigned char default_handles[] PROGMEM = {
