@@ -58,6 +58,7 @@ JoyPadState p1;
 JoyPadState p2;
 Level level;
 TileAnimations tile_animations;
+TileAnimation scope_animation;
 u16 global_frame_counter = 1;
 
 struct EepromBlockStruct handles;
@@ -97,10 +98,26 @@ void init_tile_animations(TileAnimations* ta)
 		ta->anims[i].anim.anim_count = 3;
 		ta->anims[i].anim.frames_per_anim = FRAMES_PER_ANIM;
 		ta->anims[i].anim.frame_count = 0;
+		ta->anims[i].anim.looped = 0;
+		ta->anims[i].anim.reversing = 0;
 		ta->anims[i].anim.anims[0] = (char*)map_tile_exp_0;
 		ta->anims[i].anim.anims[1] = (char*)map_tile_exp_1;
 		ta->anims[i].anim.anims[2] = (char*)map_tile_exp_2;
 	}
+}
+
+void init_scope_animation(TileAnimation* ta)
+{
+	ta->tile_index = 0;
+	ta->anim.current_anim = 0;
+	ta->anim.anim_count = 3;
+	ta->anim.frames_per_anim = FRAMES_PER_SCOPE;
+	ta->anim.frame_count = 0;
+	ta->anim.looped = 0;
+	ta->anim.reversing = 0;
+	ta->anim.anims[0] = (char*)map_scope_0;
+	ta->anim.anims[1] = (char*)map_scope_1;
+	ta->anim.anims[2] = (char*)map_scope_2;
 }
 
 void init_shot_state(Shot* s, u8 shot_type)
@@ -123,12 +140,16 @@ void set_shot_animations(Shot* s, u8 shot_type)
 	s->up_anim.anim_count = 2;
 	s->up_anim.frames_per_anim = FRAMES_PER_ANIM;
 	s->up_anim.frame_count = 0;
+	s->up_anim.looped = 0;
+	s->up_anim.reversing = 0;
 	s->up_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_0;
 	s->up_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_1;
 	s->up_anim.current_anim = 0;
 	s->right_anim.anim_count = 2;
 	s->right_anim.frames_per_anim = FRAMES_PER_ANIM;
 	s->right_anim.frame_count = 0;
+	s->right_anim.looped = 0;
+	s->right_anim.reversing = 0;
 	s->right_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_0;
 	s->right_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_1;
 }
@@ -153,6 +174,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->up_anim.anim_count = 1;
 	p->up_anim.frames_per_anim = FRAMES_PER_ANIM;
 	p->up_anim.frame_count = 0;
+	p->up_anim.looped = 0;
+	p->up_anim.reversing = 0;
 	p->up_anim.anims[0] = (char*)map_tank_up_0;
 
 	/* Tracks animation (Down) */
@@ -160,6 +183,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->right_anim.anim_count = 1;
 	p->right_anim.frames_per_anim = FRAMES_PER_ANIM;
 	p->right_anim.frame_count = 0;
+	p->right_anim.looped = 0;
+	p->right_anim.reversing = 0;
 	p->right_anim.anims[0] = (char*)map_tank_right_0;
 
 	/* Explosion Animation */
@@ -167,6 +192,8 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 	p->exp_anim.anim_count = 3;
 	p->exp_anim.frames_per_anim = FRAMES_PER_ANIM;
 	p->exp_anim.frame_count = 0;
+	p->exp_anim.looped = 0;
+	p->exp_anim.reversing = 0;
 	p->exp_anim.anims[0] = (char*)map_explosion_0;
 	p->exp_anim.anims[1] = (char*)map_explosion_1;
 	p->exp_anim.anims[2] = (char*)map_explosion_2;
@@ -298,7 +325,7 @@ void save_score()
 	save_score[4] = 0;
 	save_delta = p_win->score - p_lose->score;
 
-	for (u8 i = 0; i < 28; i += 4)
+	for (u8 i = 0; i < 28; i += 5)
 	{
 		if (saved)
 		{
@@ -570,15 +597,14 @@ void render_shot(Player* player, u8 sprite_index)
 
 void render_tile_explosions(TileAnimations* ta)
 {	
-	char looped;
 	char* map;
 	
 	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
 	{
 		if (ta->anims[i].tile_index != 0)
 		{
-			map = LBGetNextFrame(&ta->anims[i].anim, &looped);
-			if (looped)
+			map = LBGetNextFrame(&ta->anims[i].anim);
+			if (ta->anims[i].anim.looped)
 			{
 				SetTile(ta->anims[i].tile_index % 30, 3 + ta->anims[i].tile_index / 30, 0);
 				ta->anims[i].tile_index = 0;
@@ -600,13 +626,12 @@ char tank_map(Player* player, char sprite_index)
 	u8 t_flags = 0;
 	static u8 toggle_counter = FRAMES_PER_BLANK;
 	static u8 toggle_blank = 0;
-	char looped;
 
 	if (player->flags & EXPLODING_FLAG)
 	{
-		t_map = LBGetNextFrame(&player->exp_anim, &looped);
+		t_map = LBGetNextFrame(&player->exp_anim);
 		t_flags = 0;
-		if (looped)
+		if (player->exp_anim.looped)
 		{
 			player->flags = player->flags ^ EXPLODING_FLAG;
 			t_map = (char*) map_tank_blank;
@@ -621,11 +646,11 @@ char tank_map(Player* player, char sprite_index)
 		}
 		switch (player->shared.direction)
 		{
-			case D_UP: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
-			case D_RIGHT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = 0; break;
-			case D_DOWN: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = SPRITE_FLIP_Y; break;
-			case D_LEFT: t_map = LBGetNextFrame(&player->right_anim, &looped); t_flags = SPRITE_FLIP_X; break;
-			default: t_map = LBGetNextFrame(&player->up_anim, &looped); t_flags = 0; break;
+			case D_UP: t_map = LBGetNextFrame(&player->up_anim); t_flags = 0; break;
+			case D_RIGHT: t_map = LBGetNextFrame(&player->right_anim); t_flags = 0; break;
+			case D_DOWN: t_map = LBGetNextFrame(&player->up_anim); t_flags = SPRITE_FLIP_Y; break;
+			case D_LEFT: t_map = LBGetNextFrame(&player->right_anim); t_flags = SPRITE_FLIP_X; break;
+			default: t_map = LBGetNextFrame(&player->up_anim); t_flags = 0; break;
 		}
 		if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
 		{
@@ -645,7 +670,6 @@ char tank_map(Player* player, char sprite_index)
 
 char shot_map(Player* player, char sprite_index)
 {
-	char looped = 0;
 	char* s_map = 0;
 	u8 s_flags = 0;
 	Shot* shot;
@@ -657,11 +681,11 @@ char shot_map(Player* player, char sprite_index)
 		{
 			switch (shot->shared.direction)
 			{
-				case D_UP: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
-				case D_RIGHT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = 0; break;
-				case D_DOWN: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = SPRITE_FLIP_Y; break;
-				case D_LEFT: s_map = LBGetNextFrame(&player->shot[i].right_anim, &looped); s_flags = SPRITE_FLIP_X; break;
-				default: s_map = LBGetNextFrame(&player->shot[i].up_anim, &looped); s_flags = 0; break;
+				case D_UP: s_map = LBGetNextFrame(&player->shot[i].up_anim); s_flags = 0; break;
+				case D_RIGHT: s_map = LBGetNextFrame(&player->shot[i].right_anim); s_flags = 0; break;
+				case D_DOWN: s_map = LBGetNextFrame(&player->shot[i].up_anim); s_flags = SPRITE_FLIP_Y; break;
+				case D_LEFT: s_map = LBGetNextFrame(&player->shot[i].right_anim); s_flags = SPRITE_FLIP_X; break;
+				default: s_map = LBGetNextFrame(&player->shot[i].up_anim); s_flags = 0; break;
 			}
 		}
 		else
@@ -1407,12 +1431,14 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	// Update
 	if (p1->pressed & BTN_X)
 	{
+		tank_rank_counter = 0;
 		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
 	}
 	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
 	{
+		tank_rank_counter = 0;
 	    SFX_NAVIGATE;
 	    init_scores(&scores);
 	    init_handles(&handles);
@@ -1421,7 +1447,6 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 	    load_tank_rank();
 	}
 	
-	tank_rank_counter++;
 	if (tank_rank_counter > TANK_RANK_LENGTH)
 	{
 		tank_rank_counter = 0;
@@ -1429,6 +1454,7 @@ void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
 		fade_through();
 		load_splash();
 	}
+	tank_rank_counter++;
 }
 
 
@@ -1770,6 +1796,7 @@ int main()
 	init_handles(&handles);
 	init_game_state();
 	init_tile_animations(&tile_animations);
+	init_scope_animation(&scope_animation);
 	load_splash();
 	
 	while (1)

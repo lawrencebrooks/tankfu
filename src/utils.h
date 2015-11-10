@@ -29,6 +29,8 @@ typedef struct sAnimation {
 	u8 anim_count;			// Total animation count
 	u8 frames_per_anim;		// Animation lifetime in amount of render frames
 	u8 frame_count;			// Render frame counter
+	u8 looped;
+	u8 reversing;
 	char* anims[3];
 } Animation;
 
@@ -37,9 +39,9 @@ typedef struct sTileAnimation {
 	int tile_index;
 } TileAnimation;
 
-char* LBGetNextFrame(Animation* anim, char* looped)
+char* LBGetNextFrame(Animation* anim)
 {
-	*looped = 0;
+	anim->looped = 0;
 	anim->frame_count += 1;
 	if (anim->frame_count < anim->frames_per_anim)
 	{
@@ -47,7 +49,37 @@ char* LBGetNextFrame(Animation* anim, char* looped)
 	}
 	anim->frame_count = 0;
 	anim->current_anim = (anim->current_anim + 1) % anim->anim_count;
-	if (anim->current_anim == 0) *looped = 1;
+	if (anim->current_anim == 0) anim->looped = 1;
+	return anim->anims[anim->current_anim];
+}
+
+char* LBGetNextFrameReverse(Animation* anim)
+{
+	anim->looped = 0;
+	anim->frame_count += 1;
+	if (anim->frame_count < anim->frames_per_anim)
+	{
+		return anim->anims[anim->current_anim];
+	}
+	anim->frame_count = 0;
+	if (anim->reversing)
+	{
+		anim->current_anim = anim->current_anim - 1;
+		if (anim->current_anim < 0)
+		{
+			anim->looped = 1;
+			anim->reversing = 0;
+		}
+	}
+	else
+	{
+		anim->current_anim = (anim->current_anim + 1) % anim->anim_count;
+		if (anim->current_anim == 0) 
+		{
+			anim->reversing = 1;
+			anim->current_anim = anim->anim_count - 1;
+		}
+	}
 	return anim->anims[anim->current_anim];
 }
 

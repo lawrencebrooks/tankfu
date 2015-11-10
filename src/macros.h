@@ -40,6 +40,7 @@
 #define FRAMES_PER_GRACE 120
 #define FRAMES_PER_BLANK 20
 #define FRAMES_PER_ANIM 5
+#define FRAMES_PER_SCOPE 30
 
 // Handle select states
 #define SELECTING 0
