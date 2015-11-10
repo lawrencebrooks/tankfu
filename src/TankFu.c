@@ -1213,6 +1213,7 @@ void load_level(int level_number)
 	scope_animation.anim.reversing = 0;
 	scope_animation.anim.current_anim = 0;
 	scope_animation.anim.looped = 0;
+	scope_animation.tile_index = 0;
 	game.current_screen = LEVEL;
 	clear_sprites();
 	game.current_level = level_number;
@@ -1286,7 +1287,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		render_shot(&player1, p1_shot_index);
 		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
-		if (game.scope_counter > SCOPE_REVEAL)
+		if (game.scope_counter > SCOPE_REVEAL && scope_animation.tile_index > 0)
 		{
 			if (render_scope(&scope_animation)) game.scope_counter = 0;
 		}
