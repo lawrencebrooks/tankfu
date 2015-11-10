@@ -25,6 +25,7 @@ typedef struct sGameState {
 	u8 current_screen;
 	u8 current_level;
 	u8 paused;
+	u16 scope_counter;
 	char selection;
 } Game;
 

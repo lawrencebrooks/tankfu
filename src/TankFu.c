@@ -231,6 +231,7 @@ void init_game_state()
 	game.current_level = 0;
 	game.selection = PVCPU;
 	game.paused = 0;
+	game.scope_counter = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 }
@@ -618,6 +619,22 @@ void render_tile_explosions(TileAnimations* ta)
 			}
 		}
 	}
+}
+
+u8 render_scope(TileAnimation* ta)
+{
+	char *map;
+	
+	map = LBGetNextFrameReverse(&ta->anim);
+	if (ta->anim.looped)
+	{
+		DrawMap2(ta->tile_index % 30, 3 + ta->tile_index / 30, map_water);
+	}
+	else
+	{
+		DrawMap2(ta->tile_index % 30, 3 + ta->tile_index / 30, (const char*) map);
+	}
+	return ta->anim.looped;
 }
 
 char tank_map(Player* player, char sprite_index)
@@ -1180,7 +1197,7 @@ void load_level_tiles(u8 blank)
 				case L_ROCKET: DrawMap2(x, y, map_rocket_itm); break;
 				case L_TURF: DrawMap2(x, y, map_turf); break;
 				case L_WATER: DrawMap2(x, y, map_water); break;
-				case L_SCOPE: DrawMap2(x, y, map_water); break;
+				case L_SCOPE: DrawMap2(x, y, map_water); scope_animation.tile_index = i; break;
 				case L_FENCE: DrawMap2(x, y, map_fence); break;
 				default : SetTile(x, y, 0); break;
 			}
@@ -1192,6 +1209,10 @@ void load_level(int level_number)
 {
     int level_start = level_number*30*25;
 
+	game.scope_counter = 0;
+	scope_animation.anim.reversing = 0;
+	scope_animation.anim.current_anim = 0;
+	scope_animation.anim.looped = 0;
 	game.current_screen = LEVEL;
 	clear_sprites();
 	game.current_level = level_number;
@@ -1265,6 +1286,11 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		render_shot(&player1, p1_shot_index);
 		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
+		if (game.scope_counter > SCOPE_REVEAL)
+		{
+			if (render_scope(&scope_animation)) game.scope_counter = 0;
+		}
+		game.scope_counter++;
 	}
 
 	// Update

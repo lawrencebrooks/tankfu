@@ -65,8 +65,9 @@ char* LBGetNextFrameReverse(Animation* anim)
 	if (anim->reversing)
 	{
 		anim->current_anim = anim->current_anim - 1;
-		if (anim->current_anim < 0)
+		if (anim->current_anim == 0xff)
 		{
+			anim->current_anim = 0;
 			anim->looped = 1;
 			anim->reversing = 0;
 		}
