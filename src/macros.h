@@ -41,6 +41,7 @@
 #define FRAMES_PER_BLANK 20
 #define FRAMES_PER_ANIM 5
 #define FRAMES_PER_SCOPE 30
+#define FRAMES_PER_SUB 30
 
 // Handle select states
 #define SELECTING 0
@@ -79,6 +80,17 @@
 #define DEMO_LENGTH 1800
 #define TANK_RANK_LENGTH 900
 #define SCOPE_REVEAL 1000
+
+// Boss macros
+#define BOSS_LEVEL 10
+#define BOSS_FIGHT_LOADING 1
+#define BOSS_FIGHT 2
+#define BOSS_WON 4
+#define BOSS_LOST 8
+#define BOSS_SINKING 16
+#define BOSS_TURRET_LIVES 4
+#define BOSS_TURRET_SPEED 90
+#define BOSS_TURRET_SHOT_SPEED 200
 
 // Flags
 #define EXPLODING_FLAG 1

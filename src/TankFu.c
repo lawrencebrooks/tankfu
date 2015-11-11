@@ -59,6 +59,7 @@ JoyPadState p2;
 Level level;
 TileAnimations tile_animations;
 TileAnimation scope_animation;
+TileAnimation sub_animation;
 u16 global_frame_counter = 1;
 
 struct EepromBlockStruct handles;
@@ -118,6 +119,19 @@ void init_scope_animation(TileAnimation* ta)
 	ta->anim.anims[0] = (char*)map_scope_0;
 	ta->anim.anims[1] = (char*)map_scope_1;
 	ta->anim.anims[2] = (char*)map_scope_2;
+}
+
+void init_sub_animation(TileAnimation* ta)
+{
+	ta->tile_index = 0;
+	ta->anim.current_anim = 0;
+	ta->anim.anim_count = 2;
+	ta->anim.frames_per_anim = FRAMES_PER_SUB;
+	ta->anim.frame_count = 0;
+	ta->anim.looped = 0;
+	ta->anim.reversing = 0;
+	ta->anim.anims[0] = (char*)map_sub_emerging;
+	ta->anim.anims[1] = (char*)map_sub;
 }
 
 void init_shot_state(Shot* s, u8 shot_type)
@@ -232,6 +246,11 @@ void init_game_state()
 	game.selection = PVCPU;
 	game.paused = 0;
 	game.scope_counter = 0;
+	game.boss_fight_status = 0;
+	game.boss_turret_1_lives = BOSS_TURRET_LIVES;
+	game.boss_turret_2_lives = BOSS_TURRET_LIVES;
+	game.boss_fight_player = 0;
+	game.boss_fight_joypad = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 }
@@ -405,7 +424,7 @@ void print_final_score(Player* winner, Player* loser)
 }
 
 
-void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u8 hud_x)
+void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player* other_player, u8 hud_x)
 {
 	Shot* shot;
 	u8 next_level;
@@ -512,12 +531,30 @@ void update_level_helper(JoyPadState* p, Player* player, Player* other_player, u
 	}
 	
 	// Level transition
-	if ((player->level_score >= MAX_LEVEL_SCORE) && !(other_player->flags & EXPLODING_FLAG))
+	if ((player->level_score >= MAX_LEVEL_SCORE)         &&
+	     !(other_player->flags & EXPLODING_FLAG)         &&
+		 !(game.boss_fight_status == BOSS_FIGHT)         &&
+		 !(game.boss_fight_status == BOSS_FIGHT_LOADING) &&
+		 !(game.boss_fight_status == BOSS_SINKING))
 	{
 	    next_level = game.current_level + 1;
 
 	    // Tie breaker
 	    if ((next_level >= LEVEL_COUNT) && (other_player->score == player->score)) return;
+		
+		// Load boss fight
+		if (next_level >= LEVEL_COUNT && game.boss_fight_status == 0)
+		{
+			game.boss_fight_status = BOSS_FIGHT_LOADING;
+			game.boss_fight_player = player;
+			game.boss_fight_joypad = p;
+			if (other_player->score > player->score)
+			{
+				game.boss_fight_player = other_player;
+				game.boss_fight_joypad = op;
+			}
+			return;
+		}
 
 		load_level_tiles(true);
 		SetSpriteVisibility(false);
@@ -1210,10 +1247,9 @@ void load_level(int level_number)
     int level_start = level_number*30*25;
 
 	game.scope_counter = 0;
-	scope_animation.anim.reversing = 0;
-	scope_animation.anim.current_anim = 0;
-	scope_animation.anim.looped = 0;
-	scope_animation.tile_index = 0;
+	init_tile_animations(&tile_animations);
+	init_scope_animation(&scope_animation);
+	init_sub_animation(&sub_animation);
 	game.current_screen = LEVEL;
 	clear_sprites();
 	game.current_level = level_number;
@@ -1265,13 +1301,54 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	static u8 clear_banter_2 = 1;
 	static u16 demo_counter = 0;
 
-	// Render
 	if (game.paused)
 	{
+		// Render
 		SetSpriteVisibility(false);
 		DrawMap2(8, 12, (const char*) map_pause);
 		Print(12, 13, (char*) strPaused);
 		Print(11, 14, (char*) strExit);
+		
+		// Update
+		update_level_helper(p1, &player1, p2, &player2, 15);
+		update_level_helper(p2, &player2, p1, &player1, 0);
+		collision_detect_player(&player1, &player2, 0, 15);
+		collision_detect_player(&player2, &player1, 15, 0);
+	}
+	else if (game.boss_fight_status == BOSS_FIGHT_LOADING)
+	{
+		// Render
+		SetSpriteVisibility(true);
+		p2_index = tank_map(&player1, p1_index);
+		p1_shot_index = tank_map(&player2, p2_index);
+		p2_shot_index = shot_map(&player1, p1_shot_index);
+		shot_map(&player2, p2_shot_index);
+		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
+		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
+		render_player(&player1, p1_index);
+		render_player(&player2, p2_index);
+		render_shot(&player1, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
+		render_tile_explosions(&tile_animations);
+		
+		// Update
+		update_boss_fight_load();
+	}
+	else if (game.boss_fight_status == BOSS_FIGHT)
+	{
+		// Render
+		SetSpriteVisibility(true);
+		
+		// Update
+		update_boss_fight();
+	}
+	else if (game.boss_fight_status == BOSS_SINKING)
+	{
+		// Render
+		SetSpriteVisibility(true);
+		
+		// Update
+		update_boss_fight();
 	}
 	else
 	{
@@ -1292,13 +1369,13 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 			if (render_scope(&scope_animation)) game.scope_counter = 0;
 		}
 		game.scope_counter++;
+		
+		// Update
+		update_level_helper(p1, &player1, p2, &player2, 15);
+		update_level_helper(p2, &player2, p1, &player1, 0);
+		collision_detect_player(&player1, &player2, 0, 15);
+		collision_detect_player(&player2, &player1, 15, 0);
 	}
-
-	// Update
-	update_level_helper(p1, &player1, &player2, 15);
-	update_level_helper(p2, &player2, &player1, 0);
-	collision_detect_player(&player1, &player2, 0, 15);
-	collision_detect_player(&player2, &player1, 15, 0);
 	
 	if (game.selection == CPUVCPU) 
 	{
@@ -1822,8 +1899,6 @@ int main()
 	init_scores(&scores);
 	init_handles(&handles);
 	init_game_state();
-	init_tile_animations(&tile_animations);
-	init_scope_animation(&scope_animation);
 	load_splash();
 	
 	while (1)
