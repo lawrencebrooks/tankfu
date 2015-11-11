@@ -21,19 +21,6 @@
 #include "utils.h"
 #include "macros.h"
 
-typedef struct sGameState {
-	u8 current_screen;
-	u8 current_level;
-	u8 paused;
-	u8 boss_fight_status;
-	u8 boss_turret_1_lives;
-	u8 boss_turret_2_lives;
-	Player* boss_fight_player;
-	JoyPadState* boss_fight_joypad;
-	u16 scope_counter;
-	char selection;
-} Game;
-
 typedef struct sLevelState {
 	u8 level_state;
 	u8 level_map[30*25];
@@ -88,6 +75,19 @@ typedef struct sPlayer {
 	Animation right_anim;
 	Animation exp_anim;
 } Player;
+
+typedef struct sGameState {
+	u8 current_screen;
+	u8 current_level;
+	u8 paused;
+	u8 boss_fight_status;
+	u8 boss_turret_1_lives;
+	u8 boss_turret_2_lives;
+	Player* boss_fight_player;
+	JoyPadState* boss_fight_joypad;
+	u16 scope_counter;
+	char selection;
+} Game;
 
 typedef struct sHandleSelectState {
 	char handle_id;

@@ -423,13 +423,10 @@ void print_final_score(Player* winner, Player* loser)
     PrintByte(26, 14, loser->score ,true);
 }
 
-
-void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player* other_player, u8 hud_x)
+void update_player(JoyPadState* p, Player* player)
 {
 	Shot* shot;
-	u8 next_level;
-	Player* tmp;
-
+	
 	player->shared.recoiled = 0;
 	if ((p->pressed & BTN_START))
 	{
@@ -529,6 +526,14 @@ void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player
 			exit_game();
 		}
 	}
+}
+
+void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player* other_player)
+{
+	u8 next_level;
+	Player* tmp;
+	
+	update_player(p, player);
 	
 	// Level transition
 	if ((player->level_score >= MAX_LEVEL_SCORE)         &&
@@ -1127,12 +1132,24 @@ void get_interesting_tile_indexes(int* tiles, u8 x, u8 y, u8 direction)
 	}
 }
 
-void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 other_player_hud_x)
+void explode_player(Player* player, Player* other_player, u8 hud_x, u8 other_player_hud_x)
+{
+	if (!(other_player->flags & EXPLODING_FLAG))
+	{
+		player->level_score++;
+		player->score++;
+		render_score(player, hud_x);
+		kill_player(other_player, other_player_hud_x);
+	}
+}
+
+char collision_detect_player(Player* player, u8 hud_x)
 {
 	int tiles[3] = {0,0,0};
 	u8 x = player->shared.x / 8;
 	u8 y = player->shared.y / 8 - 3;
 	u8 hit_water = 0;
+	char explode = 0;
 	
 	get_interesting_tile_indexes(tiles, x, y, player->shared.direction);
 	
@@ -1141,7 +1158,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 	{
 		recoil_sprite(&player->shared);
 		player->shared.speed = 0;
-		return;
+		return explode;
 	}
 
 	/* Tile interaction */
@@ -1189,13 +1206,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
 			SFX_ITEM;
-			if (!(other_player->flags & EXPLODING_FLAG))
-			{
-				player->level_score++;
-				player->score++;
-				render_score(player, hud_x);
-				kill_player(other_player, other_player_hud_x);
-			}
+			explode = 1;
 		}
 		
 		if (!hit_water)
@@ -1204,6 +1215,7 @@ void collision_detect_player(Player* player, Player* other_player, u8 hud_x, u8 
 			if (player->has_over_speed) player->max_speed = OVER_SPEED;
 		}
 	}
+	return explode;
 }
 
 void load_level_tiles(u8 blank)
@@ -1290,6 +1302,16 @@ void load_level(int level_number)
 	SFX_LEVEL_START;
 }
 
+void update_boss_fight_load()
+{
+	
+}
+
+void update_boss_fight()
+{
+	
+}
+
 void update_level(JoyPadState* p1, JoyPadState* p2)
 {
 	char p1_index = 0;
@@ -1310,26 +1332,15 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		Print(11, 14, (char*) strExit);
 		
 		// Update
-		update_level_helper(p1, &player1, p2, &player2, 15);
-		update_level_helper(p2, &player2, p1, &player1, 0);
-		collision_detect_player(&player1, &player2, 0, 15);
-		collision_detect_player(&player2, &player1, 15, 0);
+		update_level_helper(p1, &player1, p2, &player2);
+		update_level_helper(p2, &player2, p1, &player1);
+		if (collision_detect_player(&player1, 0)) explode_player(&player1, &player2, 0, 15);
+		if (collision_detect_player(&player2, 15)) explode_player(&player2, &player1, 15, 0);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_LOADING)
 	{
 		// Render
 		SetSpriteVisibility(true);
-		p2_index = tank_map(&player1, p1_index);
-		p1_shot_index = tank_map(&player2, p2_index);
-		p2_shot_index = shot_map(&player1, p1_shot_index);
-		shot_map(&player2, p2_shot_index);
-		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
-		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
-		render_player(&player1, p1_index);
-		render_player(&player2, p2_index);
-		render_shot(&player1, p1_shot_index);
-		render_shot(&player2, p2_shot_index);
-		render_tile_explosions(&tile_animations);
 		
 		// Update
 		update_boss_fight_load();
@@ -1371,10 +1382,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		game.scope_counter++;
 		
 		// Update
-		update_level_helper(p1, &player1, p2, &player2, 15);
-		update_level_helper(p2, &player2, p1, &player1, 0);
-		collision_detect_player(&player1, &player2, 0, 15);
-		collision_detect_player(&player2, &player1, 15, 0);
+		update_level_helper(p1, &player1, p2, &player2);
+		update_level_helper(p2, &player2, p1, &player1);
+		if (collision_detect_player(&player1, 0)) explode_player(&player1, &player2, 0, 15);
+		if (collision_detect_player(&player2, 15)) explode_player(&player2, &player1, 15, 0);
 	}
 	
 	if (game.selection == CPUVCPU) 
