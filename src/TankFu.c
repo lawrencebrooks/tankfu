@@ -1364,10 +1364,15 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Render
 		SetSpriteVisibility(true);
 		render_boss_fight_scope_load();
-		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
+		p2_index = tank_map(game.boss_fight_player, p1_index);
+		MapSprite2(p2_index, map_tank_blank, 0);
+		p1_shot_index = p2_index + 4;
+		p2_shot_index = shot_map(game.boss_fight_player, p1_shot_index);
+		MapSprite2(p2_shot_index, map_none, 0);
 		shot_map(game.boss_fight_player, p1_shot_index);
 		render_player(game.boss_fight_player, p1_index);
 		render_shot(game.boss_fight_player, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
 		
 		// Update
@@ -1379,10 +1384,15 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Render
 		SetSpriteVisibility(true);
 		render_boss_fight_sub_load();
-		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
+		p2_index = tank_map(game.boss_fight_player, p1_index);
+		MapSprite2(p2_index, map_tank_blank, 0);
+		p1_shot_index = p2_index + 4;
+		p2_shot_index = shot_map(game.boss_fight_player, p1_shot_index);
+		MapSprite2(p2_shot_index, map_none, 0);
 		shot_map(game.boss_fight_player, p1_shot_index);
 		render_player(game.boss_fight_player, p1_index);
 		render_shot(game.boss_fight_player, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
 		
 		// Update
@@ -1393,8 +1403,16 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		// Render
 		SetSpriteVisibility(true);
+		render_boss_turrets();
+		p2_index = tank_map(game.boss_fight_player, p1_index);
+		MapSprite2(p2_index, map_tank_blank, 0);
+		p1_shot_index = p2_index + 4;
+		p2_shot_index = shot_map(game.boss_fight_player, p1_shot_index);
+		MapSprite2(p2_shot_index, map_none, 0);
+		shot_map(game.boss_fight_player, p1_shot_index);
 		render_player(game.boss_fight_player, p1_index);
 		render_shot(game.boss_fight_player, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
 		
 		// Update
