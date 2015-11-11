@@ -30,6 +30,7 @@
 #define PATCH_TANK_EXPLODE 10
 #define PATCH_TRACKS 11
 #define PATCH_SILENCE 12
+#define PATCH_ALARM 13
 
 
 #define PCM_CHANNEL 4
@@ -517,10 +518,112 @@ const char ad_navigate[] PROGMEM={
   0xfa, 0xfd, 0x01, 0x03, 0x04, 0x03, 0x01, 0x00, 0x00, 0x00
 };
 const char ad_rocket[] PROGMEM={0x00,0x00};
-const char ad_splash[] PROGMEM={0x00,0x00};
+const char ad_splash[] PROGMEM ={
+	0,PC_NOTE_CUT,0,
+	0,PATCH_END
+};
 const char ad_tank_explode[] PROGMEM={0x00,0x00};
 const char ad_tracks[] PROGMEM={0x00,0x00};
 const char ad_silence[] PROGMEM={0x00,0x00};
+const char ad_alarm[] PROGMEM ={
+	0,PC_WAVE,2,
+	0,PC_NOTE_DOWN,50, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_UP,1, 
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_DOWN,1,
+	1,PC_NOTE_CUT,0,
+	0,PATCH_END
+};
 
 const struct PatchStruct my_patches[] PROGMEM = {
   {2,ad_banter,0,sizeof(ad_banter)-2,sizeof(ad_banter)-1},
@@ -532,10 +635,11 @@ const struct PatchStruct my_patches[] PROGMEM = {
   {2,ad_metal,0,sizeof(ad_metal)-2,sizeof(ad_metal)-1},
   {2,ad_navigate,0,sizeof(ad_navigate)-2,sizeof(ad_navigate)-1},
   {2,ad_cannonball,0,sizeof(ad_cannonball)-2,sizeof(ad_cannonball)-1},
-  {2,ad_splash,0,sizeof(ad_splash)-2,sizeof(ad_splash)-1},
+  {0,NULL,ad_splash,0,0},
   {2,ad_brick_explode,0,sizeof(ad_brick_explode)-2,sizeof(ad_brick_explode)-1},
   {2,ad_tracks,0,sizeof(ad_tracks)-2,sizeof(ad_tracks)-1},
   {2,ad_silence,0,0,0},
+  {0,NULL,ad_alarm,0,0},
 };
 
 #endif

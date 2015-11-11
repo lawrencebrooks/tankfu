@@ -41,7 +41,7 @@
 #define FRAMES_PER_BLANK 20
 #define FRAMES_PER_ANIM 5
 #define FRAMES_PER_SCOPE 30
-#define FRAMES_PER_SUB 30
+#define FRAMES_PER_SUB 60
 
 // Handle select states
 #define SELECTING 0
@@ -108,10 +108,11 @@
 #define SFX_METAL TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
 #define SFX_ROCKET TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
-#define SFX_SPLASH TriggerNote(PCM_CHANNEL,PATCH_SPLASH,23,0xff)
+#define SFX_SPLASH TriggerFx(PATCH_SPLASH,0x0f,true);
 #define SFX_TANK_EXPLODE TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
 #define SFX_TRACKS TriggerNote(PCM_CHANNEL,PATCH_TRACKS,23,0xff)
 #define SFX_SILENCE TriggerNote(PCM_CHANNEL,PATCH_SILENCE,23,0xff)
+#define SFX_ALARM TriggerFx(PATCH_ALARM,0xff,true);
 
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 180

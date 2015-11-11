@@ -557,7 +557,7 @@ void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player
 				game.boss_fight_joypad = op;
 				game.boss_fight_player_hud = ohud_x;
 			}
-			scope_animation.tile_index = 14 + 6*30;
+			scope_animation.tile_index = 15 + 5*30;
 			return;
 		}
 
@@ -1307,6 +1307,7 @@ void render_boss_fight_scope_load()
 	if (render_scope(&scope_animation))
 	{
 		game.boss_fight_status = BOSS_FIGHT_SUB_LOADING;
+		SFX_ALARM;
 	}
 }
 
@@ -1490,7 +1491,7 @@ void load_splash()
 	Print(5, 26, (char*) strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
-	SFX_SPLASH;
+	//SFX_SPLASH;
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)
