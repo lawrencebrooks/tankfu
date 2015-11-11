@@ -74,7 +74,7 @@
 // General macros
 #define FRAME_TIME 0.0166666
 #define TEXT_LINGER 2 // seconds
-#define MAX_LEVEL_SCORE 10
+#define MAX_LEVEL_SCORE 2
 #define TILE_ANIMATIONS_LENGTH 2
 #define DEMO_WAIT 600
 #define DEMO_LENGTH 1800
@@ -83,11 +83,12 @@
 
 // Boss macros
 #define BOSS_LEVEL 10
-#define BOSS_FIGHT_LOADING 1
-#define BOSS_FIGHT 2
-#define BOSS_WON 4
-#define BOSS_LOST 8
-#define BOSS_SINKING 16
+#define BOSS_FIGHT_SCOPE_LOADING 1
+#define BOSS_FIGHT_SUB_LOADING 2
+#define BOSS_FIGHT 4
+#define BOSS_WON 8
+#define BOSS_LOST 16
+#define BOSS_SINKING 32
 #define BOSS_TURRET_LIVES 4
 #define BOSS_TURRET_SPEED 90
 #define BOSS_TURRET_SHOT_SPEED 200

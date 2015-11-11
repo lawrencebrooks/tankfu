@@ -83,6 +83,7 @@ typedef struct sGameState {
 	u8 boss_fight_status;
 	u8 boss_turret_1_lives;
 	u8 boss_turret_2_lives;
+	u8 boss_fight_player_hud;
 	Player* boss_fight_player;
 	JoyPadState* boss_fight_joypad;
 	u16 scope_counter;
