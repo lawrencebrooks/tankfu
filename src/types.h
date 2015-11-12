@@ -46,6 +46,12 @@ typedef struct sShot {
 
 } Shot;
 
+typedef struct sTurret {
+	SpriteShared shared;
+	u8 lives;
+	Shot shot[MAX_SHOTS];
+} Turret;
+
 typedef struct sPlayer {
 	SpriteShared shared;
 	char handle_id;
@@ -81,8 +87,6 @@ typedef struct sGameState {
 	u8 current_level;
 	u8 paused;
 	u8 boss_fight_status;
-	u8 boss_turret_1_lives;
-	u8 boss_turret_2_lives;
 	u8 boss_fight_player_hud;
 	Player* boss_fight_player;
 	JoyPadState* boss_fight_joypad;

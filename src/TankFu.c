@@ -60,6 +60,9 @@ Level level;
 TileAnimations tile_animations;
 TileAnimation scope_animation;
 TileAnimation sub_animation;
+Turret turret1;
+Turret turret2;
+
 u16 global_frame_counter = 1;
 
 struct EepromBlockStruct handles;
@@ -146,6 +149,30 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
 	s->shared.x = OFF_SCREEN;
 	s->shared.y = 0;
+}
+
+void init_turret(Turret* t, float x, float y)
+{
+	t->lives = BOSS_TURRET_LIVES;
+	t->shared.direction = D_LEFT;
+	t->shared.recoiled = 0;
+	t->shared.speed = BOSS_TURRET_SPEED;
+	t->shared.x = x;
+	t->shared.y = y;
+	
+	for (u8 i = 0; i < MAX_SHOTS; i++)
+	{
+		t->shot[i].shared.speed = BOSS_TURRET_SHOT_SPEED;
+		t->shot[i].shared.direction = D_DOWN;
+		t->shot[i].shared.recoiled = 0;
+		t->shot[i].shared.x = OFF_SCREEN;
+		t->shot[i].shared.y = 0;
+		t->shot[i].active = 0;
+		t->shot[i].distance = 0;
+		t->shot[i].shot_type = BOSS_TURRET_SHOT;
+		t->shot[i].rebounds = SHOT_REBOUNDS;
+		t->shot[i].hit_count = BOSS_TURRET_SHOT_HIT_COUNT;
+	}
 }
 
 void set_shot_animations(Shot* s, u8 shot_type)
@@ -247,8 +274,6 @@ void init_game_state()
 	game.paused = 0;
 	game.scope_counter = 0;
 	game.boss_fight_status = 0;
-	game.boss_turret_1_lives = BOSS_TURRET_LIVES;
-	game.boss_turret_2_lives = BOSS_TURRET_LIVES;
 	game.boss_fight_player = 0;
 	game.boss_fight_joypad = 0;
 	game.boss_fight_player_hud = 0;
@@ -1319,6 +1344,8 @@ void render_boss_fight_sub_load()
 	if (sub_animation.anim.reversing)
 	{
 		game.boss_fight_status = BOSS_FIGHT;
+		init_turret(&turret1, 96, 72);
+		init_turret(&turret2, 128, 72);
 	}
 }
 
