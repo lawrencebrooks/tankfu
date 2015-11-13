@@ -21,16 +21,11 @@
 #define PATCH_BRICK_EXPLODE 1
 #define PATCH_CANNONBALL 2
 #define PATCH_ITEM 3
-#define PATCH_LEVEL_CLEAR 4
-#define PATCH_LEVEL_START 5
-#define PATCH_METAL 6
-#define PATCH_NAVIGATE 7
-#define PATCH_ROCKET 8
-#define PATCH_SPLASH 9
-#define PATCH_TANK_EXPLODE 10
-#define PATCH_TRACKS 11
-#define PATCH_SILENCE 12
-#define PATCH_ALARM 13
+#define PATCH_METAL 4
+#define PATCH_NAVIGATE 5
+#define PATCH_ROCKET 6
+#define PATCH_TANK_EXPLODE 7
+#define PATCH_ALARM 8
 
 
 #define PCM_CHANNEL 4
@@ -434,8 +429,7 @@ const char ad_item[] PROGMEM={
   0xfd, 0xff, 0x01, 0x01, 0x00, 0xff, 0xfe, 0xff, 0x00, 0x00, 0x00, 0x00,
   0x00
 };
-const char ad_level_clear[] PROGMEM={0x00,0x00};
-const char ad_level_start[] PROGMEM={0x00,0x00};
+
 const char ad_metal[] PROGMEM={
   0x00, 0x00, 0xff, 0x00, 0xff, 0x00, 0xfe, 0x03, 0xfc, 0xed, 0xed, 0xed,
   0xed, 0x11, 0x0f, 0x11, 0x11, 0x11, 0x11, 0x11, 0x10, 0x10, 0x0a, 0x11,
@@ -484,6 +478,7 @@ const char ad_metal[] PROGMEM={
   0x00, 0x01, 0x01, 0x00, 0x00, 0xff, 0x00, 0x00, 0xff, 0xff, 0xfe, 0xff,
   0xff, 0xff, 0x00, 0x00
 };
+
 const char ad_navigate[] PROGMEM={
   0x00, 0xfc, 0xfe, 0xfe, 0xf3, 0xed, 0xf0, 0x03, 0x17, 0x24, 0x18, 0x0f,
   0x09, 0x01, 0xf7, 0xf2, 0xf4, 0xf9, 0x00, 0xfb, 0xf4, 0xf0, 0xf5, 0xfc,
@@ -517,14 +512,7 @@ const char ad_navigate[] PROGMEM={
   0xfb, 0xf8, 0xf8, 0xfb, 0xff, 0x03, 0x06, 0x07, 0x04, 0xff, 0xfb, 0xf8,
   0xfa, 0xfd, 0x01, 0x03, 0x04, 0x03, 0x01, 0x00, 0x00, 0x00
 };
-const char ad_rocket[] PROGMEM={0x00,0x00};
-const char ad_splash[] PROGMEM ={
-	0,PC_NOTE_CUT,0,
-	0,PATCH_END
-};
-const char ad_tank_explode[] PROGMEM={0x00,0x00};
-const char ad_tracks[] PROGMEM={0x00,0x00};
-const char ad_silence[] PROGMEM={0x00,0x00};
+
 const char ad_alarm[] PROGMEM ={
 	0,PC_WAVE,2,
 	0,PC_NOTE_DOWN,50, 
@@ -630,15 +618,10 @@ const struct PatchStruct my_patches[] PROGMEM = {
   {2,ad_brick_explode,0,sizeof(ad_brick_explode)-2,sizeof(ad_brick_explode)-1},
   {2,ad_cannonball,0,sizeof(ad_cannonball)-2,sizeof(ad_cannonball)-1},
   {2,ad_item,0,sizeof(ad_item)-2,sizeof(ad_item)-1},
-  {2,ad_level_clear,0,sizeof(ad_level_clear)-2,sizeof(ad_level_clear)-1},
-  {2,ad_level_start,0,sizeof(ad_level_start)-2,sizeof(ad_level_start)-1},
   {2,ad_metal,0,sizeof(ad_metal)-2,sizeof(ad_metal)-1},
   {2,ad_navigate,0,sizeof(ad_navigate)-2,sizeof(ad_navigate)-1},
   {2,ad_cannonball,0,sizeof(ad_cannonball)-2,sizeof(ad_cannonball)-1},
-  {0,0,ad_splash,0,0},
   {2,ad_brick_explode,0,sizeof(ad_brick_explode)-2,sizeof(ad_brick_explode)-1},
-  {2,ad_tracks,0,sizeof(ad_tracks)-2,sizeof(ad_tracks)-1},
-  {2,ad_silence,0,0,0},
   {0,0,ad_alarm,0,0},
 };
 

@@ -454,7 +454,7 @@ void update_player(JoyPadState* p, Player* player)
 	Shot* shot;
 	
 	player->shared.recoiled = 0;
-	if ((p->pressed & BTN_START))
+	if ((p->pressed & BTN_START) && (game.boss_fight_status == 0))
 	{
 		SFX_NAVIGATE;
 		game.paused = game.paused ^ 1;
@@ -592,7 +592,6 @@ void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player
 		LBWaitSeconds(TEXT_LINGER);
 		player->level_score = 0;
 		other_player->level_score = 0;
-		SFX_LEVEL_CLEAR;
 		if (next_level >= LEVEL_COUNT)
 		{
 		    if (other_player->score > player->score)
@@ -1324,7 +1323,6 @@ void load_level(int level_number)
 	Print(14, 1, (char*) strVertSep);
 	Print(14, 2, (char*) strVertSep);
 	load_level_tiles(false);
-	SFX_LEVEL_START;
 }
 
 void render_boss_fight_scope_load()
@@ -1385,7 +1383,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		
 		// Update
 		update_player(p1, &player1);
-		update_player(p1, &player2);
+		update_player(p2, &player2);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_SCOPE_LOADING)
 	{
@@ -1518,7 +1516,6 @@ void load_splash()
 	Print(5, 26, (char*) strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
-	//SFX_SPLASH;
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)

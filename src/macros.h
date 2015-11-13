@@ -101,19 +101,14 @@
 #define OVER_SPEED_FLAG 4
 
 // Sound Effects
-#define SFX_BANTER TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
-#define SFX_BRICK_EXPLODE TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
-#define SFX_CANNONBALL TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
-#define SFX_ITEM TriggerNote(PCM_CHANNEL,PATCH_ITEM,23,0xff)
-#define SFX_LEVEL_CLEAR TriggerNote(PCM_CHANNEL,PATCH_LEVEL_CLEAR,23,0xff)
-#define SFX_LEVEL_START TriggerNote(PCM_CHANNEL,PATCH_LEVEL_START,23,0xff)
-#define SFX_METAL TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
+#define SFX_BANTER if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
+#define SFX_BRICK_EXPLODE if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
+#define SFX_CANNONBALL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
+#define SFX_ITEM if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ITEM,23,0xff)
+#define SFX_METAL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
 #define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
-#define SFX_ROCKET TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
-#define SFX_SPLASH TriggerFx(PATCH_SPLASH,0x0f,true);
+#define SFX_ROCKET if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
 #define SFX_TANK_EXPLODE TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
-#define SFX_TRACKS TriggerNote(PCM_CHANNEL,PATCH_TRACKS,23,0xff)
-#define SFX_SILENCE TriggerNote(PCM_CHANNEL,PATCH_SILENCE,23,0xff)
 #define SFX_ALARM TriggerFx(PATCH_ALARM,0xff,true);
 
 // AI Macros
