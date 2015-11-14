@@ -191,6 +191,7 @@ void set_shot_animations(Shot* s, u8 shot_type)
 void init_turret(Turret* t, float x, float y)
 {
 	t->lives = BOSS_TURRET_LIVES;
+	t->flags = 0;
 	t->shared.direction = D_LEFT;
 	t->shared.recoiled = 0;
 	t->shared.speed = BOSS_TURRET_SPEED;
@@ -205,7 +206,7 @@ void init_turret(Turret* t, float x, float y)
 		t->shot[i].shared.x = OFF_SCREEN;
 		t->shot[i].shared.y = 0;
 		t->shot[i].active = 0;
-		t->shot[i].distance = 0;
+		t->shot[i].distance = 100;
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
 		t->shot[i].rebounds = SHOT_REBOUNDS;
 		t->shot[i].hit_count = BOSS_TURRET_SHOT_HIT_COUNT;
@@ -298,6 +299,7 @@ void init_game_state()
 	game.boss_fight_player_hud = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
+	player2.score = 20;
 }
 
 /* Utilities */
@@ -387,7 +389,7 @@ void save_score()
 	save_score[1] = p_lose->handle_id;
 	save_score[2] = p_win->score;
 	save_score[3] = p_lose->score;
-	save_score[4] = 0;
+	save_score[4] = (game.boss_fight_status == BOSS_FIGHT_WON) ? 1 : 0;
 	save_delta = p_win->score - p_lose->score;
 
 	for (u8 i = 0; i < 28; i += 5)
@@ -466,6 +468,10 @@ void print_final_score(Player* winner, Player* loser)
     PrintByte(22, 14, winner->score ,true);
     PrintChar(23, 14, '-');
     PrintByte(26, 14, loser->score ,true);
+	if (game.boss_fight_status == BOSS_FIGHT_WON)
+	{
+		PrintChar(28, 14, '*');
+	}
 }
 
 void update_player(JoyPadState* p, Player* player)
@@ -918,6 +924,11 @@ u8 player_shot(Player* p, Shot* shot)
 		   shot->distance > DISTANCE_TO_ARM;
 }
 
+u8 turret_shot(Turret* t, Shot* shot)
+{
+	return LBCollides(t->shared.x,t->shared.y,8,8,shot->shared.x+2,shot->shared.y+2,4,4) && t->lives > 0;
+}
+
 u8 collision_detect_boundries(SpriteShared* sprite)
 {
 	if (sprite->x < 0  || sprite->x + 8 > 240 ||
@@ -1083,6 +1094,23 @@ void collision_detect_shot(Player* player, Shot* shot)
 		player1.level_score++;
 		player1.score++;
 		render_score(&player1, 0);
+	}
+	else if (game.boss_fight_status == BOSS_FIGHT)
+	{
+		if (turret_shot(&turret1, shot))
+		{
+			turret1.lives--;
+			init_shot_state(shot, shot->shot_type);
+			game.boss_fight_player->active_shots--;
+			SFX_TANK_EXPLODE;
+		}
+		else if (turret_shot(&turret2, shot))
+		{
+			turret2.lives--;
+			init_shot_state(shot, shot->shot_type);
+			game.boss_fight_player->active_shots--;
+			SFX_TANK_EXPLODE;
+		}
 	}
 	if (p)
 	{
@@ -1366,9 +1394,15 @@ void render_boss_fight_sub_load()
 	}
 }
 
-void render_boss_fight_sinking()
+void render_boss_fight_sub_sinking()
 {
-	
+	char *map;
+	map = LBGetNextFrameReverse(&(sub_animation.anim));
+	if (sub_animation.anim.current_anim == 0) DrawMap2(1, 4, (const char*) map);
+	if (sub_animation.anim.looped)
+	{
+		game.boss_fight_status = BOSS_FIGHT_WON;
+	}
 }
 
 void render_boss_turret(Turret* t, u8 sprite_index)
@@ -1383,7 +1417,18 @@ void render_boss_turret_shot(Turret* t, u8 sprite_index)
 
 void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 {
-	if (t->shared.direction == D_LEFT)
+	u8 x = t->shared.x / 8;
+	u8 y = t->shared.y / 8 - 3;
+	int tile_index = (y * 30) + x;
+	
+	if (t->lives <= 0)
+	{
+		explode_tile(&tile_animations, tile_index);
+		level.level_map[tile_index] = L_EMPTY;
+		t->shared.x = OFF_SCREEN;
+		t->shared.y = OFF_SCREEN;
+	}
+	else if (t->shared.direction == D_LEFT)
 	{
 		if (t->shared.x < left_limit)
 		{
@@ -1411,16 +1456,24 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 
 void update_turret_shot(Turret* t, Shot* s)
 {	
+	if (t->lives <= 0)
+	{
+		s->active = 0;
+		s->shared.x = OFF_SCREEN;
+		s->shared.y = OFF_SCREEN;
+		return;
+	}
 	if (!s->active)
 	{
 		s->active = 1;
 		s->shared.x = t->shared.x+3;
 		s->shared.y = t->shared.y+3;
+		SFX_CANNONBALL;
 	}
 	s->shared.y += FRAME_TIME*BOSS_TURRET_SHOT_SPEED;
 	
 	/* Level boundries first */
-	if (collision_detect_boundries(&s->shared))
+	if (s->shared.y + 8 > 216)
 	{
 		s->active = 0;
 		return;
@@ -1430,7 +1483,7 @@ void update_turret_shot(Turret* t, Shot* s)
 	if (player_shot(game.boss_fight_player, s) && !(player1.flags & EXPLODING_FLAG))
 	{
 		game.boss_fight_player_lives--;
-		if (game.boss_fight_player_lives == 0)
+		if (game.boss_fight_player_lives <= 0)
 		{
 			game.boss_fight_status = BOSS_FIGHT_LOST;
 		}
@@ -1454,6 +1507,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	static u8 clear_banter_1 = 1;
 	static u8 clear_banter_2 = 1;
 	static u16 demo_counter = 0;
+	char* map;
 
 	if (game.paused)
 	{
@@ -1509,6 +1563,11 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT)
 	{
+		if ((turret1.lives <= 0) && (turret2.lives <= 0))
+		{
+			game.boss_fight_status = BOSS_FIGHT_SUB_SINKING;
+		}
+		
 		// Render
 		SetSpriteVisibility(true);
 		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
@@ -1541,13 +1600,28 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		// Render
 		SetSpriteVisibility(true);
+		render_boss_fight_sub_sinking();
+		p2_index = tank_map(game.boss_fight_player, p1_index);
+		MapSprite2(p2_index, map_tank_blank, 0);
+		p1_shot_index = p2_index + 4;
+		p2_shot_index = shot_map(game.boss_fight_player, p1_shot_index);
+		MapSprite2(p2_shot_index, map_none, 0);
+		shot_map(game.boss_fight_player, p1_shot_index);
+		render_player(game.boss_fight_player, p1_index);
+		render_shot(game.boss_fight_player, p1_shot_index);
+		render_shot(&player2, p2_shot_index);
+		render_tile_explosions(&tile_animations);
 		
 		// Update
-		render_boss_fight_sinking();
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
+		if (game.boss_fight_status != BOSS_FIGHT_SUB_SINKING)
+		{
+			update_level_helper(p1, &player1, p2, &player2, 0, 15);
+		    update_level_helper(p2, &player2, p1, &player1, 15, 0);
+		}
 	}
-	else
+	else if (game.boss_fight_status == 0)
 	{
 		SetSpriteVisibility(true);
 		p2_index = tank_map(&player1, p1_index);
@@ -1717,6 +1791,7 @@ void load_tank_rank()
 		PrintByte(23, y, scores.data[i+2] ,true);
 		PrintChar(24, y, '-');
 		PrintByte(27, y, scores.data[i+3] ,true);
+		if (scores.data[i+4]) PrintChar(29, y, '*');
 		y += 3;
 		rank += 1;
 	}
