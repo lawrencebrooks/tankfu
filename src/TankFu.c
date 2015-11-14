@@ -50,6 +50,9 @@ void load_handle_select();
 void load_level(int level_number);
 void load_level_tiles(u8 blank);
 
+/* other function declarations */
+void kill_player(Player* player, u8 hud_x);
+
 // Globals
 Game game;
 Player player1;
@@ -299,7 +302,6 @@ void init_game_state()
 	game.boss_fight_player_hud = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
-	player2.score = 20;
 }
 
 /* Utilities */
@@ -579,59 +581,86 @@ void update_player(JoyPadState* p, Player* player)
 	}
 }
 
-void update_level_helper(JoyPadState* p, Player* player, JoyPadState* op, Player* other_player, u8 hud_x, u8 ohud_x)
+void resolve_scoring()
 {
 	u8 next_level;
-	Player* tmp;
 	
-	update_player(p, player);
-	
-	// Level transition
-	if ((player->level_score >= MAX_LEVEL_SCORE) && !(other_player->flags & EXPLODING_FLAG))
+	if (game.current_level < LEVEL_COUNT - 1)
 	{
-	    next_level = game.current_level + 1;
-
-	    // Tie breaker
-	    if ((next_level >= LEVEL_COUNT) && (other_player->score == player->score)) return;
-		
-		// Load boss fight
-		if (next_level >= LEVEL_COUNT && game.boss_fight_status == 0)
+		if (player1.level_score >= MAX_LEVEL_SCORE && !(player2.flags & EXPLODING_FLAG))
 		{
-			game.boss_fight_status = BOSS_FIGHT_SCOPE_LOADING;
-			game.boss_fight_player = player;
-			game.boss_fight_joypad = p;
-			game.boss_fight_player_hud = hud_x;
-			if (other_player->score > player->score)
-			{
-				game.boss_fight_player = other_player;
-				game.boss_fight_joypad = op;
-				game.boss_fight_player_hud = ohud_x;
-			}
-			scope_animation.tile_index = 15 + 5*30;
-			return;
-		}
-
-		load_level_tiles(true);
-		SetSpriteVisibility(false);
-		print_level_score(player, other_player);
-		LBWaitSeconds(TEXT_LINGER);
-		player->level_score = 0;
-		other_player->level_score = 0;
-		if (next_level >= LEVEL_COUNT)
-		{
-		    if (other_player->score > player->score)
-		    {
-		        tmp = player;
-		        player = other_player;
-		        other_player = tmp;
-		    }
-		    print_final_score(player, other_player);
-		    LBWaitSeconds(TEXT_LINGER);
-			exit_game();
-		}
-		else
-		{
+			next_level = game.current_level + 1;
+			load_level_tiles(true);
+			SetSpriteVisibility(false);
+			print_level_score(&player1, &player2);
+			LBWaitSeconds(TEXT_LINGER);
+			player1.level_score = 0;
+			player2.level_score = 0;
 			level_transition(next_level);
+		}
+		else if (player2.level_score >= MAX_LEVEL_SCORE && !(player1.flags & EXPLODING_FLAG))
+		{
+			next_level = game.current_level + 1;
+			load_level_tiles(true);
+			SetSpriteVisibility(false);
+			print_level_score(&player2, &player1);
+			LBWaitSeconds(TEXT_LINGER);
+			player1.level_score = 0;
+			player2.level_score = 0;
+			level_transition(next_level);
+		}
+	}
+	else
+	{
+		if ((player1.level_score >= MAX_LEVEL_SCORE) || (player2.level_score >= MAX_LEVEL_SCORE))
+		{
+			// Tie Breaker
+			if (player1.score == player2.score) return;
+			
+			if (game.boss_fight_status == 0)
+			{
+				// Initiate boss fight
+				game.boss_fight_status = BOSS_FIGHT_SCOPE_LOADING;
+				if (player1.score > player2.score)
+				{
+					game.boss_fight_player = &player1;
+					game.boss_fight_joypad = &p1;
+					game.boss_fight_player_hud = 0;
+					kill_player(&player2, 15);
+					player_spawn(&player2);
+					player2.flags = player2.flags ^ EXPLODING_FLAG;
+				}
+				else
+				{
+					game.boss_fight_player = &player2;
+					game.boss_fight_joypad = &p2;
+					game.boss_fight_player_hud = 15;
+					kill_player(&player1, 0);
+					player_spawn(&player1);
+					player1.flags = player1.flags ^ EXPLODING_FLAG;
+				}
+				scope_animation.tile_index = 15 + 5*30;
+				return;
+			}
+			
+			// Print level score
+			load_level_tiles(true);
+			SetSpriteVisibility(false);
+			if (player1.level_score > player2.level_score)
+				print_level_score(&player1, &player2);
+			else
+				print_level_score(&player2, &player1);
+			LBWaitSeconds(TEXT_LINGER);
+			player1.level_score = 0;
+			player2.level_score = 0;
+			
+			// Print game score and exit
+			if (player1.score > player2.score)
+				print_final_score(&player1, &player2);
+			else
+				print_final_score(&player2, &player1);
+			LBWaitSeconds(TEXT_LINGER);
+			exit_game();
 		}
 	}
 }
@@ -1507,7 +1536,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	static u8 clear_banter_1 = 1;
 	static u8 clear_banter_2 = 1;
 	static u16 demo_counter = 0;
-	char* map;
 
 	if (game.paused)
 	{
@@ -1617,9 +1645,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
 		if (game.boss_fight_status != BOSS_FIGHT_SUB_SINKING)
 		{
-			update_level_helper(p1, &player1, p2, &player2, 0, 15);
-		    update_level_helper(p2, &player2, p1, &player1, 15, 0);
+			resolve_scoring();
 		}
+	}
+	else if (game.boss_fight_status == BOSS_FIGHT_LOST)
+	{
+		resolve_scoring();
 	}
 	else if (game.boss_fight_status == 0)
 	{
@@ -1642,8 +1673,9 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		game.scope_counter++;
 		
 		// Update
-		update_level_helper(p1, &player1, p2, &player2, 0, 15);
-		update_level_helper(p2, &player2, p1, &player1, 15, 0);
+		update_player(p1, &player1);
+		update_player(p2, &player2);
+		resolve_scoring();
 		if (collision_detect_player(&player1, 0)) explode_player(&player1, &player2, 0, 15);
 		if (collision_detect_player(&player2, 15)) explode_player(&player2, &player1, 15, 0);
 	}
@@ -1754,7 +1786,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			SFX_NAVIGATE;
 			clear_sprites();
 			fade_through();
-			level_transition(LBRandom(0, 9));
+			level_transition(LBRandom(0, 10));
 		}
 		else
 		{
@@ -1978,7 +2010,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
-		level_transition(9);
+		level_transition(0);
 	}
 }
 

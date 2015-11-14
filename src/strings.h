@@ -56,12 +56,13 @@ const unsigned char strPaused [] PROGMEM="PAUSED";
 const unsigned char strLevels [] PROGMEM="   BOOT CAMP   \0"
 " THE BRICKYARD \0"
 "   VELOCITY    \0"
-"     MAZE      \0"
+"   THE MAZE    \0"
 "   RICHOCHET   \0"
 " THE HONEY POT \0"
 "  FOCAL POINT  \0"
 "IT'S NOT FAIR! \0"
 "  MUCH BETTER  \0"
+"   THE CANAL   \0"
 "  THE HARBOUR  ";
 
 // Default handles and scores
