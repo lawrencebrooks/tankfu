@@ -150,8 +150,8 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->shot_type = shot_type;
 	s->rebounds = SHOT_REBOUNDS;
 	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
-	s->shared.x = OFF_SCREEN;
-	s->shared.y = 0;
+	s->shared.x = 240;
+	s->shared.y = 224;
 }
 
 void set_shot_animations(Shot* s, u8 shot_type)
@@ -206,8 +206,8 @@ void init_turret(Turret* t, float x, float y)
 		t->shot[i].shared.speed = BOSS_TURRET_SHOT_SPEED;
 		t->shot[i].shared.direction = D_DOWN;
 		t->shot[i].shared.recoiled = 0;
-		t->shot[i].shared.x = OFF_SCREEN;
-		t->shot[i].shared.y = 0;
+		t->shot[i].shared.x = 240;
+		t->shot[i].shared.y = 224;
 		t->shot[i].active = 0;
 		t->shot[i].distance = 100;
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
@@ -1434,12 +1434,12 @@ void render_boss_fight_sub_sinking()
 	}
 }
 
-void render_boss_turret(Turret* t, u8 sprite_index)
+void render_boss_turret(Turret* t, char sprite_index)
 {
 	MoveSprite(sprite_index, t->shared.x, t->shared.y, 1, 1);
 }
 
-void render_boss_turret_shot(Turret* t, u8 sprite_index)
+void render_boss_turret_shot(Turret* t, char sprite_index)
 {
 	MoveSprite(sprite_index, t->shot[0].shared.x, t->shot[0].shared.y, 1, 1);
 }
@@ -1454,8 +1454,8 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 	{
 		explode_tile(&tile_animations, tile_index);
 		level.level_map[tile_index] = L_EMPTY;
-		t->shared.x = OFF_SCREEN;
-		t->shared.y = OFF_SCREEN;
+		t->shared.x = 240;
+		t->shared.y = 224;
 	}
 	else if (t->shared.direction == D_LEFT)
 	{
@@ -1488,8 +1488,8 @@ void update_turret_shot(Turret* t, Shot* s)
 	if (t->lives <= 0)
 	{
 		s->active = 0;
-		s->shared.x = OFF_SCREEN;
-		s->shared.y = OFF_SCREEN;
+		s->shared.x = 240;
+		s->shared.y = 224;
 		return;
 	}
 	if (!s->active)
@@ -1509,7 +1509,7 @@ void update_turret_shot(Turret* t, Shot* s)
 	}
 	
 	/* Player interaction */
-	if (player_shot(game.boss_fight_player, s) && !(player1.flags & EXPLODING_FLAG))
+	if (player_shot(game.boss_fight_player, s) && !(game.boss_fight_player->flags & EXPLODING_FLAG))
 	{
 		game.boss_fight_player_lives--;
 		if (game.boss_fight_player_lives <= 0)
