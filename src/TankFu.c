@@ -151,6 +151,43 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->shared.y = 0;
 }
 
+void set_shot_animations(Shot* s, u8 shot_type)
+{
+	s->up_anim.current_anim = 0;
+	s->up_anim.anim_count = 2;
+	s->up_anim.frames_per_anim = FRAMES_PER_ANIM;
+	s->up_anim.frame_count = 0;
+	s->up_anim.looped = 0;
+	s->up_anim.reversing = 0;
+	if (shot_type == BASIC_SHOT)
+	{
+		s->up_anim.anims[0] = (char*) map_ball;
+		s->up_anim.anims[1] = (char*) map_ball;
+		s->right_anim.anims[0] = (char*) map_ball;
+		s->right_anim.anims[1] = (char*) map_ball;
+	}
+	else if (shot_type == ROCKET_SHOT)
+	{
+		s->up_anim.anims[0] = (char*) map_rocket_up_0;
+		s->up_anim.anims[1] = (char*) map_rocket_up_1;
+		s->right_anim.anims[0] = (char*) map_rocket_right_0;
+		s->right_anim.anims[1] = (char*) map_rocket_right_1;
+	}
+	else
+	{
+		s->up_anim.anims[0] = (char*) map_sub_shot;
+		s->up_anim.anims[1] = (char*) map_sub_shot;
+		s->right_anim.anims[0] = (char*) map_sub_shot;
+		s->right_anim.anims[1] = (char*) map_sub_shot;
+	}
+	s->up_anim.current_anim = 0;
+	s->right_anim.anim_count = 2;
+	s->right_anim.frames_per_anim = FRAMES_PER_ANIM;
+	s->right_anim.frame_count = 0;
+	s->right_anim.looped = 0;
+	s->right_anim.reversing = 0;
+}
+
 void init_turret(Turret* t, float x, float y)
 {
 	t->lives = BOSS_TURRET_LIVES;
@@ -172,27 +209,8 @@ void init_turret(Turret* t, float x, float y)
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
 		t->shot[i].rebounds = SHOT_REBOUNDS;
 		t->shot[i].hit_count = BOSS_TURRET_SHOT_HIT_COUNT;
+		set_shot_animations(&t->shot[i], BOSS_TURRET_SHOT);
 	}
-}
-
-void set_shot_animations(Shot* s, u8 shot_type)
-{
-	s->up_anim.current_anim = 0;
-	s->up_anim.anim_count = 2;
-	s->up_anim.frames_per_anim = FRAMES_PER_ANIM;
-	s->up_anim.frame_count = 0;
-	s->up_anim.looped = 0;
-	s->up_anim.reversing = 0;
-	s->up_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_0;
-	s->up_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_up_1;
-	s->up_anim.current_anim = 0;
-	s->right_anim.anim_count = 2;
-	s->right_anim.frames_per_anim = FRAMES_PER_ANIM;
-	s->right_anim.frame_count = 0;
-	s->right_anim.looped = 0;
-	s->right_anim.reversing = 0;
-	s->right_anim.anims[0] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_0;
-	s->right_anim.anims[1] = (shot_type == BASIC_SHOT) ? (char*) map_ball : (char*) map_rocket_right_1;
 }
 
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0)
@@ -276,6 +294,7 @@ void init_game_state()
 	game.boss_fight_status = 0;
 	game.boss_fight_player = 0;
 	game.boss_fight_joypad = 0;
+	game.boss_fight_player_lives = BOSS_FIGHT_PLAYER_LIVES;
 	game.boss_fight_player_hud = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
@@ -1342,8 +1361,8 @@ void render_boss_fight_sub_load()
 	if (sub_animation.anim.reversing)
 	{
 		game.boss_fight_status = BOSS_FIGHT;
-		init_turret(&turret1, 96, 72);
-		init_turret(&turret2, 128, 72);
+		init_turret(&turret1, BOSS_TURRET_1_RIGHT_LIMIT, 72);
+		init_turret(&turret2, BOSS_TURRET_2_RIGHT_LIMIT, 72);
 	}
 }
 
@@ -1352,14 +1371,73 @@ void render_boss_fight_sinking()
 	
 }
 
-void render_boss_turrets()
+void render_boss_turret(Turret* t, u8 sprite_index)
 {
-	
+	MoveSprite(sprite_index, t->shared.x, t->shared.y, 1, 1);
 }
 
-void update_boss_fight()
+void render_boss_turret_shot(Turret* t, u8 sprite_index)
 {
+	MoveSprite(sprite_index, t->shot[0].shared.x, t->shot[0].shared.y, 1, 1);
+}
+
+void update_turret(Turret *t, u8 left_limit, u8 right_limit)
+{
+	if (t->shared.direction == D_LEFT)
+	{
+		if (t->shared.x < left_limit)
+		{
+			t->shared.direction = D_RIGHT;
+			t->shared.x += FRAME_TIME*BOSS_TURRET_SPEED;
+		}
+		else
+		{
+			t->shared.x -= FRAME_TIME*BOSS_TURRET_SPEED;
+		}
+	}
+	else if (t->shared.direction == D_RIGHT)
+	{
+		if (t->shared.x > right_limit)
+		{
+			t->shared.direction = D_LEFT;
+			t->shared.x -= FRAME_TIME*BOSS_TURRET_SPEED;
+		}
+		else
+		{
+			t->shared.x += FRAME_TIME*BOSS_TURRET_SPEED;
+		}
+	}
+}
+
+void update_turret_shot(Turret* t, Shot* s)
+{	
+	if (!s->active)
+	{
+		s->active = 1;
+		s->shared.x = t->shared.x+3;
+		s->shared.y = t->shared.y+3;
+	}
+	s->shared.y += FRAME_TIME*BOSS_TURRET_SHOT_SPEED;
 	
+	/* Level boundries first */
+	if (collision_detect_boundries(&s->shared))
+	{
+		s->active = 0;
+		return;
+	}
+	
+	/* Player interaction */
+	if (player_shot(game.boss_fight_player, s) && !(player1.flags & EXPLODING_FLAG))
+	{
+		game.boss_fight_player_lives--;
+		if (game.boss_fight_player_lives == 0)
+		{
+			game.boss_fight_status = BOSS_FIGHT_LOST;
+		}
+		s->active = 0;
+		kill_player(game.boss_fight_player, game.boss_fight_player_hud);
+		SFX_TANK_EXPLODE;
+	}
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
@@ -1368,6 +1446,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	char p2_index = 0;
 	char p1_shot_index = 0;
 	char p2_shot_index = 0;
+	char t1_index = 0;
+	char t2_index = 0;
+	char t1_shot_index = 0;
+	char t2_shot_index = 0;
 	u16 held = 0;
 	static u8 clear_banter_1 = 1;
 	static u8 clear_banter_2 = 1;
@@ -1429,24 +1511,33 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		// Render
 		SetSpriteVisibility(true);
-		render_boss_turrets();
-		p2_index = tank_map(game.boss_fight_player, p1_index);
-		MapSprite2(p2_index, map_tank_blank, 0);
-		p1_shot_index = p2_index + 4;
-		p2_shot_index = shot_map(game.boss_fight_player, p1_shot_index);
-		MapSprite2(p2_shot_index, map_none, 0);
-		shot_map(game.boss_fight_player, p1_shot_index);
+		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
+		t1_index = shot_map(game.boss_fight_player, p1_shot_index);
+		t1_shot_index = t1_index+1;
+		t2_index = t1_index+2;
+		t2_shot_index = t1_index+3;
+		MapSprite2(t1_index, map_sub_turret, 0);
+		MapSprite2(t1_shot_index, map_sub_shot, 0);
+		MapSprite2(t2_index, map_sub_turret, 0);
+		MapSprite2(t2_shot_index, map_sub_shot, 0);
+		
 		render_player(game.boss_fight_player, p1_index);
 		render_shot(game.boss_fight_player, p1_shot_index);
-		render_shot(&player2, p2_shot_index);
 		render_tile_explosions(&tile_animations);
+		render_boss_turret(&turret1, t1_index);
+		render_boss_turret_shot(&turret1, t1_shot_index);
+		render_boss_turret(&turret2, t2_index);
+		render_boss_turret_shot(&turret2, t2_shot_index);
 		
 		// Update
-		update_boss_fight();
+		update_turret(&turret1, BOSS_TURRET_1_LEFT_LIMIT, BOSS_TURRET_1_RIGHT_LIMIT);
+		update_turret(&turret2, BOSS_TURRET_2_LEFT_LIMIT, BOSS_TURRET_2_RIGHT_LIMIT);
+		update_turret_shot(&turret1, &turret1.shot[0]);
+		update_turret_shot(&turret2, &turret2.shot[0]);
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
 	}
-	else if (game.boss_fight_status == BOSS_SINKING)
+	else if (game.boss_fight_status == BOSS_FIGHT_SUB_SINKING)
 	{
 		// Render
 		SetSpriteVisibility(true);
