@@ -150,8 +150,8 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->shot_type = shot_type;
 	s->rebounds = SHOT_REBOUNDS;
 	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
-	s->shared.x = 240;
-	s->shared.y = 224;
+	s->shared.x = OFF_SCREEN;
+	s->shared.y = 0;
 }
 
 void set_shot_animations(Shot* s, u8 shot_type)
@@ -206,8 +206,8 @@ void init_turret(Turret* t, float x, float y)
 		t->shot[i].shared.speed = BOSS_TURRET_SHOT_SPEED;
 		t->shot[i].shared.direction = D_DOWN;
 		t->shot[i].shared.recoiled = 0;
-		t->shot[i].shared.x = 240;
-		t->shot[i].shared.y = 224;
+		t->shot[i].shared.x = OFF_SCREEN;
+		t->shot[i].shared.y = 0;
 		t->shot[i].active = 0;
 		t->shot[i].distance = 100;
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
@@ -462,7 +462,7 @@ void print_level_score(Player* winner, Player* loser)
 
 void print_final_score(Player* winner, Player* loser)
 {
-    Print(9, 13, (char*) strFinalScore);
+    Print(9, 12, (char*) strFinalScore);
     LBPrintStr(4, 14, &winner->handle[0], 3);
     Print(8, 14, (char*) strOwns);
     LBPrintStr(13, 14, &loser->handle[0], 3);
@@ -1454,8 +1454,6 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 	{
 		explode_tile(&tile_animations, tile_index);
 		level.level_map[tile_index] = L_EMPTY;
-		t->shared.x = 240;
-		t->shared.y = 224;
 	}
 	else if (t->shared.direction == D_LEFT)
 	{
@@ -1488,8 +1486,6 @@ void update_turret_shot(Turret* t, Shot* s)
 	if (t->lives <= 0)
 	{
 		s->active = 0;
-		s->shared.x = 240;
-		s->shared.y = 224;
 		return;
 	}
 	if (!s->active)
@@ -1520,6 +1516,18 @@ void update_turret_shot(Turret* t, Shot* s)
 		kill_player(game.boss_fight_player, game.boss_fight_player_hud);
 		SFX_TANK_EXPLODE;
 	}
+}
+
+char* turret_map(Turret* t)
+{
+	if (t->lives <= 0) return (char*) map_none;
+	return (char*) map_sub_turret;
+}
+
+char* turret_shot_map(Turret* t)
+{
+	if (t->lives <= 0) return (char*) map_none;
+	return (char*) map_sub_shot;
 }
 
 void update_level(JoyPadState* p1, JoyPadState* p2)
@@ -1603,10 +1611,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		t1_shot_index = t1_index+1;
 		t2_index = t1_index+2;
 		t2_shot_index = t1_index+3;
-		MapSprite2(t1_index, map_sub_turret, 0);
-		MapSprite2(t1_shot_index, map_sub_shot, 0);
-		MapSprite2(t2_index, map_sub_turret, 0);
-		MapSprite2(t2_shot_index, map_sub_shot, 0);
+		MapSprite2(t1_index, turret_map(&turret1), 0);
+		MapSprite2(t1_shot_index, turret_shot_map(&turret1), 0);
+		MapSprite2(t2_index, turret_map(&turret2), 0);
+		MapSprite2(t2_shot_index, turret_shot_map(&turret2), 0);
 		
 		render_player(game.boss_fight_player, p1_index);
 		render_shot(game.boss_fight_player, p1_shot_index);
