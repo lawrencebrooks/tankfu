@@ -10599,7 +10599,7 @@ void LBWaitSeconds(u8 seconds)
 void init_scores(struct EepromBlockStruct* e)
 {
     e->id = EEPROM_TANK_RANK_ID;
-    b082:	21 e9       	ldi	r18, 0x91	; 145
+    b082:	2b e8       	ldi	r18, 0x8B	; 139
     b084:	30 e0       	ldi	r19, 0x00	; 0
     b086:	fc 01       	movw	r30, r24
     b088:	21 93       	st	Z+, r18
@@ -10618,7 +10618,7 @@ void init_scores(struct EepromBlockStruct* e)
 void init_handles(struct EepromBlockStruct* e)
 {
     e->id = EEPROM_HANDLES_ID;
-    b09a:	20 e9       	ldi	r18, 0x90	; 144
+    b09a:	2a e8       	ldi	r18, 0x8A	; 138
     b09c:	30 e0       	ldi	r19, 0x00	; 0
     b09e:	fc 01       	movw	r30, r24
     b0a0:	21 93       	st	Z+, r18
