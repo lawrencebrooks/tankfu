@@ -476,6 +476,11 @@ void print_final_score(Player* winner, Player* loser)
 	}
 }
 
+char shoot_pressed(JoyPadState* p)
+{
+	return (p->pressed & BTN_A) || (p->pressed & BTN_B);
+}
+
 void update_player(JoyPadState* p, Player* player)
 {
 	Shot* shot;
@@ -520,7 +525,7 @@ void update_player(JoyPadState* p, Player* player)
 		{
 			player->shared.speed = 0;
 		}
-		if ((p->pressed & BTN_A) && (player->active_shots < MAX_SHOTS))
+		if (shoot_pressed(p) && (player->active_shots < MAX_SHOTS))
 		{
 			for (u8 i = 0; i < MAX_SHOTS; i++)
 			{
@@ -551,7 +556,10 @@ void update_player(JoyPadState* p, Player* player)
 				}
 			}
 		}
-
+	}
+	
+	if (!game.paused)
+	{
 		/* Update Shot */
 		for (u8 i = 0; i < MAX_SHOTS; i++)
 		{
@@ -865,21 +873,23 @@ void recoil_sprite(SpriteShared* sprite)
 
 void recoil_sprite_fine(SpriteShared* sprite)
 {	
+	float speed = FRAME_TIME * sprite->speed;
+	
 	if (sprite->direction == D_UP)
 	{
-		sprite->y += FRAME_TIME * sprite->speed;
+		sprite->y += speed;
 	}
 	else if (sprite->direction == D_RIGHT)
 	{
-		sprite->x -= FRAME_TIME * sprite->speed;
+		sprite->x -= speed;
 	}
 	else if (sprite->direction == D_DOWN)
 	{
-		sprite->y -= FRAME_TIME * sprite->speed;
+		sprite->y -= speed;
 	}
 	else
 	{
-		sprite->x += FRAME_TIME * sprite->speed;
+		sprite->x += speed;
 	}
 	sprite->recoiled = 1;
 }
@@ -895,21 +905,6 @@ u8 solid_square_tile(int tile_index)
 	return 0;
 }
 
-u8 solid_tile(int tile_index)
-{
-	u8 tile = level.level_map[tile_index];
-	
-	if (tile == L_BRICK) return tile;
-	if (tile == L_METAL) return tile;
-	if (tile == L_FENCE) return tile;
-	if (tile == L_TL) return tile;
-	if (tile == L_BR) return tile;
-	if (tile == L_TR) return tile;
-	if (tile == L_BL) return tile;
-
-	return 0;
-}
-
 u8 solid_directional_tile(int tile_index)
 {
 	u8 tile = level.level_map[tile_index];
@@ -920,6 +915,16 @@ u8 solid_directional_tile(int tile_index)
 	if (tile == L_BL) return tile;
 	
 	return 0;
+}
+
+u8 solid_tile(int tile_index)
+{
+	u8 tile = level.level_map[tile_index];
+	
+	if (tile == L_BRICK) return tile;
+	if (tile == L_METAL) return tile;
+	if (tile == L_FENCE) return tile;
+	return solid_directional_tile(tile_index);
 }
 
 u8 collides_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
@@ -970,24 +975,27 @@ u8 collision_detect_boundries(SpriteShared* sprite)
 
 void drop_item(int tile_index, const char* map, u8 item_type)
 {
+	u8 x = tile_index % 30;
+	u8 y = 3 + tile_index / 30;
+	
 	if (level.level_map[tile_index] == L_EMPTY)
 	{
-		DrawMap2(tile_index % 30, 3 + tile_index / 30, map);
+		DrawMap2(x, y, map);
 		level.level_map[tile_index] = item_type;
 	}
 	else if (level.level_map[tile_index+1] == L_EMPTY)
 	{
-		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30, map);
+		DrawMap2(x+1, y, map);
 		level.level_map[tile_index+1] = item_type;
 	}
 	else if (level.level_map[tile_index+30] == L_EMPTY)
 	{
-		DrawMap2(tile_index % 30, 3 + tile_index / 30 + 1, map);
+		DrawMap2(x, y+1, map);
 		level.level_map[tile_index+30] = item_type;
 	}
 	else if (level.level_map[tile_index+31] == L_EMPTY)
 	{
-		DrawMap2(tile_index % 30 + 1, 3 + tile_index / 30 + 1, map);
+		DrawMap2(x+1, y+1, map);
 		level.level_map[tile_index+31] = item_type;
 	}
 }
@@ -1016,24 +1024,25 @@ void kill_player(Player* player, u8 hud_x)
 
 void get_interesting_tile_indexes_shot(int* tiles, u8 x, u8 y, u8 direction)
 {
+	int tile_root = (y * 30) + x;
 	if (direction == D_UP)
 	{
-		tiles[0] = (y * 30) + x;
+		tiles[0] = tile_root;
 		tiles[1] = tiles[0]+1;
 	}
 	else if (direction == D_RIGHT)
 	{
-		tiles[0] = (y * 30) + x + 1;
+		tiles[0] = tile_root + 1;
 		tiles[1] = tiles[0]+30;
 	}
 	else if (direction == D_DOWN)
 	{
-		tiles[0] = (y * 30) + x + 30;
+		tiles[0] = tile_root + 30;
 		tiles[1] = tiles[0]+1;
 	}
 	else
 	{
-		tiles[0] = (y * 30) + x;
+		tiles[0] = tile_root;
 		tiles[1] = tiles[0]+30;
 	}
 }
@@ -1059,28 +1068,24 @@ void richochet(u8 tile_type, SpriteShared* sprite)
 	switch (tile_type)
 	{
 		case L_TL:
+			sprite->direction = D_DOWN;
 			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
 				sprite->direction = D_RIGHT;
-			else
-				sprite->direction = D_DOWN;
 			break;
 		case L_TR:
+			sprite->direction = D_DOWN;
 			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
 				sprite->direction = D_LEFT;
-			else
-				sprite->direction = D_DOWN;
 			break;
 		case L_BL:
+			sprite->direction = D_UP;
 			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
 				sprite->direction = D_RIGHT;
-			else
-				sprite->direction = D_UP;
 			break;
 		case L_BR:
+			sprite->direction = D_UP;
 			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
 				sprite->direction = D_LEFT;
-			else
-				sprite->direction = D_UP;
 			break;
 	}
 }
@@ -1206,27 +1211,28 @@ void collision_detect_shot(Player* player, Shot* shot)
 
 void get_interesting_tile_indexes(int* tiles, u8 x, u8 y, u8 direction)
 {
+	u16 tile_root = (y * 30) + x;
 	if (direction == D_UP)
 	{
-		tiles[0] = (y * 30) + x;
+		tiles[0] = tile_root;
 		tiles[1] = tiles[0]+1;
 		tiles[2] = tiles[0]+2;
 	}
 	else if (direction == D_RIGHT)
 	{
-		tiles[0] = (y * 30) + x + 2;
+		tiles[0] = tile_root + 2;
 		tiles[1] = tiles[0]+30;
 		tiles[2] = tiles[0]+60;
 	}
 	else if (direction == D_DOWN)
 	{
-		tiles[0] = (y * 30) + x + 60;
+		tiles[0] = tile_root + 60;
 		tiles[1] = tiles[0]+1;
 		tiles[2] = tiles[0]+2;
 	}
 	else
 	{
-		tiles[0] = (y * 30) + x;
+		tiles[0] = tile_root;
 		tiles[1] = tiles[0]+30;
 		tiles[2] = tiles[0]+60;
 	}
@@ -1243,6 +1249,26 @@ void explode_player(Player* player, Player* other_player, u8 hud_x, u8 other_pla
 	}
 }
 
+void slide(Player* player, u8 collision_tile, int tile)
+{
+	u8 tile_x = (tile % 30 * 8);
+	u8 tile_y = (tile / 30 + 3) * 8;
+	if (player->shared.direction == D_UP || player->shared.direction == D_DOWN)
+	{
+		if (collision_tile == 0 && ((player->shared.x - tile_x) > 4))
+			player->shared.x++; 
+		else if (collision_tile == 2 && ((player->shared.x - tile_x) < -12))
+			player->shared.x--;
+	}
+	else
+	{
+		if (collision_tile == 0 && ((player->shared.y - tile_y) > 4))
+			player->shared.y++;
+		else if (collision_tile == 2 && ((player->shared.y - tile_y) < -12))
+			player->shared.y--;
+	}
+}
+
 char collision_detect_player(Player* player, u8 hud_x)
 {
 	int tiles[3] = {0,0,0};
@@ -1250,6 +1276,10 @@ char collision_detect_player(Player* player, u8 hud_x)
 	u8 y = player->shared.y / 8 - 3;
 	u8 hit_water = 0;
 	char explode = 0;
+	u8 collision_tile = 0;
+	char collision_count = 0;
+	u8 tile_x;
+	u8 tile_y;
 	
 	get_interesting_tile_indexes(tiles, x, y, player->shared.direction);
 	
@@ -1264,22 +1294,26 @@ char collision_detect_player(Player* player, u8 hud_x)
 	/* Tile interaction */
 	for (u8 i = 0; i < 3; i++)
 	{
+		tile_x = tiles[i] % 30;
+		tile_y = 3 + tiles[i] / 30;
+		
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
 			(player->handle_id == 9) ? recoil_sprite(&player->shared) : recoil_sprite_fine(&player->shared);
 			player->shared.speed = 0;
 		}
-		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
+		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,tile_x*8,tile_y*8,8,8))
 		{
-			recoil_sprite(&player->shared);
+			collision_count++;
+			collision_tile = i;
 			player->shared.speed = 0;
 		}
-		else if (level.level_map[tiles[i]] == L_WATER && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
+		else if (level.level_map[tiles[i]] == L_WATER && LBCollides(player->shared.x,player->shared.y,16,16,tile_x*8,tile_y*8,8,8))
 		{
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
 		}
-		else if (level.level_map[tiles[i]] == L_SCOPE && LBCollides(player->shared.x,player->shared.y,16,16,(tiles[i]%30)*8,(tiles[i]/30+3)*8,8,8))
+		else if (level.level_map[tiles[i]] == L_SCOPE && LBCollides(player->shared.x,player->shared.y,16,16,tile_x*8,tile_y*8,8,8))
 		{
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
@@ -1290,7 +1324,7 @@ char collision_detect_player(Player* player, u8 hud_x)
 			player->max_speed = OVER_SPEED;
 			player->has_over_speed = true;
 			DrawMap2(hud_x+10, 1, map_speed_itm);
-			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
 		}
 		else if (level.level_map[tiles[i]] == L_ROCKET && !(player->flags & EXPLODING_FLAG))
@@ -1298,13 +1332,13 @@ char collision_detect_player(Player* player, u8 hud_x)
 			level.level_map[tiles[i]] = L_EMPTY;
 			player->has_rocket = true;
 			DrawMap2(hud_x+11, 1, map_rocket_itm);
-			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
 		}
 		else if (level.level_map[tiles[i]] == L_EXPLODE && !(player->flags & EXPLODING_FLAG))
 		{
 			level.level_map[tiles[i]] = L_EMPTY;
-			SetTile(tiles[i] % 30, 3 + tiles[i] / 30, 0);
+			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
 			explode = 1;
 		}
@@ -1314,6 +1348,13 @@ char collision_detect_player(Player* player, u8 hud_x)
 			player->max_speed = MAX_SPEED;
 			if (player->has_over_speed) player->max_speed = OVER_SPEED;
 		}
+	}
+	
+	// Slide
+	if (collision_count) recoil_sprite(&player->shared);
+	if (collision_count == 1)
+	{
+		slide(player, collision_tile, tiles[collision_tile]);
 	}
 	return explode;
 }
@@ -1354,9 +1395,23 @@ void load_level_tiles(u8 blank)
 	}
 }
 
+void prep_player(Player* p, u8 x, u8 y)
+{
+	p->spawn_x = x;
+	p->spawn_y = y;
+	p->level_score = 0;
+	p->has_over_speed = false;
+	p->has_rocket = false;
+	p->max_speed = MAX_SPEED;
+	player_init_shot_state(p);
+	player_spawn(p);
+}
+
 void load_level(int level_number)
 {
     int level_start = level_number*30*25;
+	u8 x;
+	u8 y;
 
 	game.scope_counter = 0;
 	init_tile_animations(&tile_animations);
@@ -1367,28 +1422,16 @@ void load_level(int level_number)
 	game.current_level = level_number;
 	for (int i = 0; i < 30*25; i++)
 	{
+		x = (i % 30) * 8;
+		y = (i / 30 + 3) * 8;
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
 		if (level.level_map[i] == L_P1_SPAWN)
 		{
-			player1.spawn_x = (i % 30) * 8;
-			player1.spawn_y = (i / 30) * 8 + 3*8;
-			player1.level_score = 0;
-			player1.has_over_speed = false;
-			player1.has_rocket = false;
-			player1.max_speed = MAX_SPEED;
-			player_init_shot_state(&player1);
-			player_spawn(&player1);
+			prep_player(&player1, x, y);
 		}
 		if (level.level_map[i] == L_P2_SPAWN)
 		{
-			player2.spawn_x = (i % 30) * 8;
-			player2.spawn_y = (i / 30) * 8 + 3*8;
-			player2.level_score = 0;
-			player2.has_over_speed = false;
-			player2.has_rocket = false;
-			player2.max_speed = MAX_SPEED;
-			player_init_shot_state(&player2);
-			player_spawn(&player2);
+			prep_player(&player2, x, y);
 		}
 	}
 	render_hud(&player1, 0);
@@ -1460,11 +1503,11 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		if (t->shared.x < left_limit)
 		{
 			t->shared.direction = D_RIGHT;
-			t->shared.x += FRAME_TIME*BOSS_TURRET_SPEED;
+			t->shared.speed = LBRandom(BOSS_TURRET_SPEED, BOSS_TURRET_SPEED+50);
 		}
 		else
 		{
-			t->shared.x -= FRAME_TIME*BOSS_TURRET_SPEED;
+			t->shared.x -= FRAME_TIME*t->shared.speed;
 		}
 	}
 	else if (t->shared.direction == D_RIGHT)
@@ -1472,11 +1515,11 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		if (t->shared.x > right_limit)
 		{
 			t->shared.direction = D_LEFT;
-			t->shared.x -= FRAME_TIME*BOSS_TURRET_SPEED;
+			t->shared.speed = LBRandom(BOSS_TURRET_SPEED, BOSS_TURRET_SPEED+50);
 		}
 		else
 		{
-			t->shared.x += FRAME_TIME*BOSS_TURRET_SPEED;
+			t->shared.x += FRAME_TIME*t->shared.speed;
 		}
 	}
 }
@@ -1692,22 +1735,13 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		demo_counter++;
 		held = ReadJoypad(0);
-	}
-	if (game.selection == CPUVCPU &&
-	    (((held & BTN_X) ||
-		 (held & BTN_START) ||
-		 (held & BTN_SL) ||
-		 (held & BTN_SR) ||
-		 (held & BTN_SELECT) ||
-		 (held & BTN_Y) ||
-		 (held & BTN_B)) ||
-		demo_counter >= DEMO_LENGTH)
-		)
-	{
-		demo_counter = 0;
-		fade_through();
-		init_game_state();
-		load_splash();
+		if (held || (demo_counter >= DEMO_LENGTH))
+		{
+			demo_counter = 0;
+			fade_through();
+			init_game_state();
+			load_splash();
+		}
 	}
 }
 
@@ -1721,6 +1755,11 @@ void load_splash()
 	Print(5, 26, (char*) strCopyright);
 	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
+}
+
+char select_pressed(JoyPadState* p)
+{
+	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)
@@ -1744,7 +1783,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			MoveSprite(0, 6*8, 15*8, 1, 1);
 			break;
 	}
-	Print(9, 21, (char*) strSelectHandle);
+	Print(6, 21, (char*) strSelectHandle);
 
 	// Update
 	if (p1->pressed) demo_counter = 0;
@@ -1761,7 +1800,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		if (game.selection > TR) game.selection = TR;
 		SFX_NAVIGATE;
 	}
-	else if ((p1->pressed & BTN_A) && ((game.selection == PVCPU) || (game.selection == PVP)))
+	else if (select_pressed(p1) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
 		demo_counter = 0;
 		p1s.select_state = SELECTING;
@@ -1772,7 +1811,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		load_handle_select();
 		return;
 	}
-	else if ((p1->pressed & BTN_A) && (game.selection == TR))
+	else if (select_pressed(p1) && (game.selection == TR))
 	{
 		demo_counter = 0;
 		SFX_NAVIGATE;
@@ -1839,7 +1878,7 @@ void load_tank_rank()
 	Print(10, 24, (char*) strCancelHandle);
 }
 
-void update_tank_rank(JoyPadState* p1, JoyPadState* p2)
+void update_tank_rank(JoyPadState* p1)
 {
 	static u16 tank_rank_counter = 0;
 	
@@ -1887,7 +1926,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		if (ps->handle_id > 8) ps->handle_id = 8;
 		SFX_NAVIGATE;
 	}
-	else if ((p->pressed & BTN_A) && (ps->select_state == SELECTING))
+	else if (select_pressed(p) && (ps->select_state == SELECTING))
 	{
 		ps->select_state = EDITING;
 		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
@@ -1917,7 +1956,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
 		SFX_NAVIGATE;
 	}
-	else if ((p->pressed & BTN_A) && (ps->select_state == EDITING))
+	else if (select_pressed(p) && (ps->select_state == EDITING))
 	{
 		player->handle_id = ps->handle_id;
 		LBCopyChars(player->handle, ps->handle, 3);
@@ -1986,10 +2025,10 @@ void load_handle_select()
 		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
-	Print(8, 21, (char*) strSelectHandle);
-	Print(8, 22, (char*) strConfirmHandle);
-	Print(8, 23, (char*) strCancelHandle);
-	Print(8, 24, (char*) strChangeHandle);
+	Print(5, 21, (char*) strSelectHandle);
+	Print(5, 22, (char*) strConfirmHandle);
+	Print(5, 23, (char*) strCancelHandle);
+	Print(5, 24, (char*) strChangeHandle);
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -2068,25 +2107,28 @@ char crash_and_turn(char current_x, char current_y, u8 recoiled, Player* player,
 			recoiled = 0;
 		}
 	}
-	if ((p->held & BTN_LEFT) && recoiled)
+	if (recoiled)
 	{
-		p->held = BTN_UP;
-		player->feeling_my_way = 1;
-	}
-	else if ((p->held & BTN_UP) && recoiled)
-	{
-		p->held = BTN_RIGHT;
-		player->feeling_my_way = 1;
-	}
-	else if ((p->held & BTN_RIGHT) && recoiled)
-	{
-		p->held = BTN_DOWN;
-		player->feeling_my_way = 1;
-	}
-	else if ((p->held & BTN_DOWN) && recoiled)
-	{
-		p->held = BTN_LEFT;
-		player->feeling_my_way = 1;
+		if (p->held & BTN_LEFT)
+		{
+			p->held = BTN_UP;
+			player->feeling_my_way = 1;
+		}
+		else if (p->held & BTN_UP)
+		{
+			p->held = BTN_RIGHT;
+			player->feeling_my_way = 1;
+		}
+		else if (p->held & BTN_RIGHT)
+		{
+			p->held = BTN_DOWN;
+			player->feeling_my_way = 1;
+		}
+		else if (p->held & BTN_DOWN)
+		{
+			p->held = BTN_LEFT;
+			player->feeling_my_way = 1;
+		}
 	}
 
 	if ((player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) && current_y == player->goal) return 1;
@@ -2115,6 +2157,15 @@ u16 get_cpu_goal_direction(char distance_x, char distance_y)
 	return direction;
 }
 
+void evade(Player* player, JoyPadState* p)
+{	
+	p->held = BTN_UP;
+	if (player->shared.direction == D_UP || player->shared.direction == D_DOWN)
+	{
+		p->held = BTN_LEFT;
+	}
+}
+
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
@@ -2126,6 +2177,9 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char distance_y;
 	char player_x;
 	char player_y;
+	int bdx = other_player->shot[0].shared.x - player->shared.x;
+	int bdy = other_player->shot[0].shared.y - player->shared.y;
+	static u8 evade_delay = 0;
 	
 	goal_x = other_player->shared.x / 8;
 	goal_y = other_player->shared.y / 8 - 3;
@@ -2140,14 +2194,23 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		return;
 	}
 	
+	// Take evasive action
+	if (evade_delay) evade_delay --;
+	if (other_player->active_shots > 0 && ((bdx*bdx + bdy*bdy) < 800) && evade_delay == 0)
+	{
+		evade(player, p);
+		evade_delay = 0xff;
+		return;
+	}
+	
 	// Shot
-	if (p->pressed & BTN_A)
+	if (shoot_pressed(p))
 	{
 		p->pressed = 0;
 	}
 	if (global_frame_counter % DEFAULT_FRAMES_PER_SHOT == 0 && player->grace_frame > 50)
 	{
-		p->pressed = BTN_A;
+		p->pressed = BTN_B;
 	}
 		
 	// Determine goal
@@ -2223,7 +2286,7 @@ int main()
 				break;
 			case TANK_RANK:
 				LBGetJoyPadState(&p1, 0);
-				update_tank_rank(&p1, &p2);
+				update_tank_rank(&p1);
 				break;
 			case HANDLE_SELECT:
 				LBGetJoyPadState(&p1, 0);
