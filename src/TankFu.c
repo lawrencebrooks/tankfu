@@ -1068,24 +1068,28 @@ void richochet(u8 tile_type, SpriteShared* sprite)
 	switch (tile_type)
 	{
 		case L_TL:
-			sprite->direction = D_DOWN;
 			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
 				sprite->direction = D_RIGHT;
+			else
+				sprite->direction = D_DOWN;
 			break;
 		case L_TR:
-			sprite->direction = D_DOWN;
 			if (sprite->direction == D_UP || sprite->direction == D_DOWN)
 				sprite->direction = D_LEFT;
+			else
+				sprite->direction = D_DOWN;
 			break;
 		case L_BL:
-			sprite->direction = D_UP;
 			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
 				sprite->direction = D_RIGHT;
+			else
+				sprite->direction = D_UP;
 			break;
 		case L_BR:
-			sprite->direction = D_UP;
 			if (sprite->direction == D_DOWN || sprite->direction == D_UP)
 				sprite->direction = D_LEFT;
+			else
+				sprite->direction = D_UP;
 			break;
 	}
 }
@@ -2157,15 +2161,6 @@ u16 get_cpu_goal_direction(char distance_x, char distance_y)
 	return direction;
 }
 
-void evade(Player* player, JoyPadState* p)
-{	
-	p->held = BTN_UP;
-	if (player->shared.direction == D_UP || player->shared.direction == D_DOWN)
-	{
-		p->held = BTN_LEFT;
-	}
-}
-
 void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 {
 	// Update joy pad state artificially for a CPU player using crash and turn pathfinding and custom
@@ -2177,9 +2172,6 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char distance_y;
 	char player_x;
 	char player_y;
-	int bdx = other_player->shot[0].shared.x - player->shared.x;
-	int bdy = other_player->shot[0].shared.y - player->shared.y;
-	static u8 evade_delay = 0;
 	
 	goal_x = other_player->shared.x / 8;
 	goal_y = other_player->shared.y / 8 - 3;
@@ -2191,15 +2183,6 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	if (player->grace_frame == 0)
 	{
 		p->held = 0;
-		return;
-	}
-	
-	// Take evasive action
-	if (evade_delay) evade_delay --;
-	if (other_player->active_shots > 0 && ((bdx*bdx + bdy*bdy) < 800) && evade_delay == 0)
-	{
-		evade(player, p);
-		evade_delay = 0xff;
 		return;
 	}
 	
