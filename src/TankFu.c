@@ -194,7 +194,6 @@ void set_shot_animations(Shot* s, u8 shot_type)
 void init_turret(Turret* t, float x, float y)
 {
 	t->lives = BOSS_TURRET_LIVES;
-	t->flags = 0;
 	t->shared.direction = D_LEFT;
 	t->shared.recoiled = 0;
 	t->shared.speed = BOSS_TURRET_SPEED;

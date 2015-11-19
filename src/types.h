@@ -49,7 +49,6 @@ typedef struct sShot {
 typedef struct sTurret {
 	SpriteShared shared;
 	u8 lives;
-	u8 flags;
 	Shot shot[MAX_SHOTS];
 } Turret;
 
