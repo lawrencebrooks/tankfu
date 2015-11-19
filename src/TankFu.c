@@ -877,9 +877,9 @@ void recoil_sprite(SpriteShared* sprite)
 	sprite->recoiled = 1;
 }
 
-void recoil_sprite_fine(SpriteShared* sprite)
+void recoil_sprite_fine(Player* p, SpriteShared* sprite)
 {	
-	float speed = FRAME_TIME * sprite->speed;
+	float speed = get_delta(p, sprite);
 	
 	if (sprite->direction == D_UP)
 	{
@@ -1189,7 +1189,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	
 	if (hit & HIT_ANGLE)
 	{
-		recoil_sprite_fine(&shot->shared);
+		recoil_sprite_fine(player, &shot->shared);
 		richochet(angle_tile, &shot->shared);
 		shot->rebounds--;
 		if (shot->rebounds <= 0)
@@ -1309,7 +1309,7 @@ char collision_detect_player(Player* player, u8 hud_x)
 		
 		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->shared.x, player->shared.y, 16, 16))
 		{
-			(player->handle_id == 9) ? recoil_sprite(&player->shared) : recoil_sprite_fine(&player->shared);
+			(player->handle_id == 9) ? recoil_sprite(&player->shared) : recoil_sprite_fine(player, &player->shared);
 			player->shared.speed = 0;
 		}
 		else if (solid_square_tile(tiles[i]) && LBCollides(player->shared.x,player->shared.y,16,16,tile_x*8,tile_y*8,8,8))
