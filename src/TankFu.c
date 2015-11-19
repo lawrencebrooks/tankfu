@@ -480,6 +480,13 @@ char shoot_pressed(JoyPadState* p)
 	return (p->pressed & BTN_A) || (p->pressed & BTN_B);
 }
 
+float get_delta(Player* p, SpriteShared* s)
+{
+	if (p->goal == 0)
+		return FRAME_TIME * s->speed;
+	return FRAME_TIME * s->speed * AI_SPEED_FACTOR;
+}
+
 void update_player(JoyPadState* p, Player* player)
 {
 	Shot* shot;
@@ -503,22 +510,22 @@ void update_player(JoyPadState* p, Player* player)
 		if ((p->held & BTN_UP))
 		{
 			player->shared.direction = D_UP;
-			player->shared.y -= FRAME_TIME * player->shared.speed;
+			player->shared.y -= get_delta(player, &player->shared);
 		}
 		else if ((p->held & BTN_RIGHT))
 		{
 			player->shared.direction = D_RIGHT;
-			player->shared.x += FRAME_TIME * player->shared.speed;
+			player->shared.x += get_delta(player, &player->shared);
 		}
 		else if ((p->held & BTN_DOWN))
 		{
 			player->shared.direction = D_DOWN;
-			player->shared.y += FRAME_TIME * player->shared.speed;
+			player->shared.y += get_delta(player, &player->shared);
 		}
 		else if ((p->held & BTN_LEFT))
 		{
 			player->shared.direction = D_LEFT;
-			player->shared.x -= FRAME_TIME * player->shared.speed;
+			player->shared.x -= get_delta(player, &player->shared);
 		}
 		else
 		{
@@ -567,13 +574,13 @@ void update_player(JoyPadState* p, Player* player)
 			{
 				switch (shot->shared.direction)
 				{
-					case D_UP: shot->shared.y -= FRAME_TIME * shot->shared.speed; break;
-					case D_RIGHT: shot->shared.x += FRAME_TIME * shot->shared.speed; break;
-					case D_DOWN: shot->shared.y += FRAME_TIME * shot->shared.speed; break;
-					case D_LEFT: shot->shared.x -= FRAME_TIME * shot->shared.speed; break;
+					case D_UP: shot->shared.y -= get_delta(player, &shot->shared); break;
+					case D_RIGHT: shot->shared.x += get_delta(player, &shot->shared); break;
+					case D_DOWN: shot->shared.y += get_delta(player, &shot->shared); break;
+					case D_LEFT: shot->shared.x -= get_delta(player, &shot->shared); break;
 					default: break;
 				}
-				shot->distance += (shot->distance <= DISTANCE_TO_ARM) ? FRAME_TIME * shot->shared.speed : 0;
+				shot->distance += (shot->distance <= DISTANCE_TO_ARM) ? get_delta(player, &shot->shared) : 0;
 				collision_detect_shot(player, shot);
 			}
 		}
@@ -1873,7 +1880,10 @@ void load_tank_rank()
 		PrintByte(23, y, scores.data[i+2] ,true);
 		PrintChar(24, y, '-');
 		PrintByte(27, y, scores.data[i+3] ,true);
-		if (scores.data[i+4]) PrintChar(29, y, '*');
+		if (scores.data[i+4])
+			PrintChar(29, y, '*');
+		else
+			PrintChar(29, y, ' ');
 		y += 3;
 		rank += 1;
 	}
