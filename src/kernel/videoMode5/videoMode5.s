@@ -57,10 +57,10 @@
 
 .section .bss
 	vram: 	  		.space VRAM_SIZE	;allocate space for the video memory (VRAM)
-	tile_table_lo:	.byte 1
-	tile_table_hi:	.byte 1
-	font_tile_index:.byte 1 
-	
+	tile_table_lo:	.space 1
+	tile_table_hi:	.space 1
+	font_tile_index:.space 1
+
 .section .text
 
 sub_video_mode5:
@@ -85,10 +85,7 @@ next_text_line:
 	;***draw line***
 	call render_tile_line
 
-	ldi r19,16 - CENTER_ADJUSTMENT
-	dec r19			
-	brne .-4
-
+	WAIT r19,48 - CENTER_ADJUSTMENT
 
 	dec r10
 	breq text_frame_end

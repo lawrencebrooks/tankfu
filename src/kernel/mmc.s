@@ -23,10 +23,12 @@
 #define MMC_CS     6
 
 // command values to be used with mmccommand
-#define CMD_RESET 0
-#define CMD_INIT 1
-#define CMD_SEND_CSD 9
-#define CMD_READBLOCK 17
+#define CMD_RESET		0
+#define CMD_INIT		1
+#define CMD_SEND_CSD		9
+#define CMD_STOPTRANSMISSION 	12
+#define CMD_READBLOCK		17
+#define CMD_READMULTIBLOCK 	18
 
 
 .global spi_byte
@@ -40,7 +42,7 @@
 
 
 .section .bss
-	sector_buffer_ptr:	.word 1  ;pointer to sector buffer (at least 512 bytes)
+	sector_buffer_ptr:	.space 2  ;pointer to sector buffer (at least 512 bytes)
 	last_sector:		.space 4 ;used for caching
 
 .section .text

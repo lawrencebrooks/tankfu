@@ -61,72 +61,58 @@
 
 
 mix_buf: 	  .space MIX_BUF_SIZE
-mix_pos:	  .word 1
-mix_bank: 	  .byte 1 ;0=first half,1=second half
-mix_block:	  .byte 1
+mix_pos:	  .space 2
+mix_bank: 	  .space 1 ;0=first half,1=second half
+mix_block:	  .space 1
 
-sound_enabled:.byte 1
+sound_enabled:.space 1
 
 //struct MixerStruct -> soundEngine.h
-mixer:	
+mixer:
 mixerStruct:
 
 
-tr1_vol:		 .byte 1
-tr1_step_lo:	 .byte 1
-tr1_step_hi:	 .byte 1
-tr1_pos_frac:	 .byte 1
-tr1_pos_lo:		 .byte 1
-tr1_pos_hi:		 .byte 1
-;tr1_loop_start_lo: .byte 1
-;tr1_loop_start_hi: .byte 1
-;tr1_loop_end_lo: .byte 1
-;tr1_loop_end_hi: .byte 1
+tr1_vol:		 .space 1
+tr1_step_lo:	 .space 1
+tr1_step_hi:	 .space 1
+tr1_pos_frac:	 .space 1
+tr1_pos_lo:		 .space 1
+tr1_pos_hi:		 .space 1
 
-tr2_vol:		 .byte 1
-tr2_step_lo:	 .byte 1
-tr2_step_hi:	 .byte 1
-tr2_pos_frac:	 .byte 1
-tr2_pos_lo:		 .byte 1
-tr2_pos_hi:		 .byte 1
-;tr2_loop_start_lo: .byte 1
-;tr2_loop_start_hi: .byte 1
-;tr2_loop_end_lo: .byte 1
-;tr2_loop_end_hi: .byte 1
+tr2_vol:		 .space 1
+tr2_step_lo:	 .space 1
+tr2_step_hi:	 .space 1
+tr2_pos_frac:	 .space 1
+tr2_pos_lo:		 .space 1
+tr2_pos_hi:		 .space 1
 
-tr3_vol:		 .byte 1
-tr3_step_lo:	 .byte 1
-tr3_step_hi:	 .byte 1
-tr3_pos_frac:	 .byte 1
-tr3_pos_lo:		 .byte 1
-tr3_pos_hi:		 .byte 1
-;tr3_loop_start_lo: .byte 1
-;tr3_loop_start_hi: .byte 1
-;tr3_loop_end_lo: .byte 1
-;tr3_loop_end_hi: .byte 1
+tr3_vol:		 .space 1
+tr3_step_lo:	 .space 1
+tr3_step_hi:	 .space 1
+tr3_pos_frac:	 .space 1
+tr3_pos_lo:		 .space 1
+tr3_pos_hi:		 .space 1
+
 
 #if MIXER_CHAN4_TYPE == 0
-	tr4_vol:		 .byte 1
-	tr4_params:		 .byte 1 //bit0=>0=7,1=15 bits lfsr, b1:6=divider 
-	tr4_barrel_lo:	 .byte 1
-	tr4_barrel_hi:	 .byte 1
-	tr4_divider:	 .byte 1 ;current divider accumulator
-	tr4_reserved1:	 .byte 1
-;	tr4_reserved2:	 .byte 1
-;	tr4_reserved3:	 .byte 1
-;	tr4_reserved4:	 .byte 1
-;	tr4_reserved5:	 .byte 1
+	tr4_vol:		 .space 1
+	tr4_params:		 .space 1 //bit0=>0=7,1=15 bits lfsr, b1:6=divider
+	tr4_barrel_lo:	 .space 1
+	tr4_barrel_hi:	 .space 1
+	tr4_divider:	 .space 1 ;current divider accumulator
+	tr4_reserved1:	 .space 1
+
 #else
-	tr4_vol:		 .byte 1
-	tr4_step_lo:	 .byte 1
-	tr4_step_hi:	 .byte 1
-	tr4_pos_frac:	 .byte 1
-	tr4_pos_lo:		 .byte 1
-	tr4_pos_hi:		 .byte 1
-	tr4_loop_start_lo: .byte 1
-	tr4_loop_start_hi: .byte 1
-	tr4_loop_end_lo: .byte 1
-	tr4_loop_end_hi: .byte 1
+	tr4_vol:		 .space 1
+	tr4_step_lo:	 .space 1
+	tr4_step_hi:	 .space 1
+	tr4_pos_frac:	 .space 1
+	tr4_pos_lo:		 .space 1
+	tr4_pos_hi:		 .space 1
+	tr4_loop_len_lo: .space 1
+	tr4_loop_len_hi: .space 1
+	tr4_loop_end_lo: .space 1
+	tr4_loop_end_hi: .space 1
 
 #endif
 
@@ -205,27 +191,23 @@ end_set_bank:
 			lds r24,tr4_divider
 		#else
 			lds r21,tr4_vol
-			lds r22,tr4_pos_lo
-			lds r23,tr4_pos_hi
+			lds ZL,tr4_pos_lo
+			lds ZH,tr4_pos_hi
 			lds r24,tr4_pos_frac
 
 			lds r4,tr4_step_lo 
 			lds r5,tr4_step_hi 
 			clr r6
+
+			;compute loop start
+			movw r10,ZL
+			lds r0,tr4_loop_len_lo
+			lds r1,tr4_loop_len_hi
+			sub r10,r0
+			sbc r11,r1
 			lds r8,tr4_loop_end_lo
 			lds r9,tr4_loop_end_hi
-
-			//lds r10,tr4_loop_start_lo
-			//lds r11,tr4_loop_start_hi
 			
-			;compute loop lenght
-			lds ZL,tr4_loop_start_lo
-			lds ZH,tr4_loop_start_hi
-			movw r10,r8
-			sub r10,ZL
-			sbc r11,ZH
-			
-
 			movw r2,XL	;push
 
 			ldi r28,lo8(262/2)
@@ -233,16 +215,14 @@ end_set_bank:
 			;channel 4 -PCM mode
 		.rept 2
 			add r24,r4
-			adc r22,r5
-			adc r23,r6
+			adc ZL,r5
+			adc ZH,r6
 
-			cp r22,r8
-			cpc r23,r9
-			brlo .+4
-			sub r22,r10	;substract loop lenght
-			sbc r23,r11 
+			cp ZL,r8
+			cpc ZH,r9
+			brlo .+2
+			movw ZL,r10
 
-			movw ZL,r22
 			lpm	r20,Z	;load sample
 			mulsu r20,r21;(sample*mixing vol)
 			st X+,r1
@@ -251,7 +231,14 @@ end_set_bank:
 			dec r28
 			brne ch4_loop
 
-			movw XL,r2	;push
+			movw XL,r2	;pop
+
+			//save positions
+			sts tr4_vol,r21
+			sts tr4_pos_lo,ZL
+			sts tr4_pos_hi,ZH
+			sts tr4_pos_frac,r24
+
 
 		#endif	//MIXER_CHAN4_TYPE == 0
 	
@@ -418,12 +405,6 @@ mix_loop:
 	sts tr4_barrel_lo,r22
 	sts tr4_barrel_hi,r23
 	sts tr4_divider,r24
-#else
-	sts tr4_vol,r21	
-	sts tr4_pos_lo,r22
-	sts tr4_pos_hi,r23
-	sts tr4_pos_frac,r24
-
 #endif
 
 	pop r29

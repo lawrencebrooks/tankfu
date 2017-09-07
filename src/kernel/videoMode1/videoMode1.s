@@ -68,10 +68,10 @@
 
 .section .bss
 	vram: 	  		.space VRAM_SIZE	;allocate space for the video memory (VRAM)
-	font_table_lo:	.byte 1			;pointer to user font table
-	font_table_hi:	.byte 1	
-	tile_table_lo:	.byte 1
-	tile_table_hi:	.byte 1
+	font_table_lo:	.space 1			;pointer to user font table
+	font_table_hi:	.space 1
+	tile_table_lo:	.space 1
+	tile_table_hi:	.space 1
 	
 .section .text
 
@@ -93,7 +93,7 @@ sub_video_mode1:
 next_tile_line:	
 	rcall hsync_pulse
 
-	WAIT r19,264 - AUDIO_OUT_HSYNC_CYCLES + CENTER_ADJUSTMENT
+	WAIT r19,HSYNC_USABLE_CYCLES - AUDIO_OUT_HSYNC_CYCLES + CENTER_ADJUSTMENT
 	
 	call render_tile_line
 
