@@ -59,6 +59,7 @@ typedef struct sPlayer {
 	u8 score;
 	u8 level_score;
 	u8 active_shots;
+	u8 old_active_shots;
 	u8 spawn_x;
 	u8 spawn_y;
 	u8 flags;
@@ -69,6 +70,8 @@ typedef struct sPlayer {
 	u8 has_rocket;
 	u8 has_over_speed;
 	u8 feeling_my_way;
+	u8 tank_tactic;
+	u8 shot_tactic;
 	u16 goal_direction;
 	u16 deadlock_count_x;
 	u16 deadlock_count_y;
@@ -89,9 +92,16 @@ typedef struct sGameState {
 	u8 boss_fight_status;
 	u8 boss_fight_player_hud;
 	u8 boss_fight_player_lives;
+	u8 toggle_counter;
+	u8 toggle_blank;
+	u8 clear_banter_1;
+	u8 clear_banter_2;
+	u8 demo_choice;
+	u16 demo_counter;
+	u16 scope_counter;
+	u16 tank_rank_counter;
 	Player* boss_fight_player;
 	JoyPadState* boss_fight_joypad;
-	u16 scope_counter;
 	char selection;
 } Game;
 

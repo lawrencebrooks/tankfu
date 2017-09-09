@@ -262,6 +262,7 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 
 	/* Shot */
 	p->active_shots = 0;
+	p->old_active_shots = 0;
 	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
 		init_shot_state(&p->shot[i], BASIC_SHOT);
@@ -282,6 +283,7 @@ void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_righ
 void player_init_shot_state(Player* player)
 {
 	player->active_shots = 0;
+	player->old_active_shots = 0;
 	for (u8 i = 0; i < MAX_SHOTS; i++)
 	{
 		init_shot_state(&player->shot[i], BASIC_SHOT);
@@ -299,6 +301,13 @@ void init_game_state()
 	game.boss_fight_joypad = 0;
 	game.boss_fight_player_lives = BOSS_FIGHT_PLAYER_LIVES;
 	game.boss_fight_player_hud = 0;
+	game.toggle_counter = FRAMES_PER_BLANK;
+	game.toggle_blank = 0;
+	game.clear_banter_1 = 1;
+	game.clear_banter_2 = 1;
+	game.demo_counter = 0;
+	game.demo_choice = 0;
+	game.tank_rank_counter = 0;
 	init_player(&player1, map_tank1_up_0, map_tank1_right_0);
 	init_player(&player2, map_tank2_up_0, map_tank2_right_0);
 }
@@ -312,6 +321,8 @@ void player_spawn(Player* player)
 	player->shared.direction = D_UP;
 	player->shared.speed = 0;
 	player->shared.recoiled = 0;
+	player->tank_tactic = LBRandom(0, 2);
+	player->shot_tactic = LBRandom(0, 2);
 	
 }
 
@@ -420,7 +431,6 @@ void exit_game()
 {
     save_score();
 	fade_through();
-	SetSpriteVisibility(true);
 	init_game_state();
 	load_tank_rank();
 }
@@ -492,6 +502,7 @@ void update_player(JoyPadState* p, Player* player)
 	Shot* shot;
 	
 	player->shared.recoiled = 0;
+	player->old_active_shots = player->active_shots;
 	if ((p->pressed & BTN_START) && (game.boss_fight_status == 0))
 	{
 		SFX_NAVIGATE;
@@ -604,8 +615,8 @@ void resolve_scoring()
 		if (player1.level_score >= MAX_LEVEL_SCORE && !(player2.flags & EXPLODING_FLAG))
 		{
 			next_level = game.current_level + 1;
+			LBHideAllSprites();
 			load_level_tiles(true);
-			SetSpriteVisibility(false);
 			print_level_score(&player1, &player2);
 			LBWaitSeconds(TEXT_LINGER);
 			player1.level_score = 0;
@@ -615,8 +626,8 @@ void resolve_scoring()
 		else if (player2.level_score >= MAX_LEVEL_SCORE && !(player1.flags & EXPLODING_FLAG))
 		{
 			next_level = game.current_level + 1;
+			LBHideAllSprites();
 			load_level_tiles(true);
-			SetSpriteVisibility(false);
 			print_level_score(&player2, &player1);
 			LBWaitSeconds(TEXT_LINGER);
 			player1.level_score = 0;
@@ -658,8 +669,8 @@ void resolve_scoring()
 			}
 			
 			// Print level score
+			LBHideAllSprites();
 			load_level_tiles(true);
-			SetSpriteVisibility(false);
 			if (player1.level_score > player2.level_score)
 				print_level_score(&player1, &player2);
 			else
@@ -775,8 +786,6 @@ char tank_map(Player* player, char sprite_index)
 {
 	char* t_map = 0;
 	u8 t_flags = 0;
-	static u8 toggle_counter = FRAMES_PER_BLANK;
-	static u8 toggle_blank = 0;
 
 	if (player->flags & EXPLODING_FLAG)
 	{
@@ -803,15 +812,15 @@ char tank_map(Player* player, char sprite_index)
 			case D_LEFT: t_map = LBGetNextFrame(&player->right_anim); t_flags = SPRITE_FLIP_X; break;
 			default: t_map = LBGetNextFrame(&player->up_anim); t_flags = 0; break;
 		}
-		if ((player->grace_frame != FRAMES_PER_GRACE) && (toggle_blank))
+		if ((player->grace_frame != FRAMES_PER_GRACE) && (game.toggle_blank))
 		{
 			t_map = (char*) map_tank_blank;
 		}
-		toggle_counter--;
-		if (toggle_counter == 0)
+		game.toggle_counter--;
+		if (game.toggle_counter == 0)
 		{
-			toggle_counter = FRAMES_PER_BLANK;
-			toggle_blank = toggle_blank ^ 1;
+			game.toggle_counter = FRAMES_PER_BLANK;
+			game.toggle_blank = game.toggle_blank ^ 1;
 		}
 	}
 	MapSprite2(sprite_index, (const char*) t_map, t_flags);
@@ -1594,14 +1603,11 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	char t1_shot_index = 0;
 	char t2_shot_index = 0;
 	u16 held = 0;
-	static u8 clear_banter_1 = 1;
-	static u8 clear_banter_2 = 1;
-	static u16 demo_counter = 0;
 
 	if (game.paused)
 	{
 		// Render
-		SetSpriteVisibility(false);
+		LBHideAllSprites();
 		DrawMap2(8, 12, (const char*) map_pause);
 		Print(12, 13, (char*) strPaused);
 		Print(11, 14, (char*) strExit);
@@ -1613,7 +1619,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	else if (game.boss_fight_status == BOSS_FIGHT_SCOPE_LOADING)
 	{
 		// Render
-		SetSpriteVisibility(true);
 		render_boss_fight_scope_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1633,7 +1638,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_LOADING)
 	{
 		// Render
-		SetSpriteVisibility(true);
 		render_boss_fight_sub_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1658,7 +1662,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		}
 		
 		// Render
-		SetSpriteVisibility(true);
 		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
 		t1_index = shot_map(game.boss_fight_player, p1_shot_index);
 		t1_shot_index = t1_index+1;
@@ -1688,7 +1691,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_SINKING)
 	{
 		// Render
-		SetSpriteVisibility(true);
 		render_boss_fight_sub_sinking();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1715,13 +1717,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (game.boss_fight_status == 0)
 	{
-		SetSpriteVisibility(true);
 		p2_index = tank_map(&player1, p1_index);
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
 		shot_map(&player2, p2_shot_index);
-		clear_banter_1 = render_banter(&player1, 15, clear_banter_1);
-		clear_banter_2 = render_banter(&player2, 0, clear_banter_2);
+		game.clear_banter_1 = render_banter(&player1, 15, game.clear_banter_1);
+		game.clear_banter_2 = render_banter(&player2, 0, game.clear_banter_2);
 		render_player(&player1, p1_index);
 		render_player(&player2, p2_index);
 		render_shot(&player1, p1_shot_index);
@@ -1743,11 +1744,11 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	
 	if (game.selection == CPUVCPU) 
 	{
-		demo_counter++;
+		game.demo_counter++;
 		held = ReadJoypad(0);
-		if (held || (demo_counter >= DEMO_LENGTH))
+		if (held || (game.demo_counter >= DEMO_LENGTH))
 		{
-			demo_counter = 0;
+			game.demo_counter = 0;
 			fade_through();
 			init_game_state();
 			load_splash();
@@ -1776,11 +1777,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 /*
  * Splash or title screen
  */
-{
-	static u16 demo_counter = 0;
-	static u8 demo_choice = 0;
-	
-	// Render
+{		// Render
 	switch (game.selection)
 	{
 		case PVCPU:
@@ -1796,7 +1793,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	Print(6, 21, (char*) strSelectHandle);
 
 	// Update
-	if (p1->pressed) demo_counter = 0;
+	if (p1->pressed) game.demo_counter = 0;
 	
 	if (p1->pressed & BTN_UP)
 	{
@@ -1812,7 +1809,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (select_pressed(p1) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
-		demo_counter = 0;
+		game.demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
 		SFX_NAVIGATE;
@@ -1823,17 +1820,17 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (select_pressed(p1) && (game.selection == TR))
 	{
-		demo_counter = 0;
+		game.demo_counter = 0;
 		SFX_NAVIGATE;
 		fade_through();
 		load_eeprom(&scores);
 		load_tank_rank();
 		return;
 	}
-	else if (demo_counter >= DEMO_WAIT)
+	else if (game.demo_counter >= DEMO_WAIT)
 	{
-		demo_counter = 0;
-		if (demo_choice % 2 == 0)
+		game.demo_counter = 0;
+		if (game.demo_choice % 2 == 0)
 		{
 			game.selection = CPUVCPU;
 			player1.handle_id = 9;
@@ -1852,11 +1849,11 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			load_eeprom(&scores);
 			load_tank_rank();
 		}
-		demo_choice++;
+		game.demo_choice++;
 		return;
 		
 	}
-	demo_counter++;
+	game.demo_counter++;
 }
 
 void load_tank_rank()
@@ -1893,19 +1890,17 @@ void load_tank_rank()
 
 void update_tank_rank(JoyPadState* p1)
 {
-	static u16 tank_rank_counter = 0;
-	
 	// Update
 	if (p1->pressed & BTN_X)
 	{
-		tank_rank_counter = 0;
+		game.tank_rank_counter = 0;
 		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
 	}
 	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
 	{
-		tank_rank_counter = 0;
+		game.tank_rank_counter = 0;
 	    SFX_NAVIGATE;
 	    init_scores(&scores);
 	    init_handles(&handles);
@@ -1914,14 +1909,14 @@ void update_tank_rank(JoyPadState* p1)
 	    load_tank_rank();
 	}
 	
-	if (tank_rank_counter > TANK_RANK_LENGTH)
+	if (game.tank_rank_counter > TANK_RANK_LENGTH)
 	{
-		tank_rank_counter = 0;
+		game.tank_rank_counter = 0;
 		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
 	}
-	tank_rank_counter++;
+	game.tank_rank_counter++;
 }
 
 
@@ -2150,21 +2145,37 @@ char crash_and_turn(char current_x, char current_y, u8 recoiled, Player* player,
 	return 0;
 }
 
-u16 get_cpu_goal_direction(char distance_x, char distance_y)
+u16 get_cpu_goal_direction(Player* player, char distance_x, char distance_y)
 {
 	char abs_distance_x = (distance_x < 0) ? -distance_x : distance_x;
 	char abs_distance_y = (distance_y < 0) ? -distance_y : distance_y;
 	u16 direction = BTN_UP;
 	
-	if (abs_distance_x > abs_distance_y)
+	if (player->tank_tactic == TACTIC_TANK_ATTACK)
 	{
-		direction = BTN_LEFT;
-		if (distance_x > 0) direction = BTN_RIGHT;
+		if (abs_distance_x > abs_distance_y)
+		{
+			direction = BTN_LEFT;
+			if (distance_x > 0) direction = BTN_RIGHT;
+		}
+		else
+		{
+			direction = BTN_UP;
+			if (distance_y > 0) direction = BTN_DOWN;
+		}
 	}
 	else
 	{
-		direction = BTN_UP;
-		if (distance_y > 0) direction = BTN_DOWN;
+		if (abs_distance_x > abs_distance_y)
+		{
+			direction = BTN_RIGHT;
+			if (distance_x > 0) direction = BTN_LEFT;
+		}
+		else
+		{
+			direction = BTN_DOWN;
+			if (distance_y > 0) direction = BTN_UP;
+		}
 	}
 	
 	return direction;
@@ -2219,7 +2230,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		}
 		else
 		{
-			player->goal_direction = get_cpu_goal_direction(distance_x, distance_y);
+			player->goal_direction = get_cpu_goal_direction(player, distance_x, distance_y);
 			player->goal = goal_x;
 			if (player->goal_direction == BTN_UP || player->goal_direction == BTN_DOWN) player->goal = goal_y;
 		}
@@ -2250,6 +2261,70 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		player->deadlock_count_y = 0;
 	}
 	else player->goal_reached = crash_and_turn(player->shared.x / 8, player->shared.y / 8 - 3, player->shared.recoiled, player, p);
+	
+	// Re-act to player shot
+	if (player->shot_tactic == TACTIC_SHOT_EVADE && other_player->old_active_shots < other_player->active_shots)
+	{
+		if (other_player->shared.y < player->shared.y && other_player->shared.x < player->shared.x)
+		{
+			if (other_player->shared.direction == D_DOWN && player->shared.direction == D_LEFT)
+			{
+				p->held = BTN_RIGHT;
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+			}
+			if (other_player->shared.direction == D_RIGHT && player->shared.direction == D_UP)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_DOWN;
+			}
+		}
+		else if (other_player->shared.y < player->shared.y && other_player->shared.x > player->shared.x)
+		{
+			if (other_player->shared.direction == D_DOWN && player->shared.direction == D_RIGHT)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_LEFT;
+			}
+			if (other_player->shared.direction == D_LEFT && player->shared.direction == D_UP)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_DOWN;
+			}
+		}
+		else if (other_player->shared.y > player->shared.y && other_player->shared.x < player->shared.x)
+		{
+			if (other_player->shared.direction == D_UP && player->shared.direction == D_LEFT)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_RIGHT;
+			}
+			if (other_player->shared.direction == D_RIGHT && player->shared.direction == D_DOWN)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_UP;
+			}
+		}
+		else if (other_player->shared.y > player->shared.y && other_player->shared.x > player->shared.x)
+		{
+			if (other_player->shared.direction == D_UP && player->shared.direction == D_RIGHT)
+			{
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_LEFT;
+			}
+			if (other_player->shared.direction == D_LEFT && player->shared.direction == D_DOWN){
+				player->goal_reached = 0;
+				player->feeling_my_way = 0;
+				p->held = BTN_UP;
+			}
+		}
+	}
 }
 
 int main()

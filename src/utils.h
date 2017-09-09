@@ -178,4 +178,12 @@ void LBWaitSeconds(u8 seconds)
 	}
 }
 
+void LBHideAllSprites()
+{
+	for(int i = 0; i < MAX_SPRITES; i++)
+	{
+		sprites[i].x = (SCREEN_TILES_H*TILE_WIDTH);
+	}
+}
+
 #endif
