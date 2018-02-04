@@ -21,19 +21,27 @@
 
 
 // String indexes
-const unsigned char strCopyright [] PROGMEM="2015 LAWRENCE BROOKS";
+#if JAMMA
+const unsigned char strInsertCoin [] PROGMEM="INSERT COIN";
+const unsigned char str1Player [] PROGMEM="P1 START VS CPU";
+const unsigned char str2Player [] PROGMEM="P2 START VS P1";
+const unsigned char strCreditCount [] PROGMEM="CREDITS ";
+const unsigned char strSelectHandle [] PROGMEM="SELECT - START";
+#else
 const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
 const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
+const unsigned char strConfirmHandle [] PROGMEM="CONFIRM - A/START";
+const unsigned char strReset [] PROGMEM="RESET DEFAULTS - SL (5S)";
+const unsigned char strCancelHandle [] PROGMEM="CANCEL - X";
+const unsigned char strSelectHandle [] PROGMEM="SELECT - START";
+#endif
+const unsigned char strCopyright [] PROGMEM="2015 LAWRENCE BROOKS";
 const unsigned char strHighscores [] PROGMEM="TANK RANK";
 const unsigned char strHandlesTitle [] PROGMEM="EDIT HANDLE";
 const unsigned char strUnderline [] PROGMEM="___________";
 const unsigned char strVertSep [] PROGMEM=";";
 const unsigned char strPlayer1 [] PROGMEM="P1";
 const unsigned char strPlayer2 [] PROGMEM="P2";
-const unsigned char strSelectHandle [] PROGMEM="SELECT - A/START";
-const unsigned char strConfirmHandle [] PROGMEM="CONFIRM - A/START";
-const unsigned char strCancelHandle [] PROGMEM="CANCEL - X";
-const unsigned char strReset [] PROGMEM="RESET DEFAULTS - SL (5S)";
 const unsigned char strChangeHandle [] PROGMEM="EDIT - UP/DOWN";
 const unsigned char strOwns [] PROGMEM="OWNS";
 const unsigned char strBy [] PROGMEM="BY";
@@ -103,5 +111,15 @@ const unsigned char default_scores[] PROGMEM = {
     4, 5, 20, 17, 0,
     5, 6, 20, 18, 0
 };
+
+#if JAMMA
+const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX JAM.\0\0\0\0\0"
+"PROGRAMMING AND DESIGN\0\0"
+"LAWRENCE BROOKS\0#";
+#else
+const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX\0\0\0\0\0"
+"PROGRAMMING AND DESIGN\0\0"
+"LAWRENCE BROOKS\0#";
+#endif
 
 #endif

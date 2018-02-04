@@ -24,6 +24,9 @@
 #include "data/levels.h"
 #include "data/patches.h"
 #include "types.h"
+#if JAMMA
+#include "jamma.h"
+#endif
 #include "strings.h"
 #include "utils.h"
 #include "macros.h"
@@ -326,6 +329,14 @@ void player_spawn(Player* player)
 	
 }
 
+void waitForVSync()
+{
+    WaitVsync(1);
+#if JAMMA
+    handle_coin_insert();
+#endif
+}
+
 void load_eeprom(struct EepromBlockStruct* block)
 /*
  * Load from EEPROM
@@ -505,18 +516,24 @@ void update_player(JoyPadState* p, Player* player)
 	player->old_active_shots = player->active_shots;
 	if ((p->pressed & BTN_START) && (game.boss_fight_status == 0))
 	{
+#if JAMMA
+#else
 		SFX_NAVIGATE;
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
+#endif
 	}
 	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
 	{
+#if JAMMA
+#else
 		if ((p->pressed & BTN_SR) && (player->banter_frame == FRAMES_PER_BANTER))
 		{
 			player->banter_frame = 0;
 			player->banter_index = (u8) LBRandom(0, 9);
 			SFX_BANTER;
 		}
+#endif
 		player->shared.speed = player->max_speed;
 		if ((p->held & BTN_UP))
 		{
@@ -1746,12 +1763,25 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	{
 		game.demo_counter++;
 		held = ReadJoypad(0);
-		if (held || (game.demo_counter >= DEMO_LENGTH))
+		if (ReadJoypad(0) || ReadJoypad(1) || (game.demo_counter >= DEMO_LENGTH))
 		{
+#if JAMMA
+			handle_coin_insert();
+			game.demo_counter = 0;
+			if (credits_available() > 0) {
+				game.demo_counter = 0;
+				fade_through();
+				init_game_state();
+				load_splash();
+			} else {
+				exit_game();
+			}
+#else
 			game.demo_counter = 0;
 			fade_through();
 			init_game_state();
 			load_splash();
+#endif
 		}
 	}
 }
@@ -1760,17 +1790,37 @@ void load_splash()
 {
 	game.current_screen = SPLASH;
 	clear_sprites();
+#if JAMMA
+    if (credits_available() == 1) {
+        Print(7, 13, (char*) str1Player);
+    } else if (credits_available()) {
+        Print(7, 13, (char*) str1Player);
+		Print(7, 14, (char*) str2Player);
+    } else {
+		Print(9, 13, (char*) strInsertCoin);
+	}
+	Print(5, 22, (char*) strCopyright);
+	Print(18, 25, (char*) strCreditCount);
+    LBPrintByte(27, 25, credits_available(), false);
+#else	
 	Print(7, 13, (char*) str1Player);
 	Print(7, 14, (char*) str2Player);
 	Print(7, 15, (char*) strHighscores);
+	Print(7, 13, (char*) str1Player);
 	Print(5, 26, (char*) strCopyright);
-	DrawMap2(4, 5, (const char*) map_splash);
 	MapSprite2(0, map_right_arrow, 0);
+#endif
+	DrawMap2(4, 5, (const char*) map_splash);
 }
 
 char select_pressed(JoyPadState* p)
 {
+#if JAMMA
+	if (p == &p2) return p1.pressed & BTN_SELECT;
+	return p->pressed & BTN_START;
+#else
 	return (p->pressed & BTN_A) || (p->pressed & BTN_START);
+#endif
 }
 
 void update_splash(JoyPadState* p1, JoyPadState* p2)
@@ -1778,6 +1828,74 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
  * Splash or title screen
  */
 {		// Render
+#if JAMMA
+	
+	// Update
+	Print(18, 25, (char*) strCreditCount);
+    LBPrintByte(27, 25, credits_available(), false);
+	if (credits_available() == 1) {
+        Print(7, 13, (char*) str1Player);
+    } else if (credits_available()) {
+        Print(7, 13, (char*) str1Player);
+		Print(7, 14, (char*) str2Player);
+    } else {
+		Print(9, 13, (char*) strInsertCoin);
+	}
+	if (p1->pressed) game.demo_counter = 0;
+	if (select_pressed(p1) && credits_available())
+	{
+		acquire_credit();
+		game.selection = PVCPU;
+		game.demo_counter = 0;
+		p1s.select_state = SELECTING;
+		p2s.select_state = SELECTING;
+		SFX_NAVIGATE;
+		fade_through();
+		load_eeprom(&handles);
+		load_handle_select();
+		return;
+	}
+	else if (select_pressed(p2) && credits_available() > 1)
+	{
+		acquire_credit();
+		acquire_credit();
+		game.selection = PVP;
+		game.demo_counter = 0;
+		p1s.select_state = SELECTING;
+		p2s.select_state = SELECTING;
+		SFX_NAVIGATE;
+		fade_through();
+		load_eeprom(&handles);
+		load_handle_select();
+	}
+	else if (game.demo_counter >= DEMO_WAIT && !credits_available())
+	{
+		game.demo_counter = 0;
+		if (game.demo_choice % 2 == 0)
+		{
+			game.selection = CPUVCPU;
+			player1.handle_id = 9;
+			LBCopyChars(player1.handle, &handles.data[9*3], 3);
+			player2.handle_id = 9;
+			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+			SFX_NAVIGATE;
+			clear_sprites();
+			fade_through();
+			level_transition(LBRandom(0, 10));
+		}
+		else
+		{
+			SFX_NAVIGATE;
+			fade_through();
+			load_eeprom(&scores);
+			load_tank_rank();
+		}
+		game.demo_choice++;
+		return;
+		
+	}
+	game.demo_counter++;
+#else
 	switch (game.selection)
 	{
 		case PVCPU:
@@ -1854,6 +1972,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		
 	}
 	game.demo_counter++;
+#endif
 }
 
 void load_tank_rank()
@@ -1884,12 +2003,44 @@ void load_tank_rank()
 		y += 3;
 		rank += 1;
 	}
+#if JAMMA
+#else
 	Print(3, 22, (char*) strReset);
 	Print(10, 24, (char*) strCancelHandle);
+#endif
 }
 
 void update_tank_rank(JoyPadState* p1)
 {
+#if JAMMA
+	// Update
+	if (ReadJoypad(0) ||ReadJoypad(1))
+	{
+		game.tank_rank_counter = 0;
+		SFX_NAVIGATE;
+		fade_through();
+		load_splash();
+	}
+	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
+	{
+		game.tank_rank_counter = 0;
+	    SFX_NAVIGATE;
+	    init_scores(&scores);
+	    init_handles(&handles);
+	    save_eeprom(&scores);
+	    save_eeprom(&handles);
+	    load_tank_rank();
+	}
+	
+	if (game.tank_rank_counter > TANK_RANK_LENGTH)
+	{
+		game.tank_rank_counter = 0;
+		SFX_NAVIGATE;
+		fade_through();
+		load_splash();
+	}
+	game.tank_rank_counter++;
+#else
 	// Update
 	if (p1->pressed & BTN_X)
 	{
@@ -1917,6 +2068,7 @@ void update_tank_rank(JoyPadState* p1)
 		load_splash();
 	}
 	game.tank_rank_counter++;
+#endif
 }
 
 
@@ -1973,6 +2125,8 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
 	}
+#if JAMMA
+#else
 	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING))
 	{
 		ps->select_state = SELECTING;
@@ -1989,6 +2143,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		fade_through();
 		load_splash();
 	}
+#endif
 }
 
 void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_offset, u8 idx)
@@ -2033,10 +2188,15 @@ void load_handle_select()
 		PrintChar((i % 3) + 3, 8 + (i / 3), handles.data[i]);
 		PrintChar(20 + (i % 3), 8 + (i / 3), handles.data[i]);
 	}
+#if JAMMA
+	Print(6, 22, (char*) strSelectHandle);
+	Print(6, 24, (char*) strChangeHandle);
+#else
 	Print(5, 21, (char*) strSelectHandle);
 	Print(5, 22, (char*) strConfirmHandle);
 	Print(5, 23, (char*) strCancelHandle);
 	Print(5, 24, (char*) strChangeHandle);
+#endif
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -2326,6 +2486,42 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		}
 	}
 }
+void stream_text_middle(const char* dialogue, u8 y, u16 delay)
+{
+	u8 x, ln, c;
+	
+	while (pgm_read_byte(dialogue) != '#')
+	{
+		ln = strnlen_P(dialogue, 255);
+		x = 15 - ln / 2;
+		while ((c = pgm_read_byte(dialogue++)))
+		{
+#if JAMMA
+			handle_coin_insert();
+#endif
+			LBPrintStr(x++, y, &c, 1);
+			LBGetJoyPadState(&p1, 0);
+			if (!(p1.held & BTN_A)) LBWaitUs(delay);
+		}
+		y++;
+	}
+}
+
+void load_credits()
+{
+	fade_through();
+	stream_text_middle((const char*) strCredits, 5, 100);
+	LBWaitSeconds(4);
+	fade_through();
+}
+
+#if JAMMA
+void read_dip_switches() {
+    scores.id = EEPROM_DIP_SWITCH_ID;
+    load_eeprom(&scores);
+    extract_dip_switches(scores.data[0]);
+} 
+#endif
 
 int main()
 {
@@ -2337,14 +2533,18 @@ int main()
 	SetFontTilesIndex(TILES_DATA_SIZE);
 	FadeIn(FRAMES_PER_FADE, false);
 	ClearVram();
+#if JAMMA
+	read_dip_switches();
+#endif
 	init_scores(&scores);
 	init_handles(&handles);
 	init_game_state();
+	load_credits();
 	load_splash();
 	
 	while (1)
 	{
-		WaitVsync(1);
+		waitForVSync();
 		switch (game.current_screen)
 		{
 			case SPLASH:

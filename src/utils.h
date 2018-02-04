@@ -17,6 +17,10 @@
 #ifndef LB_UTILS_H
 #define LB_UTILS_H
 
+#if JAMMA
+#include "jamma.h"
+#endif
+
 typedef struct sJoyPadState {
 	unsigned int pressed;
 	unsigned int released;
@@ -123,6 +127,18 @@ void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
 	}
 }
 
+void LBPrintByte(u8 x, u8 y, u8 value, char pad)
+{
+	u8 tmp = 0;
+	for (u8 i = 0; i < 3; i++)
+	{
+		tmp = value % 10 + 48;
+		LBPrintStr(x--, y, &tmp, 1);
+		value /= 10;
+		if (!pad && value == 0) break;
+	}
+}
+
 u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
 						 u8 x2, u8 y2, u8 width2, u8 height2)
 {
@@ -170,11 +186,24 @@ int LBRandom(unsigned int from, unsigned int to)
 	return from + ((delta + shifted) % delta);
 }
 
+void LBWaitUs(u16 micro_seconds)
+{
+#if JAMMA
+	micro_seconds = micro_seconds / 1500;
+	for (;micro_seconds > 0; micro_seconds--) {
+		WaitVsync(1);
+		handle_coin_insert();
+	}
+#else
+	WaitUs(micro_seconds);
+#endif
+}
+
 void LBWaitSeconds(u8 seconds)
 {
 	for(u8 i = 0; i < seconds; i++)
 	{
-		WaitUs(65535);
+		LBWaitUs(65535);
 	}
 }
 

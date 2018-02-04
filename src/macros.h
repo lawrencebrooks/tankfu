@@ -21,6 +21,7 @@
 // EEPROM ID's
 #define EEPROM_HANDLES_ID 0x8A
 #define EEPROM_TANK_RANK_ID 0x8B
+#define EEPROM_DIP_SWITCH_ID 0xAB0C
 
 // Screens
 #define SPLASH 0
@@ -35,7 +36,11 @@
 #define CPUVCPU 3
 
 // Frame counts
+#if JAMMA
+#define FRAMES_PER_FADE 0
+#else
 #define FRAMES_PER_FADE 3
+#endif
 #define FRAMES_PER_BANTER 90
 #define FRAMES_PER_GRACE 120
 #define FRAMES_PER_BLANK 20
@@ -105,6 +110,17 @@
 #define OVER_SPEED_FLAG 4
 
 // Sound Effects
+#if JAMMA
+#define SFX_BANTER if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
+#define SFX_BRICK_EXPLODE if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
+#define SFX_CANNONBALL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
+#define SFX_ITEM if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_ITEM,23,0xff)
+#define SFX_METAL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
+#define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
+#define SFX_ROCKET if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG) || no_demo_sound())) TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
+#define SFX_TANK_EXPLODE if (!no_demo_sound()) TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
+#define SFX_ALARM TriggerFx(PATCH_ALARM,0xff,true);
+#else
 #define SFX_BANTER if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
 #define SFX_BRICK_EXPLODE if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
 #define SFX_CANNONBALL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
@@ -114,6 +130,7 @@
 #define SFX_ROCKET if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
 #define SFX_TANK_EXPLODE TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
 #define SFX_ALARM TriggerFx(PATCH_ALARM,0xff,true);
+#endif
 
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 180
