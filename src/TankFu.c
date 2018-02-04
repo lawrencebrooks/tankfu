@@ -23,10 +23,10 @@
 #include "data/sprites.h"
 #include "data/levels.h"
 #include "data/patches.h"
-#include "types.h"
 #if JAMMA
 #include "jamma.h"
 #endif
+#include "types.h"
 #include "strings.h"
 #include "utils.h"
 #include "macros.h"
