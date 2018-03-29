@@ -168,22 +168,13 @@ u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
 	return 1;
 }
 
-int LBRandom(unsigned int from, unsigned int to)
+u8 LBRandom(u8 from, u8 to)
 /*
  * Return a random number between 'from' and 'to'.
  */
 {
-	static unsigned int random_seed = 0;
-	if (random_seed == 0) random_seed = GetTrueRandomSeed();
-	
-	static u8 shift_count = 0;
-	unsigned int shifted = random_seed >> shift_count;
-	unsigned int delta = to - from;
-
-	shift_count++;
-	if (shift_count >= 16) shift_count = 0;
-
-	return from + ((delta + shifted) % delta);
+    u8 tmp = GetPrngNumber(0) % 256;
+    return ((tmp) % (to - from + 1)) + from;
 }
 
 void LBWaitUs(u16 micro_seconds)

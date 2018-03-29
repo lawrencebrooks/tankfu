@@ -331,7 +331,9 @@ void player_spawn(Player* player)
 
 void waitForVSync()
 {
+    ProcessSprites();
     WaitVsync(1);
+    RestoreBackground();
 #if JAMMA
     handle_coin_insert();
 #endif
@@ -2526,6 +2528,7 @@ void read_dip_switches() {
 int main()
 {
 	// Initialize
+    GetPrngNumber(GetTrueRandomSeed());
 	InitMusicPlayer(my_patches);
 	SetMasterVolume(0xff);
 	SetTileTable(tiles_data);
