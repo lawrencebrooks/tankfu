@@ -30,6 +30,7 @@
 #include "strings.h"
 #include "utils.h"
 #include "macros.h"
+#include "networking.h"
 
 /* Utilities */
 void load_eeprom(struct EepromBlockStruct* block);
