@@ -139,8 +139,8 @@ void LBPrintByte(u8 x, u8 y, u8 value, char pad)
 	}
 }
 
-u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
-						 u8 x2, u8 y2, u8 width2, u8 height2)
+u8 LBCollides(u16 x1, u16 y1, u16 width1, u16 height1,
+						 u16 x2, u16 y2, u16 width2, u16 height2)
 {
 	if (y1 + height1 <= y2) return 0;
 	if (y1 >= y2 + height2) return 0;
@@ -149,11 +149,11 @@ u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
 	return 1;
 }
 
-u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
-							  u8 line2x1, u8 line2y1, u8 line2x2, u8 line2y2)
+u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
+							  u16 line2x1, u16 line2y1, u16 line2x2, u16 line2y2)
 {
-	float ua, ub;
-	float denom;
+	u16 ua, ub;
+	u16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
 			 ((line2x2 - line2x1) * (line1y2 - line1y1));
@@ -168,12 +168,12 @@ u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
 	return 1;
 }
 
-u8 LBRandom(u8 from, u8 to)
+u16 LBRandom(u16 from, u16 to)
 /*
  * Return a random number between 'from' and 'to'.
  */
 {
-    u8 tmp = GetPrngNumber(0) % 256;
+    u16 tmp = GetPrngNumber(0);
     return ((tmp) % (to - from + 1)) + from;
 }
 

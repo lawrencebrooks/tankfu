@@ -34,6 +34,7 @@
 #define P2PEXIT 12
 #define P2PHANDLESELECT 13
 #define P2PHANDLESELECTDONE 14
+#define P2PBANTER 15
 
 typedef struct P2PMessageHeaderStruct {
     u8 code;
@@ -97,5 +98,9 @@ typedef struct P2PHandleSelectMessageStruct {
 typedef struct P2PHandleSelectDoneMessageStruct {
     P2PMessageHeader header;
 } P2PHandleSelectDoneMessage;
+
+typedef struct P2PBanterMessageStruct {
+    P2PMessageHeader header;
+} P2PBanterMessage;
 
 #endif

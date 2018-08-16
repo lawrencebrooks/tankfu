@@ -35,6 +35,20 @@
 #define TR 2
 #define CPUVCPU 3
 
+// Fixed point constants
+#define FP_512 4096
+#define FP_256 2048
+#define FP_128 1024
+#define FP_64 512
+#define FP_32 256
+#define FP_16 128
+#define FP_8 64
+#define FP_4 32
+#define FP_2 16
+#define FP_1 8
+
+#define FP_FACTOR 3
+
 // Frame counts
 #if JAMMA
 #define FRAMES_PER_FADE 0
@@ -58,9 +72,9 @@
 #define D_RIGHT 1
 #define D_DOWN 2
 #define D_LEFT 3
-#define MAX_SPEED 50
-#define OVER_SPEED 65
-#define WATER_SPEED 25
+#define MAX_SPEED FP_64 
+#define OVER_SPEED FP_64
+#define WATER_SPEED FP_32
 
 // Shot
 #define BASIC_SHOT 0
@@ -68,8 +82,8 @@
 #define BASIC_SHOT_HIT_COUNT 1
 #define ROCKET_SHOT_HIT_COUNT 5
 #define SHOT_REBOUNDS 4
-#define SHOT_SPEED 120
-#define SHOT_OVER_SPEED 170
+#define SHOT_SPEED FP_128 
+#define SHOT_OVER_SPEED FP_128 
 #define MAX_SHOTS 1
 #define DISTANCE_TO_ARM 8
 #define HIT_METAL 1
@@ -78,6 +92,7 @@
 
 // General macros
 #define FRAME_TIME 0.0166666
+#define FRAME_TIME_INVERTED 64
 #define TEXT_LINGER 4 // seconds
 #define MAX_LEVEL_SCORE 10 
 #define TILE_ANIMATIONS_LENGTH 2
@@ -95,8 +110,8 @@
 #define BOSS_FIGHT_SUB_SINKING 32
 #define BOSS_FIGHT_PLAYER_LIVES 2
 #define BOSS_TURRET_LIVES 5
-#define BOSS_TURRET_SPEED 90
-#define BOSS_TURRET_SHOT_SPEED 250
+#define BOSS_TURRET_SPEED FP_128 
+#define BOSS_TURRET_SHOT_SPEED FP_256 
 #define BOSS_TURRET_SHOT 2
 #define BOSS_TURRET_SHOT_HIT_COUNT 1
 #define BOSS_TURRET_1_LEFT_LIMIT 40
@@ -136,7 +151,7 @@
 #define DEFAULT_FRAMES_PER_GOAL 180
 #define DEFAULT_FRAMES_PER_SHOT 10
 #define FRAMES_PER_DEADLOCK 320
-#define AI_SPEED_FACTOR 1.4
+#define AI_SPEED_FACTOR FP_2 
 #define TACTIC_TANK_ATTACK 0
 #define TACTIC_TANK_EVADE 1
 #define TACTIC_SHOT_IGNORE 0
