@@ -1500,8 +1500,8 @@ void render_boss_fight_sub_load()
 	if (sub_animation.anim.reversing)
 	{
 		game.boss_fight_status = BOSS_FIGHT;
-		init_turret(&turret1, BOSS_TURRET_1_RIGHT_LIMIT, 72 << FP_FACTOR);
-		init_turret(&turret2, BOSS_TURRET_2_RIGHT_LIMIT, 72 << FP_FACTOR);
+		init_turret(&turret1, BOSS_TURRET_1_RIGHT_LIMIT, 576);
+		init_turret(&turret2, BOSS_TURRET_2_RIGHT_LIMIT, 576);
 	}
 }
 
@@ -1526,7 +1526,7 @@ void render_boss_turret_shot(Turret* t, char sprite_index)
 	MoveSprite(sprite_index, t->shot[0].shared.x >> FP_FACTOR, t->shot[0].shared.y >> FP_FACTOR, 1, 1);
 }
 
-void update_turret(Turret *t, u8 left_limit, u8 right_limit)
+void update_turret(Turret *t, u16 left_limit, u16 right_limit)
 {
 	u8 x = t->shared.x / FP_8;
 	u8 y = t->shared.y / FP_8 - 3;
