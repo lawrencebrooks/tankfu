@@ -3,33 +3,33 @@ TankFu.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000004  00800100  0000e00a  0000e10a  2**0
+  0 .data         00000004  00800100  0000e006  0000e106  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000e00a  00000000  00000000  00000100  2**8
+  1 .text         0000e006  00000000  00000000  00000100  2**8
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .bss          00000f8b  00800104  00800104  0000e124  2**5
                   ALLOC
-  3 .stab         0000057c  00000000  00000000  0000e110  2**2
+  3 .stab         0000057c  00000000  00000000  0000e10c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00000256  00000000  00000000  0000e68c  2**0
+  4 .stabstr      00000256  00000000  00000000  0000e688  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .comment      00000011  00000000  00000000  0000e8e2  2**0
+  5 .comment      00000011  00000000  00000000  0000e8de  2**0
                   CONTENTS, READONLY
-  6 .debug_aranges 000006e8  00000000  00000000  0000e8f8  2**3
+  6 .debug_aranges 000006e8  00000000  00000000  0000e8f0  2**3
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   0000a3e6  00000000  00000000  0000efe0  2**0
+  7 .debug_info   0000a3c3  00000000  00000000  0000efd8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 000015bb  00000000  00000000  000193c6  2**0
+  8 .debug_abbrev 000015bb  00000000  00000000  0001939b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   0000238f  00000000  00000000  0001a981  2**0
+  9 .debug_line   00002395  00000000  00000000  0001a956  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00001578  00000000  00000000  0001cd10  2**2
+ 10 .debug_frame  00001578  00000000  00000000  0001ccec  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00001ecb  00000000  00000000  0001e288  2**0
+ 11 .debug_str    00001ecb  00000000  00000000  0001e264  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00008d61  00000000  00000000  00020153  2**0
+ 12 .debug_loc    00008d61  00000000  00000000  0002012f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 000007b8  00000000  00000000  00028eb8  2**3
+ 13 .debug_ranges 000007b8  00000000  00000000  00028e90  2**3
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2344,7 +2344,7 @@ Disassembly of section .text:
     7eb2:	11 e0       	ldi	r17, 0x01	; 1
     7eb4:	a0 e0       	ldi	r26, 0x00	; 0
     7eb6:	b1 e0       	ldi	r27, 0x01	; 1
-    7eb8:	ea e0       	ldi	r30, 0x0A	; 10
+    7eb8:	e6 e0       	ldi	r30, 0x06	; 6
     7eba:	f0 ee       	ldi	r31, 0xE0	; 224
     7ebc:	02 c0       	rjmp	.+4      	; 0x7ec2 <__do_copy_data+0x10>
     7ebe:	05 90       	lpm	r0, Z+
@@ -2492,7 +2492,7 @@ void Initialize(void){
 	DisplayLogo();
     7f6c:	0e 94 dd 51 	call	0xa3ba	; 0xa3ba <DisplayLogo>
     7f70:	0e 94 27 6f 	call	0xde4e	; 0xde4e <main>
-    7f74:	0c 94 03 70 	jmp	0xe006	; 0xe006 <_exit>
+    7f74:	0c 94 01 70 	jmp	0xe002	; 0xe002 <_exit>
 
 00007f78 <__bad_interrupt>:
     7f78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -5750,7 +5750,7 @@ void PatchCommand11(Track* track, char param){
     8c3a:	97 0b       	sbc	r25, r23
     8c3c:	68 85       	ldd	r22, Y+8	; 0x08
     8c3e:	70 e0       	ldi	r23, 0x00	; 0
-    8c40:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    8c40:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
 	if(delta==0)delta++;
     8c44:	61 15       	cp	r22, r1
     8c46:	71 05       	cpc	r23, r1
@@ -9636,7 +9636,7 @@ void PrintByte(int x,int y, unsigned char val,bool zeropad){
 		c=val%10;
     a496:	80 2f       	mov	r24, r16
     a498:	6e 2d       	mov	r22, r14
-    a49a:	0e 94 bb 6f 	call	0xdf76	; 0xdf76 <__udivmodqi4>
+    a49a:	0e 94 b9 6f 	call	0xdf72	; 0xdf72 <__udivmodqi4>
 		if(val>0 || i==0){
 			SetFont(x--,y,c+CHAR_ZERO);
     a49e:	40 e1       	ldi	r20, 0x10	; 16
@@ -9660,7 +9660,7 @@ void PrintByte(int x,int y, unsigned char val,bool zeropad){
 		val=val/10;
     a4b6:	80 2f       	mov	r24, r16
     a4b8:	6e 2d       	mov	r22, r14
-    a4ba:	0e 94 bb 6f 	call	0xdf76	; 0xdf76 <__udivmodqi4>
+    a4ba:	0e 94 b9 6f 	call	0xdf72	; 0xdf72 <__udivmodqi4>
     a4be:	08 2f       	mov	r16, r24
 
 //Print an unsigned byte in decimal
@@ -9947,7 +9947,7 @@ char* LBGetNextFrame(Animation* anim)
     a600:	01 96       	adiw	r24, 0x01	; 1
     a602:	61 81       	ldd	r22, Z+1	; 0x01
     a604:	70 e0       	ldi	r23, 0x00	; 0
-    a606:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    a606:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     a60a:	80 83       	st	Z, r24
 	if (anim->current_anim == 0) anim->looped = 1;
     a60c:	81 11       	cpse	r24, r1
@@ -10017,7 +10017,7 @@ char* LBGetNextFrameReverse(Animation* anim)
     a656:	01 96       	adiw	r24, 0x01	; 1
     a658:	62 2f       	mov	r22, r18
     a65a:	70 e0       	ldi	r23, 0x00	; 0
-    a65c:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    a65c:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     a660:	80 83       	st	Z, r24
 		if (anim->current_anim == 0) 
     a662:	81 11       	cpse	r24, r1
@@ -10307,8 +10307,8 @@ u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
     a7ec:	1f 93       	push	r17
     a7ee:	cf 93       	push	r28
     a7f0:	df 93       	push	r29
-	u16 ua, ub;
-	u16 denom;
+	s16 ua, ub;
+	s16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
     a7f2:	ae 18       	sub	r10, r14
@@ -10323,8 +10323,8 @@ u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
     a802:	37 0b       	sbc	r19, r23
 							  u16 line2x1, u16 line2y1, u16 line2x2, u16 line2y2)
 {
-	u16 ua, ub;
-	u16 denom;
+	s16 ua, ub;
+	s16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
     a804:	ac 9e       	mul	r10, r28
@@ -10344,8 +10344,8 @@ u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
     a81e:	11 24       	eor	r1, r1
 							  u16 line2x1, u16 line2y1, u16 line2x2, u16 line2y2)
 {
-	u16 ua, ub;
-	u16 denom;
+	s16 ua, ub;
+	s16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
     a820:	e4 1b       	sub	r30, r20
@@ -10393,9 +10393,9 @@ u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
 	ua = (((line2x2 - line2x1) * (line1y1 - line2y1)) -
     a852:	84 1b       	sub	r24, r20
     a854:	95 0b       	sbc	r25, r21
-    a856:	bf 01       	movw	r22, r30
-    a858:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
 		 ((line2y2 - line2y1) * (line1x1 - line2x1))) / denom;
+    a856:	bf 01       	movw	r22, r30
+    a858:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
 	ub = (((line1x2 - line1x1) * (line1y1 - line2y1)) -
 		 ((line1y2 - line1y1) * (line1x1 - line2x1))) / denom;
 	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
@@ -10431,16 +10431,16 @@ u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
 	ub = (((line1x2 - line1x1) * (line1y1 - line2y1)) -
     a87e:	84 1b       	sub	r24, r20
     a880:	95 0b       	sbc	r25, r21
-    a882:	bf 01       	movw	r22, r30
-    a884:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
 		 ((line1y2 - line1y1) * (line1x1 - line2x1))) / denom;
+    a882:	bf 01       	movw	r22, r30
+    a884:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
 	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
     a888:	81 e0       	ldi	r24, 0x01	; 1
     a88a:	62 30       	cpi	r22, 0x02	; 2
     a88c:	71 05       	cpc	r23, r1
     a88e:	08 f0       	brcs	.+2      	; 0xa892 <LBLineIntersect+0xb4>
-	u16 ua, ub;
-	u16 denom;
+	s16 ua, ub;
+	s16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
 			 ((line2x2 - line2x1) * (line1y2 - line1y1));
@@ -10487,7 +10487,7 @@ u16 LBRandom(u16 from, u16 to)
     a8c0:	71 0b       	sbc	r23, r17
     a8c2:	6f 5f       	subi	r22, 0xFF	; 255
     a8c4:	7f 4f       	sbci	r23, 0xFF	; 255
-    a8c6:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
+    a8c6:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
 }
     a8ca:	80 0f       	add	r24, r16
     a8cc:	91 1f       	adc	r25, r17
@@ -10582,7 +10582,7 @@ void init_scores(struct EepromBlockStruct* e)
     a918:	50 e0       	ldi	r21, 0x00	; 0
     a91a:	6e e2       	ldi	r22, 0x2E	; 46
     a91c:	71 e0       	ldi	r23, 0x01	; 1
-    a91e:	0c 94 ef 6f 	jmp	0xdfde	; 0xdfde <memcpy_P>
+    a91e:	0c 94 ed 6f 	jmp	0xdfda	; 0xdfda <memcpy_P>
 
 0000a922 <init_handles>:
 }
@@ -10601,7 +10601,7 @@ void init_handles(struct EepromBlockStruct* e)
     a930:	50 e0       	ldi	r21, 0x00	; 0
     a932:	6c e4       	ldi	r22, 0x4C	; 76
     a934:	71 e0       	ldi	r23, 0x01	; 1
-    a936:	0c 94 ef 6f 	jmp	0xdfde	; 0xdfde <memcpy_P>
+    a936:	0c 94 ed 6f 	jmp	0xdfda	; 0xdfda <memcpy_P>
 
 0000a93a <init_tile_animations>:
 }
@@ -12145,7 +12145,7 @@ void render_tile_explosions(TileAnimations* ta)
 			{
 				SetTile(ta->anims[i].tile_index % 30, 3 + ta->anims[i].tile_index / 30, 0);
     b0e2:	b7 01       	movw	r22, r14
-    b0e4:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b0e4:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b0e8:	6d 5f       	subi	r22, 0xFD	; 253
 	for (u8 i = 0; i < TILE_ANIMATIONS_LENGTH; i++)
 	{
@@ -12214,7 +12214,7 @@ u8 render_scope(TileAnimation* ta)
 		DrawMap2(ta->tile_index % 30, 3 + ta->tile_index / 30, map_water);
     b12a:	6e e1       	ldi	r22, 0x1E	; 30
     b12c:	70 e0       	ldi	r23, 0x00	; 0
-    b12e:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b12e:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b132:	6d 5f       	subi	r22, 0xFD	; 253
 u8 render_scope(TileAnimation* ta)
 {
@@ -12785,7 +12785,7 @@ u8 collides_directional_tile(int tile_index, u16 x, u16 y, u16 width, u16 height
 	u16 tile_x = (tile_index % 30) * FP_8;
     b3ee:	6e e1       	ldi	r22, 0x1E	; 30
     b3f0:	70 e0       	ldi	r23, 0x00	; 0
-    b3f2:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b3f2:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b3f6:	dc 01       	movw	r26, r24
     b3f8:	86 e0       	ldi	r24, 0x06	; 6
     b3fa:	aa 0f       	add	r26, r26
@@ -13207,7 +13207,7 @@ void drop_item(int tile_index, const char* map, u8 item_type)
 	u8 x = tile_index % 30;
     b6c8:	6e e1       	ldi	r22, 0x1E	; 30
     b6ca:	70 e0       	ldi	r23, 0x00	; 0
-    b6cc:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b6cc:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b6d0:	96 2f       	mov	r25, r22
 	u8 y = 3 + tile_index / 30;
     b6d2:	63 e0       	ldi	r22, 0x03	; 3
@@ -13462,7 +13462,7 @@ void explode_tile(TileAnimations* ta, int tile_index)
     b812:	f1 2c       	mov	r15, r1
     b814:	cb 01       	movw	r24, r22
     b816:	b7 01       	movw	r22, r14
-    b818:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b818:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b81c:	6d 5f       	subi	r22, 0xFD	; 253
     b81e:	40 e0       	ldi	r20, 0x00	; 0
     b820:	50 e0       	ldi	r21, 0x00	; 0
@@ -13482,7 +13482,7 @@ void explode_tile(TileAnimations* ta, int tile_index)
 	{
 		SetTile(ta->anims[ta->next_available].tile_index % 30, 3 + ta->anims[ta->next_available].tile_index / 30, 0);
     b83c:	b7 01       	movw	r22, r14
-    b83e:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    b83e:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     b842:	6d 5f       	subi	r22, 0xFD	; 253
     b844:	40 e0       	ldi	r20, 0x00	; 0
     b846:	50 e0       	ldi	r21, 0x00	; 0
@@ -13967,7 +13967,7 @@ void collision_detect_shot(Player* player, Shot* shot)
     bad8:	2e c0       	rjmp	.+92     	; 0xbb36 <collision_detect_shot+0x27a>
     bada:	c7 01       	movw	r24, r14
     badc:	b2 01       	movw	r22, r4
-    bade:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    bade:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     bae2:	7b 01       	movw	r14, r22
     bae4:	a3 e0       	ldi	r26, 0x03	; 3
     bae6:	ea 0e       	add	r14, r26
@@ -14019,7 +14019,7 @@ void collision_detect_shot(Player* player, Shot* shot)
     bb3a:	b9 cf       	rjmp	.-142    	; 0xbaae <collision_detect_shot+0x1f2>
     bb3c:	c7 01       	movw	r24, r14
     bb3e:	b2 01       	movw	r22, r4
-    bb40:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    bb40:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     bb44:	7b 01       	movw	r14, r22
     bb46:	a3 e0       	ldi	r26, 0x03	; 3
     bb48:	ea 0e       	add	r14, r26
@@ -14382,7 +14382,7 @@ void slide(Player* player, u8 collision_tile, int tile)
     bd52:	ca 01       	movw	r24, r20
     bd54:	6e e1       	ldi	r22, 0x1E	; 30
     bd56:	70 e0       	ldi	r23, 0x00	; 0
-    bd58:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    bd58:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     bd5c:	82 95       	swap	r24
     bd5e:	88 0f       	add	r24, r24
     bd60:	88 0f       	add	r24, r24
@@ -14432,7 +14432,7 @@ void slide(Player* player, u8 collision_tile, int tile)
     bd9e:	ca 01       	movw	r24, r20
     bda0:	6e e1       	ldi	r22, 0x1E	; 30
     bda2:	70 e0       	ldi	r23, 0x00	; 0
-    bda4:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    bda4:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     bda8:	cb 01       	movw	r24, r22
     bdaa:	03 96       	adiw	r24, 0x03	; 3
     bdac:	82 95       	swap	r24
@@ -14623,7 +14623,7 @@ char collision_detect_player(Player* player, u8 hud_x)
     bea8:	c1 01       	movw	r24, r2
     beaa:	6e e1       	ldi	r22, 0x1E	; 30
     beac:	70 e0       	ldi	r23, 0x00	; 0
-    beae:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    beae:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     beb2:	3c 01       	movw	r6, r24
 		tile_y = 3 + tiles[i] / 30;
     beb4:	a3 e0       	ldi	r26, 0x03	; 3
@@ -15026,7 +15026,7 @@ void load_level_tiles(u8 blank)
     c154:	f1 2c       	mov	r15, r1
     c156:	ce 01       	movw	r24, r28
     c158:	b7 01       	movw	r22, r14
-    c15a:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    c15a:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
 		y = 3 + i / 30;
     c15e:	6d 5f       	subi	r22, 0xFD	; 253
 		if (blank)
@@ -15305,7 +15305,7 @@ void load_level(int level_number)
     c2b8:	d1 2c       	mov	r13, r1
     c2ba:	c8 01       	movw	r24, r16
     c2bc:	b6 01       	movw	r22, r12
-    c2be:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    c2be:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     c2c2:	d8 2f       	mov	r29, r24
     c2c4:	dd 0f       	add	r29, r29
     c2c6:	dd 0f       	add	r29, r29
@@ -18357,7 +18357,7 @@ void load_handle_select()
     d52e:	67 01       	movw	r12, r14
     d530:	ce 01       	movw	r24, r28
     d532:	b5 01       	movw	r22, r10
-    d534:	0e 94 db 6f 	call	0xdfb6	; 0xdfb6 <__divmodhi4>
+    d534:	0e 94 d9 6f 	call	0xdfb2	; 0xdfb2 <__divmodhi4>
     d538:	4c 01       	movw	r8, r24
     d53a:	8b 01       	movw	r16, r22
     d53c:	08 5f       	subi	r16, 0xF8	; 248
@@ -18818,8 +18818,8 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
     d7ee:	9f e0       	ldi	r25, 0x0F	; 15
     d7f0:	0e 94 8a 53 	call	0xa714	; 0xa714 <LBCopyChars>
 		}
-		level_transition(0);
-    d7f4:	80 e0       	ldi	r24, 0x00	; 0
+		level_transition(10);
+    d7f4:	8a e0       	ldi	r24, 0x0A	; 10
 	}
 }
     d7f6:	df 91       	pop	r29
@@ -18831,7 +18831,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 			player2.handle_id = 9;
 			LBCopyChars(player2.handle, &handles.data[9*3], 3);
 		}
-		level_transition(0);
+		level_transition(10);
     d7fe:	0c 94 cb 61 	jmp	0xc396	; 0xc396 <level_transition>
 	}
 }
@@ -19385,7 +19385,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
     daf4:	c9 01       	movw	r24, r18
     daf6:	6a e0       	ldi	r22, 0x0A	; 10
     daf8:	70 e0       	ldi	r23, 0x00	; 0
-    dafa:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
+    dafa:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
     dafe:	89 2b       	or	r24, r25
     db00:	41 f4       	brne	.+16     	; 0xdb12 <get_cpu_joypad_state+0x78>
     db02:	8d 89       	ldd	r24, Y+21	; 0x15
@@ -19405,7 +19405,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
     db12:	c9 01       	movw	r24, r18
     db14:	64 eb       	ldi	r22, 0xB4	; 180
     db16:	70 e0       	ldi	r23, 0x00	; 0
-    db18:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
+    db18:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
     db1c:	89 2b       	or	r24, r25
     db1e:	39 f0       	breq	.+14     	; 0xdb2e <get_cpu_joypad_state+0x94>
     db20:	8d 89       	ldd	r24, Y+21	; 0x15
@@ -19899,7 +19899,7 @@ void stream_text_middle(const char* dialogue, u8 y, u16 delay)
     ddc6:	6f ef       	ldi	r22, 0xFF	; 255
     ddc8:	70 e0       	ldi	r23, 0x00	; 0
     ddca:	c8 01       	movw	r24, r16
-    ddcc:	0e 94 f8 6f 	call	0xdff0	; 0xdff0 <strnlen_P>
+    ddcc:	0e 94 f6 6f 	call	0xdfec	; 0xdfec <strnlen_P>
 		x = 15 - ln / 2;
     ddd0:	86 95       	lsr	r24
     ddd2:	eb 2c       	mov	r14, r11
@@ -20047,7 +20047,7 @@ int main()
     deb2:	c9 f0       	breq	.+50     	; 0xdee6 <main+0x98>
     deb4:	83 30       	cpi	r24, 0x03	; 3
     deb6:	41 f1       	breq	.+80     	; 0xdf08 <main+0xba>
-    deb8:	54 c0       	rjmp	.+168    	; 0xdf62 <main+0x114>
+    deb8:	52 c0       	rjmp	.+164    	; 0xdf5e <main+0x110>
 		{
 			case SPLASH:
 				LBGetJoyPadState(&p1, 0);
@@ -20062,7 +20062,7 @@ int main()
     deca:	9c e0       	ldi	r25, 0x0C	; 12
     decc:	0e 94 de 6a 	call	0xd5bc	; 0xd5bc <update_splash>
 				break;
-    ded0:	48 c0       	rjmp	.+144    	; 0xdf62 <main+0x114>
+    ded0:	46 c0       	rjmp	.+140    	; 0xdf5e <main+0x110>
 			case TANK_RANK:
 				LBGetJoyPadState(&p1, 0);
     ded2:	60 e0       	ldi	r22, 0x00	; 0
@@ -20074,7 +20074,7 @@ int main()
     dede:	9c e0       	ldi	r25, 0x0C	; 12
     dee0:	0e 94 62 68 	call	0xd0c4	; 0xd0c4 <update_tank_rank>
 				break;
-    dee4:	3e c0       	rjmp	.+124    	; 0xdf62 <main+0x114>
+    dee4:	3c c0       	rjmp	.+120    	; 0xdf5e <main+0x110>
 			case HANDLE_SELECT:
 				LBGetJoyPadState(&p1, 0);
     dee6:	60 e0       	ldi	r22, 0x00	; 0
@@ -20093,172 +20093,171 @@ int main()
     df00:	9c e0       	ldi	r25, 0x0C	; 12
     df02:	0e 94 b8 6b 	call	0xd770	; 0xd770 <update_handle_select>
 				break;
-    df06:	2d c0       	rjmp	.+90     	; 0xdf62 <main+0x114>
+    df06:	2b c0       	rjmp	.+86     	; 0xdf5e <main+0x110>
 			case LEVEL:
 				if (game.selection == PVCPU)
     df08:	80 91 1b 0c 	lds	r24, 0x0C1B
     df0c:	81 11       	cpse	r24, r1
-    df0e:	06 c0       	rjmp	.+12     	; 0xdf1c <main+0xce>
+    df0e:	04 c0       	rjmp	.+8      	; 0xdf18 <main+0xca>
 				{
 					LBGetJoyPadState(&p1, 0);
     df10:	60 e0       	ldi	r22, 0x00	; 0
     df12:	8c ea       	ldi	r24, 0xAC	; 172
     df14:	9c e0       	ldi	r25, 0x0C	; 12
-    df16:	0e 94 3f 53 	call	0xa67e	; 0xa67e <LBGetJoyPadState>
-    df1a:	0a c0       	rjmp	.+20     	; 0xdf30 <main+0xe2>
-					get_cpu_joypad_state(&player2, &player1, &p2);
+    df16:	1b c0       	rjmp	.+54     	; 0xdf4e <main+0x100>
+					//get_cpu_joypad_state(&player2, &player1, &p2);
 				}
 				else if (game.selection == CPUVCPU)
-    df1c:	83 30       	cpi	r24, 0x03	; 3
-    df1e:	89 f4       	brne	.+34     	; 0xdf42 <main+0xf4>
+    df18:	83 30       	cpi	r24, 0x03	; 3
+    df1a:	89 f4       	brne	.+34     	; 0xdf3e <main+0xf0>
 				{
 					get_cpu_joypad_state(&player1, &player2, &p1);
-    df20:	4c ea       	ldi	r20, 0xAC	; 172
-    df22:	5c e0       	ldi	r21, 0x0C	; 12
-    df24:	62 ea       	ldi	r22, 0xA2	; 162
-    df26:	7f e0       	ldi	r23, 0x0F	; 15
-    df28:	89 e3       	ldi	r24, 0x39	; 57
-    df2a:	9c e0       	ldi	r25, 0x0C	; 12
-    df2c:	0e 94 4d 6d 	call	0xda9a	; 0xda9a <get_cpu_joypad_state>
+    df1c:	4c ea       	ldi	r20, 0xAC	; 172
+    df1e:	5c e0       	ldi	r21, 0x0C	; 12
+    df20:	62 ea       	ldi	r22, 0xA2	; 162
+    df22:	7f e0       	ldi	r23, 0x0F	; 15
+    df24:	89 e3       	ldi	r24, 0x39	; 57
+    df26:	9c e0       	ldi	r25, 0x0C	; 12
+    df28:	0e 94 4d 6d 	call	0xda9a	; 0xda9a <get_cpu_joypad_state>
 					get_cpu_joypad_state(&player2, &player1, &p2);
-    df30:	4f ed       	ldi	r20, 0xDF	; 223
-    df32:	5b e0       	ldi	r21, 0x0B	; 11
-    df34:	69 e3       	ldi	r22, 0x39	; 57
-    df36:	7c e0       	ldi	r23, 0x0C	; 12
-    df38:	82 ea       	ldi	r24, 0xA2	; 162
-    df3a:	9f e0       	ldi	r25, 0x0F	; 15
-    df3c:	0e 94 4d 6d 	call	0xda9a	; 0xda9a <get_cpu_joypad_state>
-    df40:	0a c0       	rjmp	.+20     	; 0xdf56 <main+0x108>
+    df2c:	4f ed       	ldi	r20, 0xDF	; 223
+    df2e:	5b e0       	ldi	r21, 0x0B	; 11
+    df30:	69 e3       	ldi	r22, 0x39	; 57
+    df32:	7c e0       	ldi	r23, 0x0C	; 12
+    df34:	82 ea       	ldi	r24, 0xA2	; 162
+    df36:	9f e0       	ldi	r25, 0x0F	; 15
+    df38:	0e 94 4d 6d 	call	0xda9a	; 0xda9a <get_cpu_joypad_state>
+    df3c:	0a c0       	rjmp	.+20     	; 0xdf52 <main+0x104>
 				}
 				else
 				{
 					LBGetJoyPadState(&p1, 0);
-    df42:	60 e0       	ldi	r22, 0x00	; 0
-    df44:	8c ea       	ldi	r24, 0xAC	; 172
-    df46:	9c e0       	ldi	r25, 0x0C	; 12
-    df48:	0e 94 3f 53 	call	0xa67e	; 0xa67e <LBGetJoyPadState>
+    df3e:	60 e0       	ldi	r22, 0x00	; 0
+    df40:	8c ea       	ldi	r24, 0xAC	; 172
+    df42:	9c e0       	ldi	r25, 0x0C	; 12
+    df44:	0e 94 3f 53 	call	0xa67e	; 0xa67e <LBGetJoyPadState>
 					LBGetJoyPadState(&p2, 1);
-    df4c:	61 e0       	ldi	r22, 0x01	; 1
-    df4e:	8f ed       	ldi	r24, 0xDF	; 223
-    df50:	9b e0       	ldi	r25, 0x0B	; 11
-    df52:	0e 94 3f 53 	call	0xa67e	; 0xa67e <LBGetJoyPadState>
+    df48:	61 e0       	ldi	r22, 0x01	; 1
+    df4a:	8f ed       	ldi	r24, 0xDF	; 223
+    df4c:	9b e0       	ldi	r25, 0x0B	; 11
+    df4e:	0e 94 3f 53 	call	0xa67e	; 0xa67e <LBGetJoyPadState>
 				}
 				update_level(&p1, &p2);
-    df56:	6f ed       	ldi	r22, 0xDF	; 223
-    df58:	7b e0       	ldi	r23, 0x0B	; 11
-    df5a:	8c ea       	ldi	r24, 0xAC	; 172
-    df5c:	9c e0       	ldi	r25, 0x0C	; 12
-    df5e:	0e 94 20 66 	call	0xcc40	; 0xcc40 <update_level>
+    df52:	6f ed       	ldi	r22, 0xDF	; 223
+    df54:	7b e0       	ldi	r23, 0x0B	; 11
+    df56:	8c ea       	ldi	r24, 0xAC	; 172
+    df58:	9c e0       	ldi	r25, 0x0C	; 12
+    df5a:	0e 94 20 66 	call	0xcc40	; 0xcc40 <update_level>
 				break;
 			default:
 				break;
 		}
 		global_frame_counter++;
-    df62:	80 91 01 01 	lds	r24, 0x0101
-    df66:	90 91 02 01 	lds	r25, 0x0102
-    df6a:	01 96       	adiw	r24, 0x01	; 1
-    df6c:	90 93 02 01 	sts	0x0102, r25
-    df70:	80 93 01 01 	sts	0x0101, r24
+    df5e:	80 91 01 01 	lds	r24, 0x0101
+    df62:	90 91 02 01 	lds	r25, 0x0102
+    df66:	01 96       	adiw	r24, 0x01	; 1
+    df68:	90 93 02 01 	sts	0x0102, r25
+    df6c:	80 93 01 01 	sts	0x0101, r24
 	}
-    df74:	96 cf       	rjmp	.-212    	; 0xdea2 <main+0x54>
+    df70:	98 cf       	rjmp	.-208    	; 0xdea2 <main+0x54>
 
-0000df76 <__udivmodqi4>:
-    df76:	99 1b       	sub	r25, r25
-    df78:	79 e0       	ldi	r23, 0x09	; 9
-    df7a:	04 c0       	rjmp	.+8      	; 0xdf84 <__udivmodqi4_ep>
+0000df72 <__udivmodqi4>:
+    df72:	99 1b       	sub	r25, r25
+    df74:	79 e0       	ldi	r23, 0x09	; 9
+    df76:	04 c0       	rjmp	.+8      	; 0xdf80 <__udivmodqi4_ep>
 
-0000df7c <__udivmodqi4_loop>:
-    df7c:	99 1f       	adc	r25, r25
-    df7e:	96 17       	cp	r25, r22
-    df80:	08 f0       	brcs	.+2      	; 0xdf84 <__udivmodqi4_ep>
-    df82:	96 1b       	sub	r25, r22
+0000df78 <__udivmodqi4_loop>:
+    df78:	99 1f       	adc	r25, r25
+    df7a:	96 17       	cp	r25, r22
+    df7c:	08 f0       	brcs	.+2      	; 0xdf80 <__udivmodqi4_ep>
+    df7e:	96 1b       	sub	r25, r22
 
-0000df84 <__udivmodqi4_ep>:
-    df84:	88 1f       	adc	r24, r24
-    df86:	7a 95       	dec	r23
-    df88:	c9 f7       	brne	.-14     	; 0xdf7c <__udivmodqi4_loop>
-    df8a:	80 95       	com	r24
-    df8c:	08 95       	ret
+0000df80 <__udivmodqi4_ep>:
+    df80:	88 1f       	adc	r24, r24
+    df82:	7a 95       	dec	r23
+    df84:	c9 f7       	brne	.-14     	; 0xdf78 <__udivmodqi4_loop>
+    df86:	80 95       	com	r24
+    df88:	08 95       	ret
 
-0000df8e <__udivmodhi4>:
-    df8e:	aa 1b       	sub	r26, r26
-    df90:	bb 1b       	sub	r27, r27
-    df92:	51 e1       	ldi	r21, 0x11	; 17
-    df94:	07 c0       	rjmp	.+14     	; 0xdfa4 <__udivmodhi4_ep>
+0000df8a <__udivmodhi4>:
+    df8a:	aa 1b       	sub	r26, r26
+    df8c:	bb 1b       	sub	r27, r27
+    df8e:	51 e1       	ldi	r21, 0x11	; 17
+    df90:	07 c0       	rjmp	.+14     	; 0xdfa0 <__udivmodhi4_ep>
 
-0000df96 <__udivmodhi4_loop>:
-    df96:	aa 1f       	adc	r26, r26
-    df98:	bb 1f       	adc	r27, r27
-    df9a:	a6 17       	cp	r26, r22
-    df9c:	b7 07       	cpc	r27, r23
-    df9e:	10 f0       	brcs	.+4      	; 0xdfa4 <__udivmodhi4_ep>
-    dfa0:	a6 1b       	sub	r26, r22
-    dfa2:	b7 0b       	sbc	r27, r23
+0000df92 <__udivmodhi4_loop>:
+    df92:	aa 1f       	adc	r26, r26
+    df94:	bb 1f       	adc	r27, r27
+    df96:	a6 17       	cp	r26, r22
+    df98:	b7 07       	cpc	r27, r23
+    df9a:	10 f0       	brcs	.+4      	; 0xdfa0 <__udivmodhi4_ep>
+    df9c:	a6 1b       	sub	r26, r22
+    df9e:	b7 0b       	sbc	r27, r23
 
-0000dfa4 <__udivmodhi4_ep>:
-    dfa4:	88 1f       	adc	r24, r24
-    dfa6:	99 1f       	adc	r25, r25
-    dfa8:	5a 95       	dec	r21
-    dfaa:	a9 f7       	brne	.-22     	; 0xdf96 <__udivmodhi4_loop>
-    dfac:	80 95       	com	r24
-    dfae:	90 95       	com	r25
-    dfb0:	bc 01       	movw	r22, r24
-    dfb2:	cd 01       	movw	r24, r26
-    dfb4:	08 95       	ret
+0000dfa0 <__udivmodhi4_ep>:
+    dfa0:	88 1f       	adc	r24, r24
+    dfa2:	99 1f       	adc	r25, r25
+    dfa4:	5a 95       	dec	r21
+    dfa6:	a9 f7       	brne	.-22     	; 0xdf92 <__udivmodhi4_loop>
+    dfa8:	80 95       	com	r24
+    dfaa:	90 95       	com	r25
+    dfac:	bc 01       	movw	r22, r24
+    dfae:	cd 01       	movw	r24, r26
+    dfb0:	08 95       	ret
 
-0000dfb6 <__divmodhi4>:
-    dfb6:	97 fb       	bst	r25, 7
-    dfb8:	07 2e       	mov	r0, r23
-    dfba:	16 f4       	brtc	.+4      	; 0xdfc0 <__divmodhi4+0xa>
-    dfbc:	00 94       	com	r0
-    dfbe:	07 d0       	rcall	.+14     	; 0xdfce <__divmodhi4_neg1>
-    dfc0:	77 fd       	sbrc	r23, 7
-    dfc2:	09 d0       	rcall	.+18     	; 0xdfd6 <__divmodhi4_neg2>
-    dfc4:	0e 94 c7 6f 	call	0xdf8e	; 0xdf8e <__udivmodhi4>
-    dfc8:	07 fc       	sbrc	r0, 7
-    dfca:	05 d0       	rcall	.+10     	; 0xdfd6 <__divmodhi4_neg2>
-    dfcc:	3e f4       	brtc	.+14     	; 0xdfdc <__divmodhi4_exit>
+0000dfb2 <__divmodhi4>:
+    dfb2:	97 fb       	bst	r25, 7
+    dfb4:	07 2e       	mov	r0, r23
+    dfb6:	16 f4       	brtc	.+4      	; 0xdfbc <__divmodhi4+0xa>
+    dfb8:	00 94       	com	r0
+    dfba:	07 d0       	rcall	.+14     	; 0xdfca <__divmodhi4_neg1>
+    dfbc:	77 fd       	sbrc	r23, 7
+    dfbe:	09 d0       	rcall	.+18     	; 0xdfd2 <__divmodhi4_neg2>
+    dfc0:	0e 94 c5 6f 	call	0xdf8a	; 0xdf8a <__udivmodhi4>
+    dfc4:	07 fc       	sbrc	r0, 7
+    dfc6:	05 d0       	rcall	.+10     	; 0xdfd2 <__divmodhi4_neg2>
+    dfc8:	3e f4       	brtc	.+14     	; 0xdfd8 <__divmodhi4_exit>
 
-0000dfce <__divmodhi4_neg1>:
-    dfce:	90 95       	com	r25
-    dfd0:	81 95       	neg	r24
-    dfd2:	9f 4f       	sbci	r25, 0xFF	; 255
-    dfd4:	08 95       	ret
+0000dfca <__divmodhi4_neg1>:
+    dfca:	90 95       	com	r25
+    dfcc:	81 95       	neg	r24
+    dfce:	9f 4f       	sbci	r25, 0xFF	; 255
+    dfd0:	08 95       	ret
 
-0000dfd6 <__divmodhi4_neg2>:
-    dfd6:	70 95       	com	r23
-    dfd8:	61 95       	neg	r22
-    dfda:	7f 4f       	sbci	r23, 0xFF	; 255
+0000dfd2 <__divmodhi4_neg2>:
+    dfd2:	70 95       	com	r23
+    dfd4:	61 95       	neg	r22
+    dfd6:	7f 4f       	sbci	r23, 0xFF	; 255
 
-0000dfdc <__divmodhi4_exit>:
-    dfdc:	08 95       	ret
+0000dfd8 <__divmodhi4_exit>:
+    dfd8:	08 95       	ret
 
-0000dfde <memcpy_P>:
-    dfde:	fb 01       	movw	r30, r22
-    dfe0:	dc 01       	movw	r26, r24
-    dfe2:	02 c0       	rjmp	.+4      	; 0xdfe8 <memcpy_P+0xa>
-    dfe4:	05 90       	lpm	r0, Z+
-    dfe6:	0d 92       	st	X+, r0
-    dfe8:	41 50       	subi	r20, 0x01	; 1
-    dfea:	50 40       	sbci	r21, 0x00	; 0
-    dfec:	d8 f7       	brcc	.-10     	; 0xdfe4 <memcpy_P+0x6>
-    dfee:	08 95       	ret
+0000dfda <memcpy_P>:
+    dfda:	fb 01       	movw	r30, r22
+    dfdc:	dc 01       	movw	r26, r24
+    dfde:	02 c0       	rjmp	.+4      	; 0xdfe4 <memcpy_P+0xa>
+    dfe0:	05 90       	lpm	r0, Z+
+    dfe2:	0d 92       	st	X+, r0
+    dfe4:	41 50       	subi	r20, 0x01	; 1
+    dfe6:	50 40       	sbci	r21, 0x00	; 0
+    dfe8:	d8 f7       	brcc	.-10     	; 0xdfe0 <memcpy_P+0x6>
+    dfea:	08 95       	ret
 
-0000dff0 <strnlen_P>:
-    dff0:	fc 01       	movw	r30, r24
-    dff2:	05 90       	lpm	r0, Z+
-    dff4:	61 50       	subi	r22, 0x01	; 1
-    dff6:	70 40       	sbci	r23, 0x00	; 0
-    dff8:	01 10       	cpse	r0, r1
-    dffa:	d8 f7       	brcc	.-10     	; 0xdff2 <strnlen_P+0x2>
-    dffc:	80 95       	com	r24
-    dffe:	90 95       	com	r25
-    e000:	8e 0f       	add	r24, r30
-    e002:	9f 1f       	adc	r25, r31
-    e004:	08 95       	ret
+0000dfec <strnlen_P>:
+    dfec:	fc 01       	movw	r30, r24
+    dfee:	05 90       	lpm	r0, Z+
+    dff0:	61 50       	subi	r22, 0x01	; 1
+    dff2:	70 40       	sbci	r23, 0x00	; 0
+    dff4:	01 10       	cpse	r0, r1
+    dff6:	d8 f7       	brcc	.-10     	; 0xdfee <strnlen_P+0x2>
+    dff8:	80 95       	com	r24
+    dffa:	90 95       	com	r25
+    dffc:	8e 0f       	add	r24, r30
+    dffe:	9f 1f       	adc	r25, r31
+    e000:	08 95       	ret
 
-0000e006 <_exit>:
-    e006:	f8 94       	cli
+0000e002 <_exit>:
+    e002:	f8 94       	cli
 
-0000e008 <__stop_program>:
-    e008:	ff cf       	rjmp	.-2      	; 0xe008 <__stop_program>
+0000e004 <__stop_program>:
+    e004:	ff cf       	rjmp	.-2      	; 0xe004 <__stop_program>

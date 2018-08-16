@@ -385,7 +385,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0xe00a
+.text           0x0000000000000000     0xe006
  *(.vectors)
  .vectors       0x0000000000000000       0x70 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
                 0x0000000000000000                __vectors
@@ -1031,29 +1031,29 @@ END GROUP
                 0x000000000000de32       0x1c TankFu.o
                 0x000000000000de32                load_credits
  .text.startup.main
-                0x000000000000de4e      0x128 TankFu.o
+                0x000000000000de4e      0x124 TankFu.o
                 0x000000000000de4e                main
  .text.libgcc.div
-                0x000000000000df76       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
-                0x000000000000df76                __udivmodqi4
+                0x000000000000df72       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
+                0x000000000000df72                __udivmodqi4
  .text.libgcc.div
-                0x000000000000df8e       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
-                0x000000000000df8e                __udivmodhi4
+                0x000000000000df8a       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
+                0x000000000000df8a                __udivmodhi4
  .text.libgcc.div
-                0x000000000000dfb6       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
-                0x000000000000dfb6                __divmodhi4
-                0x000000000000dfb6                _div
+                0x000000000000dfb2       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
+                0x000000000000dfb2                __divmodhi4
+                0x000000000000dfb2                _div
  .text.avr-libc
-                0x000000000000dfde       0x12 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(memcpy_P.o)
-                0x000000000000dfde                memcpy_P
+                0x000000000000dfda       0x12 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(memcpy_P.o)
+                0x000000000000dfda                memcpy_P
  .text.avr-libc
-                0x000000000000dff0       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen_P.o)
-                0x000000000000dff0                strnlen_P
-                0x000000000000e006                . = ALIGN (0x2)
+                0x000000000000dfec       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen_P.o)
+                0x000000000000dfec                strnlen_P
+                0x000000000000e002                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000000000000e006        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
-                0x000000000000e006                exit
-                0x000000000000e006                _exit
+ .fini9         0x000000000000e002        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+                0x000000000000e002                exit
+                0x000000000000e002                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1072,11 +1072,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000000000000e006        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x000000000000e002        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x000000000000e00a                _etext = .
+                0x000000000000e006                _etext = .
 
-.data           0x0000000000800100        0x4 load address 0x000000000000e00a
+.data           0x0000000000800100        0x4 load address 0x000000000000e006
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800100        0x1 uzeboxVideoEngine.o
@@ -1164,8 +1164,8 @@ END GROUP
                 0x0000000000801031                turret2
                 0x0000000000801060                turret1
                 0x000000000080108f                PROVIDE (__bss_end, .)
-                0x000000000000e00a                __data_load_start = LOADADDR (.data)
-                0x000000000000e00e                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000000000000e006                __data_load_start = LOADADDR (.data)
+                0x000000000000e00a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x000000000080108f        0x0
                 0x000000000080108f                PROVIDE (__noinit_start, .)
@@ -1261,7 +1261,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0xa3e6
+.debug_info     0x0000000000000000     0xa3c3
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x672 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_info    0x0000000000000672       0x7d uzeboxVideoEngineCore.o
@@ -1269,7 +1269,7 @@ END GROUP
  .debug_info    0x00000000000011a7     0x12e8 uzeboxSoundEngine.o
  .debug_info    0x000000000000248f       0x74 uzeboxSoundEngineCore.o
  .debug_info    0x0000000000002503     0x1214 uzeboxVideoEngine.o
- .debug_info    0x0000000000003717     0x6ccf TankFu.o
+ .debug_info    0x0000000000003717     0x6cac TankFu.o
 
 .debug_abbrev   0x0000000000000000     0x15bb
  *(.debug_abbrev)
@@ -1281,7 +1281,7 @@ END GROUP
  .debug_abbrev  0x0000000000000cc4      0x39a uzeboxVideoEngine.o
  .debug_abbrev  0x000000000000105e      0x55d TankFu.o
 
-.debug_line     0x0000000000000000     0x238f
+.debug_line     0x0000000000000000     0x2395
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x50b uzeboxVideoEngineCore.o
@@ -1289,7 +1289,7 @@ END GROUP
  .debug_line    0x00000000000007e1      0x3e6 uzeboxSoundEngine.o
  .debug_line    0x0000000000000bc7      0x1a9 uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000d70      0x45c uzeboxVideoEngine.o
- .debug_line    0x00000000000011cc     0x11c3 TankFu.o
+ .debug_line    0x00000000000011cc     0x11c9 TankFu.o
 
 .debug_frame    0x0000000000000000     0x1578
  *(.debug_frame)
@@ -1308,7 +1308,7 @@ END GROUP
  .debug_str     0x0000000000000afa      0x2e4 uzeboxVideoEngine.o
                                         0x46f (size before relaxing)
  .debug_str     0x0000000000000dde     0x10ed TankFu.o
-                                       0x1516 (size before relaxing)
+                                       0x151e (size before relaxing)
 
 .debug_loc      0x0000000000000000     0x8d61
  *(.debug_loc)

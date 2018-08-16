@@ -152,8 +152,8 @@ u8 LBCollides(u16 x1, u16 y1, u16 width1, u16 height1,
 u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
 							  u16 line2x1, u16 line2y1, u16 line2x2, u16 line2y2)
 {
-	u16 ua, ub;
-	u16 denom;
+	s16 ua, ub;
+	s16 denom;
 
 	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
 			 ((line2x2 - line2x1) * (line1y2 - line1y1));
