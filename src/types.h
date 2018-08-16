@@ -40,7 +40,7 @@ typedef struct sShot {
 	u8 hit_count;
 	u8 rebounds;
 	u8 active;
-	u8 distance;
+	u16 distance;
 	Animation up_anim;
 	Animation right_anim;
 

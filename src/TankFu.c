@@ -212,7 +212,7 @@ void init_turret(Turret* t, u16 x, u16 y)
 		t->shot[i].shared.x = OFF_SCREEN << FP_FACTOR;
 		t->shot[i].shared.y = 0;
 		t->shot[i].active = 0;
-		t->shot[i].distance = 100;
+		t->shot[i].distance = FP_128;
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
 		t->shot[i].rebounds = SHOT_REBOUNDS;
 		t->shot[i].hit_count = BOSS_TURRET_SHOT_HIT_COUNT;
@@ -508,7 +508,7 @@ u16 get_delta(Player* p, SpriteShared* s)
 {
 	if (p->goal == 0)
 		return s->speed / FRAME_TIME_INVERTED;
-	return (s->speed * AI_SPEED_FACTOR) / FRAME_TIME_INVERTED;
+	return (s->speed  + (s->speed / 2)) / FRAME_TIME_INVERTED;
 }
 
 void update_player(JoyPadState* p, Player* player)
@@ -885,7 +885,7 @@ void recoil_sprite(SpriteShared* sprite)
 	
 	if (sprite->direction == D_UP)
 	{
-		tile = ((u8) sprite->y / FP_8) + 1;
+		tile = sprite->y / FP_8 + 1;
 		sprite->y = tile * FP_8;
 	}
 	else if (sprite->direction == D_RIGHT)
@@ -900,7 +900,7 @@ void recoil_sprite(SpriteShared* sprite)
 	}
 	else
 	{
-		tile = ((u8) sprite->x / FP_8) + 1;
+		tile = sprite->x / FP_8 + 1;
 		sprite->x = tile * FP_8;
 	}
 	sprite->recoiled = 1;
@@ -968,40 +968,40 @@ u8 collides_directional_tile(int tile_index, u16 x, u16 y, u16 width, u16 height
 	u16 tile_x = (tile_index % 30) * FP_8;
 	u16 tile_y = (tile_index / 30 + 3) * FP_8;
 
-	if ((tile == L_TL) || (tile == L_BR))
-	{
-		if (LBLineIntersect(tile_x, tile_y+FP_8, tile_x+FP_8, tile_y, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+FP_8, tile_x+FP_8, tile_y, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+FP_8, tile_x+FP_8, tile_y, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+FP_8, tile_x+FP_8, tile_y, x, y+height, x+width, y+height)) return tile;
-	}
-	else if ((tile == L_TR) || (tile == L_BL))
-	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8, tile_y+FP_8, x, y, x, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8, tile_y+FP_8, x, y, x+width, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8, tile_y+FP_8, x+width, y, x+width, y+height)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8, tile_y+FP_8, x, y+height, x+width, y+height)) return tile;
-	}
+    if ((tile == L_TL) || (tile == L_BR))
+    {
+        if (LBLineIntersect(tile_x, tile_y+FP_8-FP_1, tile_x+FP_8-FP_1, tile_y, x, y, x, y+height-FP_1)) return tile;
+        if (LBLineIntersect(tile_x, tile_y+FP_8-FP_1, tile_x+FP_8-FP_1, tile_y, x, y, x+width-FP_1, y)) return tile;
+        if (LBLineIntersect(tile_x, tile_y+FP_8-FP_1, tile_x+FP_8-FP_1, tile_y, x+width-FP_1, y, x+width-FP_1, y+height-FP_1)) return tile;
+        if (LBLineIntersect(tile_x, tile_y+FP_8-FP_1, tile_x+FP_8-FP_1, tile_y, x, y+height-FP_1, x+width-FP_1, y+height-FP_1)) return tile;
+    }
+    else if ((tile == L_TR) || (tile == L_BL))
+    {
+        if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8-FP_1, tile_y+FP_8-FP_1, x, y, x, y+height-FP_1)) return tile;
+        if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8-FP_1, tile_y+FP_8-FP_1, x, y, x+width-FP_1, y)) return tile;
+        if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8-FP_1, tile_y+FP_8-FP_1, x+width-FP_1, y, x+width-FP_1, y+height-FP_1)) return tile;
+        if (LBLineIntersect(tile_x, tile_y, tile_x+FP_8-FP_1, tile_y+FP_8-FP_1, x, y+height-FP_1, x+width-FP_1, y+height-FP_1)) return tile;
+    }
 	
 	return 0;
 }
 
 u8 player_shot(Player* p, Shot* shot)
 {
-	return LBCollides(p->shared.x,p->shared.y,FP_16,FP_16,shot->shared.x,shot->shared.y,FP_8,FP_8) &&
+	return LBCollides(p->shared.x+FP_1,p->shared.y+FP_1,FP_16-FP_2,FP_16-FP_2,shot->shared.x+FP_2,shot->shared.y+FP_2,FP_4,FP_4) &&
 		   p->grace_frame == FRAMES_PER_GRACE &&
 		   shot->distance > DISTANCE_TO_ARM;
 }
 
 u8 turret_shot(Turret* t, Shot* shot)
 {
-	return LBCollides(t->shared.x,t->shared.y,FP_8,FP_8,shot->shared.x,shot->shared.y,FP_8,FP_8) && t->lives > 0;
+	return LBCollides(t->shared.x,t->shared.y,FP_8,FP_8,shot->shared.x+FP_2,shot->shared.y+FP_2,FP_4,FP_4) && t->lives > 0;
 }
 
 u8 collision_detect_boundries(SpriteShared* sprite)
 {
 	if (sprite->x < 0  || sprite->x + FP_8 > (240 << FP_FACTOR) ||
-	    sprite->y < 24 || sprite->y + FP_8 > (224 << FP_FACTOR))
+	    sprite->y < (24 << FP_FACTOR) || sprite->y + FP_8 > (224 << FP_FACTOR))
 	{
 		return 1;
 	}
@@ -1132,8 +1132,8 @@ void richochet(u8 tile_type, SpriteShared* sprite)
 void collision_detect_shot(Player* player, Shot* shot)
 {	 
 	int tiles[2] = {0, 0};
-	u8 x = shot->shared.x / 8;
-	u8 y = shot->shared.y / 8 - 3;
+	u8 x = shot->shared.x / FP_8;
+	u8 y = shot->shared.y / FP_8 - 3;
 	u8 tile;
 	u8 hud_x;
 	Player* p = 0;
@@ -1200,17 +1200,17 @@ void collision_detect_shot(Player* player, Shot* shot)
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
 		
-		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x, shot->shared.y,FP_8,FP_8))
+		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+FP_2, shot->shared.y+FP_2,FP_4,FP_4))
 		{
 			hit = hit | HIT_ANGLE;
 			angle_tile = tile;
 		}
-		else if (tile == L_BRICK && LBCollides(shot->shared.x,shot->shared.y,FP_8,FP_8,(tiles[i]%30)*FP_8,(tiles[i]/30+3)*FP_8,FP_8,FP_8))
+		else if (tile == L_BRICK && LBCollides(shot->shared.x+FP_2,shot->shared.y+FP_2,FP_4,FP_4,(tiles[i]%30)*FP_8,(tiles[i]/30+3)*FP_8,FP_8,FP_8))
 		{
 			hit = hit | HIT_BRICK;
 			brick_index = i;
 		}
-		else if (tile == L_METAL && LBCollides(shot->shared.x,shot->shared.y,FP_8,FP_8,(tiles[i]%30)*FP_8,(tiles[i]/30+3)*FP_8,FP_8,FP_8))
+		else if (tile == L_METAL && LBCollides(shot->shared.x+FP_2,shot->shared.y+FP_2,FP_4,FP_4,(tiles[i]%30)*FP_8,(tiles[i]/30+3)*FP_8,FP_8,FP_8))
         {
 		    hit = hit | HIT_METAL;
         }
