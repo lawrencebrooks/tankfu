@@ -30,6 +30,7 @@
 #include "strings.h"
 #include "utils.h"
 #include "macros.h"
+#include "networking.h"
 
 /* Utilities */
 void load_eeprom(struct EepromBlockStruct* block);
@@ -221,9 +222,7 @@ void init_turret(Turret* t, float x, float y)
 
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0)
 {
-	p->banter_frame = FRAMES_PER_BANTER;
 	p->grace_frame = FRAMES_PER_GRACE;
-	p->banter_index = 0;
 	p->score = 0;
 	p->level_score = 0;
 	p->shared.direction = D_UP;
@@ -306,8 +305,6 @@ void init_game_state()
 	game.boss_fight_player_hud = 0;
 	game.toggle_counter = FRAMES_PER_BLANK;
 	game.toggle_blank = 0;
-	game.clear_banter_1 = 1;
-	game.clear_banter_2 = 1;
 	game.demo_counter = 0;
 	game.demo_choice = 0;
 	game.tank_rank_counter = 0;
@@ -527,15 +524,6 @@ void update_player(JoyPadState* p, Player* player)
 	}
 	if (!(game.paused || (player->flags & EXPLODING_FLAG)))
 	{
-#if JAMMA
-#else
-		if ((p->pressed & BTN_SR) && (player->banter_frame == FRAMES_PER_BANTER))
-		{
-			player->banter_frame = 0;
-			player->banter_index = (u8) LBRandom(0, 9);
-			SFX_BANTER;
-		}
-#endif
 		player->shared.speed = player->max_speed;
 		if ((p->held & BTN_UP))
 		{
@@ -721,26 +709,6 @@ void render_score(Player* player, u8 x)
 {
 	PrintByte(x+8, 0, player->level_score, false);
 	PrintByte(x+8, 1, player->score, false);
-}
-
-u8 render_banter(Player* player, u8 banter_x, u8 clear_banter)
-{
-	// Banter
-	if (player->banter_frame != FRAMES_PER_BANTER)
-	{
-		if (player->banter_frame == 0)
-		{
-			Print(banter_x, 2, (char*) banter_map+player->banter_index*15);
-		}
-		clear_banter = 1;
-		player->banter_frame++;
-	}
-	else if (clear_banter)
-	{
-		Print(banter_x, 2, (char*) strBanterClear);
-		clear_banter = 0;
-	}
-	return clear_banter;
 }
 
 void render_player(Player* player, u8 sprite_index)
@@ -1740,8 +1708,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
 		shot_map(&player2, p2_shot_index);
-		game.clear_banter_1 = render_banter(&player1, 15, game.clear_banter_1);
-		game.clear_banter_2 = render_banter(&player2, 0, game.clear_banter_2);
 		render_player(&player1, p1_index);
 		render_player(&player2, p2_index);
 		render_shot(&player1, p1_shot_index);

@@ -63,8 +63,6 @@ typedef struct sPlayer {
 	u8 spawn_x;
 	u8 spawn_y;
 	u8 flags;
-	u8 banter_frame;
-	u8 banter_index;
 	u8 grace_frame;
 	u8 max_speed;
 	u8 has_rocket;
@@ -94,8 +92,6 @@ typedef struct sGameState {
 	u8 boss_fight_player_lives;
 	u8 toggle_counter;
 	u8 toggle_blank;
-	u8 clear_banter_1;
-	u8 clear_banter_2;
 	u8 demo_choice;
 	u16 demo_counter;
 	u16 scope_counter;

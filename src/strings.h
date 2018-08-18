@@ -46,17 +46,6 @@ const unsigned char strChangeHandle [] PROGMEM="EDIT - UP/DOWN";
 const unsigned char strOwns [] PROGMEM="OWNS";
 const unsigned char strBy [] PROGMEM="BY";
 const unsigned char strFinalScore [] PROGMEM="FINAL SCORE";
-const unsigned char banter_map [] PROGMEM="SUCH FAIL     \0"
-"LOL           \0"
-"BROKEN BUTTON?\0"
-"TRY AT LEAST  \0"
-"TOO EASY      \0"
-"YAWN          \0"
-"NOOB          \0"
-"THAT'S IT?    \0"
-"NEED HELP?    \0"
-"PFFT          ";
-const unsigned char strBanterClear [] PROGMEM="              ";
 const unsigned char strScore [] PROGMEM="SCORE:";
 const unsigned char strTotal [] PROGMEM="TOTAL:";
 const unsigned char strExit [] PROGMEM="BAIL - X";
