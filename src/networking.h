@@ -20,6 +20,8 @@
 #ifndef NETWORKING_HH
 #define NETWORKING_HH
 
+#include "strings.h"
+
 #define P2PHIT 0
 #define P2PSHOOT 1
 #define P2PITEMSPEED 2
@@ -36,71 +38,12 @@
 #define P2PHANDLESELECTDONE 14
 #define P2PBANTER 15
 
-typedef struct P2PMessageHeaderStruct {
-    u8 code;
-    u8 xpos;
-    u8 ypos;
-} P2PMessageHeader;
+typedef struct ESP2866MessageStruct {
+    u8 buffer[64];
+} ESP2866Message;
 
-typedef struct P2PHitMessageStruct {
-    P2PMessageHeader header;
-} P2PHitMessage;
-
-
-typedef struct P2PShootMessageStruct {
-    P2PMessageHeader header;
-} P2PShootMessage;
-
-typedef struct P2PItemSpeedMessageStruct {
-    P2PMessageHeader header;
-} P2PItemSpeedMessage;
-
-typedef struct P2PItemRocketMessageStruct {
-    P2PMessageHeader header;
-} P2PItemRocketMessage;
-
-typedef struct P2PItemBombMessageStruct {
-    P2PMessageHeader header;
-} P2PItemBombMessage;
-
-typedef struct P2PPosChangeMessageStruct {
-    P2PMessageHeader header;
-} P2PPosChangeMessage;
-
-typedef struct P2PBlockHitMessageStruct {
-    P2PMessageHeader header;
-} P2PBlockHitMessage;
-
-typedef struct P2PLevelEndMessageStruct {
-    P2PMessageHeader header;
-} P2PLevelEndMessage;
-
-typedef struct P2PImReadyMessageStruct {
-    P2PMessageHeader header;
-} P2PImReadyMessage;
-
-typedef struct P2PPauseMessageStruct {
-    P2PMessageHeader header;
-} P2PPauseMessage;
-
-typedef struct P2PResumeMessageStruct {
-    P2PMessageHeader header;
-} P2PResumeMessage;
-
-typedef struct P2PExitMessageStruct {
-    P2PMessageHeader header;
-} P2PExitMessage;
-
-typedef struct P2PHandleSelectMessageStruct {
-    P2PMessageHeader header;
-} P2PHandleSelectMessage;
-
-typedef struct P2PHandleSelectDoneMessageStruct {
-    P2PMessageHeader header;
-} P2PHandleSelectDoneMessage;
-
-typedef struct P2PBanterMessageStruct {
-    P2PMessageHeader header;
-} P2PBanterMessage;
+u8 espCommand(ESP2866Message* response, const char* command) {
+    return 0;
+} 
 
 #endif

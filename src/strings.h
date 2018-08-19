@@ -111,4 +111,13 @@ const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX\0\0\0\0\0"
 "LAWRENCE BROOKS\0#";
 #endif
 
+// ESP8266 AT commands
+const unsigned char ATRESTART [] PROGMEM="AT+RST\r\n";
+const unsigned char ATGETMAC [] PROGMEM="AT+CIPSTAMAC_DEF?\r\n";
+
+
+// ESP8266 Response Codes
+const unsigned char ATOK [] PROGMEM="\r\nOK\r\n";
+const unsigned char ATERROR [] PROGMEM="\r\nERROR\r\n";
+
 #endif

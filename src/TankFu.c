@@ -2500,6 +2500,13 @@ int main()
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
+    UBRR0H=0;
+    UBRR0L=30; // 115200
+    UCSR0A=(0<<U2X0); //double speed mode(reliable disabled? must double UBRR0L values IF enabled)
+    UCSR0C=(1<<UCSZ01)+(1<<UCSZ00)+(0<<USBS0); //8-bit frame, no parity, 1 stop bit
+    UCSR0B=(1<<RXEN0)+(1<<TXEN0); //Enable UART TX & RX
+    InitUartRxBuffer();
+    InitUartTxBuffer();
 	FadeIn(FRAMES_PER_FADE, false);
 	ClearVram();
 #if JAMMA
