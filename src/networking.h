@@ -21,6 +21,7 @@
 #define NETWORKING_HH
 
 #include "strings.h"
+#include "uzenet.h"
 
 #define P2PHIT 0
 #define P2PSHOOT 1
@@ -29,21 +30,102 @@
 #define P2PITEMBOMB 4
 #define P2PPOSCHANGE 5
 #define P2PBLOCKHIT 6
-#define P2PLEVELEND 7
-#define P2PIMREADY 9
 #define P2PPAUSE 10
 #define P2PRESUME 11
 #define P2PEXIT 12
 #define P2PHANDLESELECT 13
 #define P2PHANDLESELECTDONE 14
-#define P2PBANTER 15
 
-typedef struct ESP2866MessageStruct {
-    u8 buffer[64];
-} ESP2866Message;
+typedef struct NetMessageStruct {
+    u8 code;
+    u16 input;
+	u8 object_pos_x;
+	u8 object_pos_y;
+	u8 score;
+	u8 level_score;
+	float pos_x;
+	float pos_y;
+	u8 zero;
+} NetMessage;
 
-u8 espCommand(ESP2866Message* response, const char* command) {
-    return 0;
-} 
+u8 activateNet() {
+	InitUartTxBuffer();
+	InitUartRxBuffer();
+	return initWifi();
+}
+
+u8 sendNetMessage(NetMessage* msg) {
+	return wifiSend((char *) msg);
+}
+
+u8 getNetMessage(NetMessage* msg) {
+	return wifiGetIfAvailable(msg, sizeof(msg));
+}
+
+u8 hostNetGame(char* ssid) {
+	char buf[64];
+	
+	// Set SoftAP mode...
+	if (wifiRequestP(PSTR("AT+CWMODE_CUR=2\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Disable DHCP...
+	if (wifiRequestP(PSTR("AT+CWDHCP_CUR=0,0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Set SopftAP IP address
+	if (wifiRequestP(PSTR("AT+CIPAP_CUR=\"192.168.4.1\"\r\n"), PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Get SoftAP MAC address...
+	wifiSendP(PSTR("AT+CIPAPMAC_CUR?\r\n"));
+	if (wifiGetPB(PSTR("OK\r\n"), buf) != WIFI_TIMEOUT) {
+		ssid[0] = 'T';
+		ssid[1] = 'F';
+		u8 idx = 2;
+		for (u8 i = 43; i <= 49; i += 3) {
+		   ssid[idx++] = buf[i];
+		   ssid[idx++] = buf[i+1];
+		}
+		ssid[8] = 0;
+	}
+	ssid = strupr(ssid);
+	sprintf(buf, "AT+CWSAP_CUR=\"%s\",\"T4nkFuN3t\",5,3,1\r\n", ssid);
+	
+	// Setup local access point...
+	if (wifiRequest(buf,PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Activate UDP Passthrough mode
+	if (wifiRequestP(PSTR("AT+CIPSTART=\"UDP\",\"192.168.4.2\",1001,2233,0\r\n"), PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	if (wifiRequestP(PSTR("AT+CIPMODE=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	wifiSendP(PSTR("AT+CIPSEND\r\n"));
+	return WIFI_OK;
+}
+
+u8 joinNetGame(const char* ssid) {
+	char buf[64];
+	
+	sprintf(buf, "AT+CWJAP_CUR=\"%s\",\"T4nkFuN3t\"\r\n", ssid);
+	
+	// Set Station mode...
+	if (wifiRequestP(PSTR("AT+CWMODE_CUR=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Disable DHCP...
+	if (wifiRequestP(PSTR("AT+CWDHCP_CUR=1,0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// List access points...
+	if (wifiRequestP(PSTR("AT+CWLAP\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Connect to access point...
+	if (wifiRequest(buf,PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Set station IP address
+	if (wifiRequestP(PSTR("AT+CIPSTA_CUR=\"192.168.4.2\"\r\n"), PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	// Activate UDP Passthrough mode
+	if (wifiRequestP(PSTR("AT+CIPSTART=\"UDP\",\"192.168.4.1\",2233,1001\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	if (wifiRequestP(PSTR("AT+CIPMODE=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	wifiSendP(PSTR("AT+CIPSEND\r\n"));
+	return WIFI_OK;
+}
+
+u8 cleanUpNet() {
+	u8 counter = 0;
+	wifiSendP(PSTR("+++"));
+	while(counter++ < 5) WaitUs(65535);
+	InitUartTxBuffer();
+	InitUartRxBuffer();
+	if (wifiRequestP(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	if (wifiRequestP(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
+	return WIFI_OK;
+}
 
 #endif

@@ -69,6 +69,8 @@ TileAnimation scope_animation;
 TileAnimation sub_animation;
 Turret turret1;
 Turret turret2;
+NetMessage netMessage;
+u8 wifi_status;
 
 u16 global_frame_counter = 1;
 
@@ -1773,8 +1775,11 @@ void load_splash()
 #else	
 	Print(7, 13, (char*) str1Player);
 	Print(7, 14, (char*) str2Player);
-	Print(7, 15, (char*) strHighscores);
-	Print(7, 13, (char*) str1Player);
+	if (wifi_status == WIFI_OK) {
+		Print(7, 15, (char*) strHostNetGame);
+		Print(7, 16, (char*) strJoinNetGame);
+	}
+	Print(7, 17, (char*) strHighscores);
 	Print(5, 26, (char*) strCopyright);
 	MapSprite2(0, map_right_arrow, 0);
 #endif
@@ -1872,8 +1877,14 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		case PVP:
 			MoveSprite(0, 6*8, 14*8, 1, 1);
 			break;
-		case TR:
+		case HOSTNETGAME:
 			MoveSprite(0, 6*8, 15*8, 1, 1);
+			break;
+		case JOINNETGAME:
+			MoveSprite(0, 6*8, 16*8, 1, 1);
+			break;
+		case TR:
+			MoveSprite(0, 6*8, 17*8, 1, 1);
 			break;
 	}
 	Print(6, 21, (char*) strSelectHandle);
@@ -1884,12 +1895,14 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	if (p1->pressed & BTN_UP)
 	{
 		game.selection--;
+		if (game.selection == JOINNETGAME && wifi_status != WIFI_OK) game.selection -= 2;
 		if (game.selection < PVCPU) game.selection = PVCPU;
 		SFX_NAVIGATE;
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
+		if (game.selection == HOSTNETGAME && wifi_status != WIFI_OK) game.selection += 2;
 		if (game.selection > TR) game.selection = TR;
 		SFX_NAVIGATE;
 	}
@@ -2479,6 +2492,11 @@ void load_credits()
 {
 	fade_through();
 	stream_text_middle((const char*) strCredits, 5, 100);
+#if JAMMA
+	wifi_status = WIFI_TIMEOUT;
+#else
+	wifi_status = activateNet();
+#endif
 	LBWaitSeconds(4);
 	fade_through();
 }
@@ -2500,13 +2518,6 @@ int main()
 	SetTileTable(tiles_data);
 	SetSpritesTileTable(sprites_data);
 	SetFontTilesIndex(TILES_DATA_SIZE);
-    UBRR0H=0;
-    UBRR0L=30; // 115200
-    UCSR0A=(0<<U2X0); //double speed mode(reliable disabled? must double UBRR0L values IF enabled)
-    UCSR0C=(1<<UCSZ01)+(1<<UCSZ00)+(0<<USBS0); //8-bit frame, no parity, 1 stop bit
-    UCSR0B=(1<<RXEN0)+(1<<TXEN0); //Enable UART TX & RX
-    InitUartRxBuffer();
-    InitUartTxBuffer();
 	FadeIn(FRAMES_PER_FADE, false);
 	ClearVram();
 #if JAMMA

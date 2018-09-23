@@ -32,8 +32,10 @@
 // Selections
 #define PVCPU 0
 #define PVP 1
-#define TR 2
-#define CPUVCPU 3
+#define HOSTNETGAME 2
+#define JOINNETGAME 3
+#define TR 4
+#define CPUVCPU 6
 
 // Frame counts
 #if JAMMA

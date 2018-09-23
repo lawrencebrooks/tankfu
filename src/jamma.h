@@ -44,7 +44,7 @@ void extract_dip_switches(u8 switches) {
 }
 
 void coin_inserted() {
-	TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f);
+	//TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f);
     if (coin_credit_rel == CC_FRE || credits == 255) {
         credits = 255;
         return;

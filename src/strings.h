@@ -30,6 +30,8 @@ const unsigned char strSelectHandle [] PROGMEM="SELECT - START";
 #else
 const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
 const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
+const unsigned char strHostNetGame [] PROGMEM="HOST NET GAME";
+const unsigned char strJoinNetGame [] PROGMEM="JOIN NET GAME";
 const unsigned char strConfirmHandle [] PROGMEM="CONFIRM - A/START";
 const unsigned char strReset [] PROGMEM="RESET DEFAULTS - SL (5S)";
 const unsigned char strCancelHandle [] PROGMEM="CANCEL - X";
@@ -102,22 +104,14 @@ const unsigned char default_scores[] PROGMEM = {
 };
 
 #if JAMMA
-const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX JAM.\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX JAM.\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0#";
 #else
-const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
-"LAWRENCE BROOKS\0#";
+"LAWRENCE BROOKS\0\0\0\0\0"
+"LOOKING FOR WIFI DEVICE...\0#";
 #endif
-
-// ESP8266 AT commands
-const unsigned char ATRESTART [] PROGMEM="AT+RST\r\n";
-const unsigned char ATGETMAC [] PROGMEM="AT+CIPSTAMAC_DEF?\r\n";
-
-
-// ESP8266 Response Codes
-const unsigned char ATOK [] PROGMEM="\r\nOK\r\n";
-const unsigned char ATERROR [] PROGMEM="\r\nERROR\r\n";
 
 #endif
