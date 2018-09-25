@@ -23,18 +23,20 @@
 #include "strings.h"
 #include "uzenet.h"
 
-#define P2PHIT 0
-#define P2PSHOOT 1
-#define P2PITEMSPEED 2
-#define P2PITEMROCKET 3
-#define P2PITEMBOMB 4
-#define P2PPOSCHANGE 5
-#define P2PBLOCKHIT 6
-#define P2PPAUSE 10
-#define P2PRESUME 11
-#define P2PEXIT 12
-#define P2PHANDLESELECT 13
-#define P2PHANDLESELECTDONE 14
+#define NETHIT 0
+#define NETSHOOT 1
+#define NETITEMSPEED 2
+#define NETITEMROCKET 3
+#define NETITEMBOMB 4
+#define NETPOSCHANGE 5
+#define NETBLOCKHIT 6
+#define NETPAUSE 10
+#define NETRESUME 11
+#define NETEXIT 12
+#define NETHANDLESELECT 13
+#define NETHANDLESELECTDONE 14
+#define NETJOINED 15
+#define NETNODATA 16
 
 typedef struct NetMessageStruct {
     u8 code;

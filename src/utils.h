@@ -21,6 +21,10 @@
 #include "jamma.h"
 #endif
 
+#include "networking.h"
+
+u16 p_prev[2] = {0,0};
+
 typedef struct sJoyPadState {
 	unsigned int pressed;
 	unsigned int released;
@@ -93,9 +97,25 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
  * Get the current joy pad button state for index controller
  */
 {
-	static unsigned int p_prev[2] = {0,0};
-
 	p->held = ReadJoypad(index);
+
+	// Count held cycles
+	if (p->held == 0 || p->held != p_prev[index])
+	    p->held_cycles = 0;
+	else
+	    p->held_cycles += 1;
+
+	p->pressed = p->held & (p->held ^ p_prev[index]);
+	p->released = p_prev[index] & (p->held ^ p_prev[index]);
+	p_prev[index] = p->held;
+}
+
+void LBGetJoyPadStateNet(JoyPadState* p, unsigned char index, NetMessage* netMessage)
+/*
+ * Get the current joy pad button state for index controller
+ */
+{
+	p->held = netMessage->input;
 
 	// Count held cycles
 	if (p->held == 0 || p->held != p_prev[index])

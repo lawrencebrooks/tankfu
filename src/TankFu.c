@@ -51,6 +51,8 @@ void collision_detect_shot(Player* player, Shot* shot);
 void load_splash();
 void load_tank_rank();
 void load_handle_select();
+void load_host_net_game();
+void load_join_net_game();
 void load_level(int level_number);
 void load_level_tiles(u8 blank);
 
@@ -71,6 +73,7 @@ Turret turret1;
 Turret turret2;
 NetMessage netMessage;
 u8 wifi_status;
+char gameId[9];
 
 u16 global_frame_counter = 1;
 
@@ -1917,6 +1920,22 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		load_handle_select();
 		return;
 	}
+	else if (select_pressed(p1) && (game.selection == HOSTNETGAME))
+	{
+		game.demo_counter = 0;
+		SFX_NAVIGATE;
+		fade_through();
+		load_host_net_game();
+		return;
+	}
+	else if (select_pressed(p1) && (game.selection == JOINNETGAME))
+	{
+		game.demo_counter = 0;
+		SFX_NAVIGATE;
+		fade_through();
+		load_join_net_game();
+		return;
+	}
 	else if (select_pressed(p1) && (game.selection == TR))
 	{
 		game.demo_counter = 0;
@@ -2210,6 +2229,87 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
+void load_host_net_game()
+{
+	game.current_screen = HOST_NET_GAME;
+	clear_sprites();
+	if (hostNetGame(gameId) == WIFI_OK)
+	{
+		Print(4, 1, (char*) strShareGameId);
+		Print(10, 10, gameId);
+		Print(1, 19, (char*) strWaitingForNetOppenent);
+		DrawMap2(8, 10, map_green_tank);
+		DrawMap2(18, 10, map_blue_tank);
+	}
+	else
+	{
+		Print(7, 10, (char*) strNetworkError);
+	}
+	Print(5, 23, (char*) strCancelHandle);
+}
+
+void update_host_net_game(JoyPadState* p1)
+{
+	if (p1->pressed & BTN_X)
+	{
+		SFX_NAVIGATE;
+		fade_through();
+		load_splash();
+	} 
+	else if (netMessage.code == NETJOINED)
+	{
+		game.demo_counter = 0;
+		p1s.select_state = SELECTING;
+		p2s.select_state = SELECTING;
+		SFX_NAVIGATE;
+		fade_through();
+		load_eeprom(&handles);
+		load_handle_select();
+	}
+}
+
+void load_join_net_game()
+{
+	game.current_screen = JOIN_NET_GAME;
+	clear_sprites();
+	Print(4, 1, (char*) strEnterGameId);
+	Print(10, 10, gameId);
+	DrawMap2(8, 10, map_green_tank);
+	DrawMap2(18, 10, map_blue_tank);
+	
+	Print(5, 22, (char*) strConfirmHandle);
+	Print(5, 23, (char*) strCancelHandle);
+}
+
+void update_join_net_game(JoyPadState* p1)
+{
+	if (p1->pressed & BTN_X)
+	{
+		SFX_NAVIGATE;
+		fade_through();
+		load_splash();
+	} else if (select_pressed(p1))
+	{
+		Print(7, 21, (char*) strConnecting);
+		if (joinNetGame(gameId) == WIFI_OK)
+		{
+			netMessage.code = NETJOINED;
+			sendNetMessage(&netMessage);
+			game.demo_counter = 0;
+			p1s.select_state = SELECTING;
+			p2s.select_state = SELECTING;
+			SFX_NAVIGATE;
+			fade_through();
+			load_eeprom(&handles);
+			load_handle_select();
+		}
+		else
+		{
+			Print(7, 21, (char*) strNetworkError);
+		}
+	}
+}
+
 u16 button_map(u16 number)
 {
 	if (number == 0) return BTN_UP;
@@ -2481,8 +2581,7 @@ void stream_text_middle(const char* dialogue, u8 y, u16 delay)
 			handle_coin_insert();
 #endif
 			LBPrintStr(x++, y, &c, 1);
-			LBGetJoyPadState(&p1, 0);
-			if (!(p1.held & BTN_A)) LBWaitUs(delay);
+			LBWaitUs(delay);
 		}
 		y++;
 	}
@@ -2532,6 +2631,10 @@ int main()
 	while (1)
 	{
 		waitForVSync();
+		if (wifi_status == WIFI_OK && getNetMessage(&netMessage) == WIFI_NODATA)
+		{
+			netMessage.code = NETNODATA;
+		}
 		switch (game.current_screen)
 		{
 			case SPLASH:
@@ -2543,9 +2646,30 @@ int main()
 				update_tank_rank(&p1);
 				break;
 			case HANDLE_SELECT:
-				LBGetJoyPadState(&p1, 0);
-				LBGetJoyPadState(&p2, 1);
+				if (game.selection == HOSTNETGAME)
+				{
+					LBGetJoyPadState(&p1, 0);
+					LBGetJoyPadStateNet(&p2, 1, &netMessage);
+				}
+				else if (game.selection == JOINNETGAME)
+				{
+					LBGetJoyPadStateNet(&p1, 1, &netMessage);
+					LBGetJoyPadState(&p2, 0);
+				}
+				else
+				{
+					LBGetJoyPadState(&p1, 0);
+					LBGetJoyPadState(&p2, 1);
+				}
 				update_handle_select(&p1, &p2);
+				break;
+			case HOST_NET_GAME:
+				LBGetJoyPadState(&p1, 0);
+				update_host_net_game(&p1);
+				break;
+			case JOIN_NET_GAME:
+				LBGetJoyPadState(&p1, 0);
+				update_join_net_game(&p1);
 				break;
 			case LEVEL:
 				if (game.selection == PVCPU)
@@ -2557,6 +2681,16 @@ int main()
 				{
 					get_cpu_joypad_state(&player1, &player2, &p1);
 					get_cpu_joypad_state(&player2, &player1, &p2);
+				}
+				else if (game.selection == HOSTNETGAME)
+				{
+					LBGetJoyPadState(&p1, 0);
+					LBGetJoyPadStateNet(&p2, 1, &netMessage);
+				}
+				else if (game.selection == JOINNETGAME)
+				{
+					LBGetJoyPadStateNet(&p1, 1, &netMessage);
+					LBGetJoyPadState(&p2, 0);
 				}
 				else
 				{

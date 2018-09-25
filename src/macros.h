@@ -28,6 +28,8 @@
 #define TANK_RANK 1
 #define HANDLE_SELECT 2
 #define LEVEL 3
+#define HOST_NET_GAME 4
+#define JOIN_NET_GAME 5
 
 // Selections
 #define PVCPU 0
