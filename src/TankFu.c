@@ -42,6 +42,7 @@ void exit_game();
 void print_level_score(Player* winner, Player* loser);
 void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y);
 void get_net_message();
+void send_smart_net_message(Player* player, JoyPadState* p, u8 code);
 
 /* Initializers */
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
@@ -1780,7 +1781,11 @@ void load_splash()
 	Print(5, 22, (char*) strCopyright);
 	Print(18, 25, (char*) strCreditCount);
     LBPrintByte(27, 25, credits_available(), false);
-#else	
+#else
+	if (wifi_status == WIFI_OK)
+	{
+		disablePassthroughMode();
+	}
 	Print(7, 13, (char*) str1Player);
 	Print(7, 14, (char*) str2Player);
 	if (wifi_status == WIFI_OK) {
@@ -2084,42 +2089,49 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		ps->handle_id--;
 		if (ps->handle_id < 0) ps->handle_id = 0;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
 	{
 		ps->handle_id++;
 		if (ps->handle_id > 8) ps->handle_id = 8;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if (select_pressed(p) && (ps->select_state == SELECTING))
 	{
 		ps->select_state = EDITING;
 		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
 	{
 		ps->char_index++;
 		if (ps->char_index > 2) ps->char_index = 2;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING))
 	{
 		ps->char_index--;
 		if (ps->char_index < 0) ps->char_index = 0;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
 	{
 		ps->handle[(u8) ps->char_index]--;
 		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
 	{
 		ps->handle[(u8) ps->char_index]++;
 		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if (select_pressed(p) && (ps->select_state == EDITING))
 	{
@@ -2129,6 +2141,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		SFX_NAVIGATE;
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 #if JAMMA
 #else
@@ -2136,17 +2149,20 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	{
 		ps->select_state = SELECTING;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED))
 	{
 		ps->select_state = EDITING;
 		SFX_NAVIGATE;
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_X))
 	{
 		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
+		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 #endif
 }
@@ -2210,7 +2226,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 
 	// Render
 	_handle_select_render_helper(&p1s, p1, 2, 6);
-	if (game.selection == PVP)
+	if (game.selection != PVCPU && game.selection != CPUVCPU)
 	{
 		_handle_select_render_helper(&p2s, p2, 19, 8);
 	}
@@ -2218,7 +2234,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	// Update
 	_handle_select_helper(&p1s, p1, &player1);
 	if (p1s.select_state == CONFIRMED) start_game = 1;
-	if (game.selection == PVP)
+	if (game.selection != PVCPU && game.selection != CPUVCPU)
 	{
 		_handle_select_helper(&p2s, p2, &player2);
 		if (p2s.select_state != CONFIRMED) start_game = 0;
@@ -2612,6 +2628,19 @@ void read_dip_switches() {
     extract_dip_switches(scores.data[0]);
 } 
 #endif
+
+
+void send_smart_net_message(Player* player, JoyPadState* p, u8 code)
+{
+	if (game.selection == HOSTNETGAME && player == &player1)
+	{
+		send_net_message(code, 0, 0);
+	}
+	else if (game.selection == JOINNETGAME && player == &player2)
+	{
+		send_net_message(code, 0, 0);
+	}
+}
 
 void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 {

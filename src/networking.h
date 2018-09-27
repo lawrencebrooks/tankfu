@@ -34,9 +34,8 @@
 #define NETPAUSETOGGLE 8
 #define NETEXIT 9
 #define NETHANDLESELECT 10
-#define NETHANDLESELECTDONE 11
-#define NETJOINED 12
-#define NETNODATA 13
+#define NETJOINED 11
+#define NETNODATA 12
 
 typedef struct NetMessageStruct {
     u8 code;
@@ -51,7 +50,19 @@ typedef struct NetMessageStruct {
 	u8 zero;
 } NetMessage;
 
+u8 disablePassthroughMode() {
+	u8 counter = 0;
+	wifiSendP(PSTR("+++"));
+	while(counter++ < 5) WaitUs(65535);
+	InitUartTxBuffer();
+	InitUartRxBuffer();
+	if (wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 2*60) != WIFI_OK) return WIFI_TIMEOUT;
+	if (wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 2*60) != WIFI_OK) return WIFI_TIMEOUT;
+	return WIFI_OK;
+}
+
 u8 activateNet() {
+	disablePassthroughMode();
 	InitUartTxBuffer();
 	InitUartRxBuffer();
 	return initWifi();
@@ -117,17 +128,6 @@ u8 joinNetGame(const char* ssid) {
 	if (wifiRequestP(PSTR("AT+CIPSTART=\"UDP\",\"192.168.4.1\",2233,1001\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	if (wifiRequestP(PSTR("AT+CIPMODE=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	wifiSendP(PSTR("AT+CIPSEND\r\n"));
-	return WIFI_OK;
-}
-
-u8 cleanUpNet() {
-	u8 counter = 0;
-	wifiSendP(PSTR("+++"));
-	while(counter++ < 5) WaitUs(65535);
-	InitUartTxBuffer();
-	InitUartRxBuffer();
-	if (wifiRequestP(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	if (wifiRequestP(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	return WIFI_OK;
 }
 
