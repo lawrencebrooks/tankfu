@@ -40,6 +40,8 @@ void clear_sprites();
 void save_eeprom(struct EepromBlockStruct* block);
 void exit_game();
 void print_level_score(Player* winner, Player* loser);
+void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y);
+void get_net_message();
 
 /* Initializers */
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
@@ -523,6 +525,7 @@ void update_player(JoyPadState* p, Player* player)
 #if JAMMA
 #else
 		SFX_NAVIGATE;
+		send_net_message(NETPAUSETOGGLE, 0, 0);
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
 #endif
@@ -1124,21 +1127,23 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	
 	/* Player interaction */
-	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG))
+	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG) && game.selection != JOINNETGAME)
 	{
 		p = &player1;
 		hud_x = 0;
 		player2.level_score++;
 		player2.score++;
 		render_score(&player2, 15);
+		send_net_message(NETHIT, 0, 0);
 	}
-	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG) && !(game.boss_fight_status))
+	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG) && !(game.boss_fight_status)  && game.selection != HOSTNETGAME)
 	{
 		p = &player2;
 		hud_x = 15;
 		player1.level_score++;
 		player1.score++;
 		render_score(&player1, 0);
+		send_net_message(NETHIT, 0, 0);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT)
 	{
@@ -1558,7 +1563,7 @@ void update_turret_shot(Turret* t, Shot* s)
 		return;
 	}
 	
-	/* Player interaction */
+	/* Player interaction */	
 	if (player_shot(game.boss_fight_player, s) && !(game.boss_fight_player->flags & EXPLODING_FLAG))
 	{
 		game.boss_fight_player_lives--;
@@ -2608,6 +2613,71 @@ void read_dip_switches() {
 } 
 #endif
 
+void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
+{
+	Player* player = &player1;
+	Player* otherPlayer = &player2;
+	JoyPadState* state = &p1;
+	
+	if (wifi_status != WIFI_OK) return;
+	
+	netMessage.hud_x = 15;
+	if (game.selection == JOINNETGAME)
+	{
+		player = &player2;
+		otherPlayer = &player1;
+		state = &p2;
+		netMessage.hud_x = 0;
+	}
+	netMessage.code = code;
+	netMessage.input = state->held;
+	netMessage.object_pos_x = object_pos_x;
+	netMessage.object_pos_y = object_pos_y;
+	netMessage.score = otherPlayer->score;
+	netMessage.level_score = otherPlayer->level_score;
+	netMessage.pos_x = player->shared.x;
+	netMessage.pos_y = player->shared.y;
+	netMessage.zero = 0;
+	sendNetMessage(&netMessage);
+}
+
+void get_net_message()
+{
+	Player* player = &player2;
+	Player* otherPlayer = &player1;
+	if (wifi_status != WIFI_OK) return;
+	
+	netMessage.code = NETNODATA;
+	if (game.selection == JOINNETGAME)
+	{
+		player = &player1;
+		otherPlayer = &player2;
+	}
+	if (getNetMessage(&netMessage) != WIFI_NODATA)
+	{
+		otherPlayer->score = netMessage.score;
+		otherPlayer->level_score = netMessage.score;
+		player->shared.x = netMessage.pos_x;
+		player->shared.y = netMessage.pos_y;
+		
+		// Act on message code
+		if (netMessage.code == NETPAUSETOGGLE)
+		{
+			SFX_NAVIGATE;
+			game.paused = game.paused ^ 1;
+			load_level_tiles(false);
+		}
+		else if (netMessage.code == NETHIT)
+		{
+			render_score(otherPlayer, netMessage.hud_x);
+			init_shot_state(&otherPlayer->shot[0], otherPlayer->shot[0].shot_type);
+			otherPlayer->active_shots--;
+			kill_player(player, netMessage.hud_x);
+			SFX_TANK_EXPLODE;
+		}
+	}
+}
+
 int main()
 {
 	// Initialize
@@ -2631,10 +2701,7 @@ int main()
 	while (1)
 	{
 		waitForVSync();
-		if (wifi_status == WIFI_OK && getNetMessage(&netMessage) == WIFI_NODATA)
-		{
-			netMessage.code = NETNODATA;
-		}
+		get_net_message();
 		switch (game.current_screen)
 		{
 			case SPLASH:

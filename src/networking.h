@@ -24,19 +24,19 @@
 #include "uzenet.h"
 
 #define NETHIT 0
-#define NETSHOOT 1
-#define NETITEMSPEED 2
-#define NETITEMROCKET 3
-#define NETITEMBOMB 4
-#define NETPOSCHANGE 5
-#define NETBLOCKHIT 6
-#define NETPAUSE 10
-#define NETRESUME 11
-#define NETEXIT 12
-#define NETHANDLESELECT 13
-#define NETHANDLESELECTDONE 14
-#define NETJOINED 15
-#define NETNODATA 16
+#define NETTURRETHIT 1
+#define NETSHOOT 2
+#define NETITEMSPEED 3
+#define NETITEMROCKET 4
+#define NETITEMBOMB 5
+#define NETPOSCHANGE 6
+#define NETBLOCKHIT 7
+#define NETPAUSETOGGLE 8
+#define NETEXIT 9
+#define NETHANDLESELECT 10
+#define NETHANDLESELECTDONE 11
+#define NETJOINED 12
+#define NETNODATA 13
 
 typedef struct NetMessageStruct {
     u8 code;
@@ -45,6 +45,7 @@ typedef struct NetMessageStruct {
 	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
+	u8 hud_x;
 	float pos_x;
 	float pos_y;
 	u8 zero;
