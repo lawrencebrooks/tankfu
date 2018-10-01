@@ -79,7 +79,7 @@ Turret turret1;
 Turret turret2;
 NetMessage netMessage;
 u8 wifi_status;
-char gameId[9] = "TFABCDEF";
+u8 gameId[9] = "TFABCDEF";
 u8 gameIdIndex = 2;
 
 u16 global_frame_counter = 1;
@@ -2272,19 +2272,19 @@ void load_host_net_game()
 {
 	game.current_screen = HOST_NET_GAME;
 	clear_sprites();
-	if (hostNetGame(gameId) == WIFI_OK)
+	if (hostNetGame((char*)gameId) == WIFI_OK)
 	{
-		Print(4, 1, (char*) strShareGameId);
-		Print(10, 10, gameId);
-		Print(1, 19, (char*) strWaitingForNetOppenent);
-		DrawMap2(8, 10, map_green_tank);
-		DrawMap2(18, 10, map_blue_tank);
+		Print(5, 1, (char*) strShareGameId);
+		LBPrintStr(10, 10, gameId, 8);
+		Print(2, 18, (char*) strWaitingForNetOppenent);
+		DrawMap2(7, 10, map_green_tank);
+		DrawMap2(19, 10, map_blue_tank);
 	}
 	else
 	{
 		Print(7, 10, (char*) strNetworkError);
 	}
-	Print(5, 23, (char*) strCancelHandle);
+	Print(9, 23, (char*) strCancelHandle);
 }
 
 void update_host_net_game(JoyPadState* p1)
@@ -2311,12 +2311,12 @@ void load_join_net_game()
 {
 	game.current_screen = JOIN_NET_GAME;
 	clear_sprites();
-	Print(4, 1, (char*) strEnterGameId);
-	Print(10, 10, gameId);
-	DrawMap2(8, 10, map_green_tank);
-	DrawMap2(18, 10, map_blue_tank);
+	Print(5, 1, (char*) strEnterGameId);
+	LBPrintStr(10, 10, gameId, 8);
+	DrawMap2(7, 10, map_green_tank);
+	DrawMap2(19, 10, map_blue_tank);
 	Print(5, 22, (char*) strConfirmHandle);
-	Print(5, 23, (char*) strCancelHandle);
+	Print(9, 23, (char*) strCancelHandle);
 	gameIdIndex = 2;
 }
 
@@ -2324,8 +2324,9 @@ void update_join_net_game(JoyPadState* p1)
 {
 	MapSprite2(0, map_down_arrow, 0);
 	MapSprite2(1, map_up_arrow, 0);
-	MoveSprite(0, gameIdIndex*8, 9*8, 1, 1);
-	MoveSprite(1, gameIdIndex*8, 11*8, 1, 1);
+	MoveSprite(0, 8*10 + gameIdIndex*8, 9*8, 1, 1);
+	MoveSprite(1, 8*10 + gameIdIndex*8, 11*8, 1, 1);
+	LBPrintStr(10, 10, (u8*) gameId, 8);
 		
 	if (p1->pressed & BTN_X)
 	{
@@ -2335,8 +2336,8 @@ void update_join_net_game(JoyPadState* p1)
 	}
 	else if (select_pressed(p1))
 	{
-		Print(7, 21, (char*) strConnecting);
-		if (joinNetGame(gameId) == WIFI_OK)
+		Print(7, 18, (char*) strConnecting);
+		if (joinNetGame((const char*)gameId) == WIFI_OK)
 		{
 			netMessage.code = NETJOINED;
 			sendNetMessage(&netMessage);
@@ -2350,19 +2351,21 @@ void update_join_net_game(JoyPadState* p1)
 		}
 		else
 		{
-			Print(7, 21, (char*) strNetworkError);
+			Print(7, 18, (char*) strNetworkError);
 		}
 	}
 	else if ((p1->pressed & BTN_UP))
 	{
 		gameId[gameIdIndex]--;
-		if (gameId[gameIdIndex] < 'A') gameId[gameIdIndex] = 'A';
+		if ((gameId[gameIdIndex] < 'A') && (gameId[gameIdIndex] > '9')) gameId[gameIdIndex] = '9';
+		if (gameId[gameIdIndex] < '0') gameId[gameIdIndex] = 'Z';
 		SFX_NAVIGATE;
 	}
 	else if ((p1->pressed & BTN_DOWN))
 	{
-		gameId[gameIdIndex]--;
-		if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = 'Z';
+		gameId[gameIdIndex]++;
+		if ((gameId[gameIdIndex] > '9') && (gameId[gameIdIndex] < 'A')) gameId[gameIdIndex] = 'A';
+		if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = '0';
 		SFX_NAVIGATE;
 	}
 	else if ((p1->pressed & BTN_RIGHT))

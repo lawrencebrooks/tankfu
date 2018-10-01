@@ -64,8 +64,8 @@ u8 disablePassthroughMode() {
 	while(counter++ < 5) WaitUs(65535);
 	InitUartTxBuffer();
 	InitUartRxBuffer();
-	if (wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 2*60) != WIFI_OK) return WIFI_TIMEOUT;
-	if (wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 2*60) != WIFI_OK) return WIFI_TIMEOUT;
+	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 2*60);
+	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 2*60);
 	return WIFI_OK;
 }
 
