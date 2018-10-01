@@ -30,10 +30,10 @@ const unsigned char strSelectHandle [] PROGMEM="SELECT - START";
 #else
 const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
 const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
-const unsigned char strHostNetGame [] PROGMEM="HOST NET GAME";
-const unsigned char strJoinNetGame [] PROGMEM="JOIN NET GAME";
+const unsigned char strHostNetGame [] PROGMEM="HOST LAN GAME";
+const unsigned char strJoinNetGame [] PROGMEM="JOIN LAN GAME";
 const unsigned char strShareGameId [] PROGMEM="SHARE YOUR GAME ID";
-const unsigned char strWaitingForNetOppenent [] PROGMEM="WAITING ON NET OPPONENT...";
+const unsigned char strWaitingForNetOppenent [] PROGMEM="WAITING ON LAN OPPONENT...";
 const unsigned char strConnecting [] PROGMEM="CONNECTING...";
 const unsigned char strEnterGameId [] PROGMEM="ENTER HOST GAME ID";
 const unsigned char strNetworkError [] PROGMEM="NETWORK ERROR";

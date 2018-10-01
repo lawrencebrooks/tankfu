@@ -43,6 +43,9 @@ void print_level_score(Player* winner, Player* loser);
 void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y);
 void get_net_message();
 void send_smart_net_message(Player* player, JoyPadState* p, u8 code);
+u8 is_net_player(Player* player);
+void record_player_posture(Player* player);
+u8 player_posture_changed(Player* player);
 
 /* Initializers */
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
@@ -83,16 +86,8 @@ u16 global_frame_counter = 1;
 struct EepromBlockStruct handles;
 struct EepromBlockStruct scores;
 
-HandleSelectState p1s = {
-	.handle_id = 0,
-	.char_index = 0,
-	.select_state = SELECTING,
-};
-HandleSelectState p2s = {
-	.handle_id = 0,
-	.char_index = 0,
-	.select_state = SELECTING,
-};
+HandleSelectState p1s;
+HandleSelectState p2s;
 
 /* Initializers */
 void init_scores(struct EepromBlockStruct* e)
@@ -426,18 +421,18 @@ void save_score()
 	{
 		if (saved)
 		{
-			LBCopyChars(tmp_score, &scores.data[i], 5);
-			LBCopyChars(&scores.data[i], save_score, 5);
-			LBCopyChars(save_score, tmp_score, 5);
+			memcpy(tmp_score, &scores.data[i], 5);
+			memcpy(&scores.data[i], save_score, 5);
+			memcpy(save_score, tmp_score, 5);
 		}
 		else
 		{
 			cur_delta = scores.data[i+2] - scores.data[i+3];
 			if (save_delta > cur_delta)
 			{
-				LBCopyChars(tmp_score, &scores.data[i], 5);
-				LBCopyChars(&scores.data[i], save_score, 5);
-				LBCopyChars(save_score, tmp_score, 5);
+				memcpy(tmp_score, &scores.data[i], 5);
+				memcpy(&scores.data[i], save_score, 5);
+				memcpy(save_score, tmp_score, 5);
 				saved = 1;
 			}
 		}
@@ -526,7 +521,7 @@ void update_player(JoyPadState* p, Player* player)
 #if JAMMA
 #else
 		SFX_NAVIGATE;
-		send_net_message(NETPAUSETOGGLE, 0, 0);
+		send_smart_net_message(player, p, NETPAUSETOGGLE);
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
 #endif
@@ -565,6 +560,7 @@ void update_player(JoyPadState* p, Player* player)
 				shot = &player->shot[i];
 				if (!shot->active)
 				{
+					send_smart_net_message(player, p, NETSHOOT);
 					if (player->has_rocket)
 					{
 						init_shot_state(shot, ROCKET_SHOT);
@@ -618,6 +614,7 @@ void update_player(JoyPadState* p, Player* player)
 		{
 			SFX_NAVIGATE;
 			exit_game();
+			send_smart_net_message(player, p, NETEXIT);
 		}
 	}
 }
@@ -1128,7 +1125,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	
 	/* Player interaction */
-	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG) && game.selection != JOINNETGAME)
+	if (player_shot(&player1, shot) && !(player1.flags & EXPLODING_FLAG) && !is_net_player(&player1))
 	{
 		p = &player1;
 		hud_x = 0;
@@ -1137,7 +1134,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		render_score(&player2, 15);
 		send_net_message(NETHIT, 0, 0);
 	}
-	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG) && !(game.boss_fight_status)  && game.selection != HOSTNETGAME)
+	else if (player_shot(&player2, shot) && !(player2.flags & EXPLODING_FLAG) && !(game.boss_fight_status) && !is_net_player(&player2))
 	{
 		p = &player2;
 		hud_x = 15;
@@ -1335,8 +1332,9 @@ char collision_detect_player(Player* player, u8 hud_x)
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
 		}
-		else if (level.level_map[tiles[i]] == L_SPEED && !(player->flags & EXPLODING_FLAG))
+		else if (level.level_map[tiles[i]] == L_SPEED && !(player->flags & EXPLODING_FLAG) && !is_net_player(player))
 		{
+			send_net_message(NETITEMSPEED, tile_x, tile_y);
 			level.level_map[tiles[i]] = L_EMPTY;
 			player->max_speed = OVER_SPEED;
 			player->has_over_speed = true;
@@ -1344,16 +1342,18 @@ char collision_detect_player(Player* player, u8 hud_x)
 			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
 		}
-		else if (level.level_map[tiles[i]] == L_ROCKET && !(player->flags & EXPLODING_FLAG))
+		else if (level.level_map[tiles[i]] == L_ROCKET && !(player->flags & EXPLODING_FLAG) && !is_net_player(player))
 		{
+			send_net_message(NETITEMROCKET, tile_x, tile_y);
 			level.level_map[tiles[i]] = L_EMPTY;
 			player->has_rocket = true;
 			DrawMap2(hud_x+11, 1, map_rocket_itm);
 			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
 		}
-		else if (level.level_map[tiles[i]] == L_EXPLODE && !(player->flags & EXPLODING_FLAG))
+		else if (level.level_map[tiles[i]] == L_EXPLODE && !(player->flags & EXPLODING_FLAG) && !is_net_player(player))
 		{
+			send_net_message(NETITEMBOMB, tile_x, tile_y);
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tile_x, tile_y, 0);
 			SFX_ITEM;
@@ -1520,7 +1520,7 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		if (t->shared.x < left_limit)
 		{
 			t->shared.direction = D_RIGHT;
-			t->shared.speed = LBRandom(BOSS_TURRET_SPEED, BOSS_TURRET_SPEED+50);
+			t->shared.speed = BOSS_TURRET_SPEED;
 		}
 		else
 		{
@@ -1532,7 +1532,7 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		if (t->shared.x > right_limit)
 		{
 			t->shared.direction = D_LEFT;
-			t->shared.speed = LBRandom(BOSS_TURRET_SPEED, BOSS_TURRET_SPEED+50);
+			t->shared.speed = BOSS_TURRET_SPEED;
 		}
 		else
 		{
@@ -1565,16 +1565,16 @@ void update_turret_shot(Turret* t, Shot* s)
 	}
 	
 	/* Player interaction */	
-	if (player_shot(game.boss_fight_player, s) && !(game.boss_fight_player->flags & EXPLODING_FLAG))
+	if (player_shot(game.boss_fight_player, s) && !(game.boss_fight_player->flags & EXPLODING_FLAG) && !is_net_player(game.boss_fight_player))
 	{
 		game.boss_fight_player_lives--;
 		if (game.boss_fight_player_lives <= 0)
 		{
 			game.boss_fight_status = BOSS_FIGHT_LOST;
 		}
-		s->active = 0;
 		kill_player(game.boss_fight_player, game.boss_fight_player_hud);
 		SFX_TANK_EXPLODE;
+		send_net_message(NETTURRETHIT, 0, 0);
 	}
 }
 
@@ -1617,6 +1617,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	else if (game.boss_fight_status == BOSS_FIGHT_SCOPE_LOADING)
 	{
 		// Render
+		record_player_posture(game.boss_fight_player);
 		render_boss_fight_scope_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1632,10 +1633,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Update
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
+		
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_LOADING)
 	{
 		// Render
+		record_player_posture(game.boss_fight_player);
 		render_boss_fight_sub_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1651,9 +1654,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Update
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
+		if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT)
 	{
+		
+		record_player_posture(game.boss_fight_player);
 		if ((turret1.lives <= 0) && (turret2.lives <= 0))
 		{
 			game.boss_fight_status = BOSS_FIGHT_SUB_SINKING;
@@ -1685,10 +1691,12 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		update_turret_shot(&turret2, &turret2.shot[0]);
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
+		if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_SINKING)
 	{
 		// Render
+		record_player_posture(game.boss_fight_player);
 		render_boss_fight_sub_sinking();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1708,6 +1716,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		{
 			resolve_scoring();
 		}
+		if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_LOST)
 	{
@@ -1715,6 +1724,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (game.boss_fight_status == 0)
 	{
+		record_player_posture(&player1);
+		record_player_posture(&player2);
 		p2_index = tank_map(&player1, p1_index);
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
@@ -1736,6 +1747,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		resolve_scoring();
 		if (collision_detect_player(&player1, 0)) explode_player(&player1, &player2, 0, 15);
 		if (collision_detect_player(&player2, 15)) explode_player(&player2, &player1, 15, 0);
+		if (player_posture_changed(&player1)) send_smart_net_message(&player1, p1, NETPOSCHANGE);
+		if (player_posture_changed(&player2)) send_smart_net_message(&player2, p2, NETPOSCHANGE);
 	}
 	
 	if (game.selection == CPUVCPU) 
@@ -1861,9 +1874,9 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		{
 			game.selection = CPUVCPU;
 			player1.handle_id = 9;
-			LBCopyChars(player1.handle, &handles.data[9*3], 3);
+			memcpy(player1.handle, &handles.data[9*3], 3);
 			player2.handle_id = 9;
-			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+			memcpy(player2.handle, &handles.data[9*3], 3);
 			SFX_NAVIGATE;
 			clear_sprites();
 			fade_through();
@@ -1962,9 +1975,9 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		{
 			game.selection = CPUVCPU;
 			player1.handle_id = 9;
-			LBCopyChars(player1.handle, &handles.data[9*3], 3);
+			memcpy(player1.handle, &handles.data[9*3], 3);
 			player2.handle_id = 9;
-			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+			memcpy(player2.handle, &handles.data[9*3], 3);
 			SFX_NAVIGATE;
 			clear_sprites();
 			fade_through();
@@ -2083,50 +2096,50 @@ void update_tank_rank(JoyPadState* p1)
 
 
 void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player)
-{
-	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING))
+{	
+	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->handle_id--;
 		if (ps->handle_id < 0) ps->handle_id = 0;
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
+	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->handle_id++;
 		if (ps->handle_id > 8) ps->handle_id = 8;
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if (select_pressed(p) && (ps->select_state == SELECTING))
+	else if (select_pressed(p) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->select_state = EDITING;
-		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
+		memcpy(ps->handle, &handles.data[ps->handle_id*3], 3);
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
+	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->char_index++;
 		if (ps->char_index > 2) ps->char_index = 2;
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING))
+	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->char_index--;
 		if (ps->char_index < 0) ps->char_index = 0;
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
+	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->handle[(u8) ps->char_index]--;
 		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
 		SFX_NAVIGATE;
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
+	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->handle[(u8) ps->char_index]++;
 		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
@@ -2136,8 +2149,8 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	else if (select_pressed(p) && (ps->select_state == EDITING))
 	{
 		player->handle_id = ps->handle_id;
-		LBCopyChars(player->handle, ps->handle, 3);
-		LBCopyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
+		memcpy(player->handle, ps->handle, 3);
+		memcpy(&handles.data[ps->handle_id*3], ps->handle, 3);
 		SFX_NAVIGATE;
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
@@ -2182,7 +2195,7 @@ void _handle_select_render_helper(HandleSelectState* ps, JoyPadState* p, u8 x_of
 		MapSprite2(idx+1, map_up_arrow, 0);
 		MoveSprite(idx, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id - 1)*8, 1, 1);
 		MoveSprite(idx+1, (x_offset+5+ps->char_index)*8, (8 + ps->handle_id + 1)*8, 1, 1);
-		LBCopyChars(tmp, ps->handle, 3);
+		memcpy(tmp, ps->handle, 3);
 	}
 	else if (ps->select_state == CONFIRMED)
 	{
@@ -2244,7 +2257,7 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 		if (game.selection == PVCPU)
 		{
 			player2.handle_id = 9;
-			LBCopyChars(player2.handle, &handles.data[9*3], 3);
+			memcpy(player2.handle, &handles.data[9*3], 3);
 		}
 		level_transition(0);
 	}
@@ -2647,25 +2660,37 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 	Player* player = &player1;
 	Player* otherPlayer = &player2;
 	JoyPadState* state = &p1;
+	HandleSelectState* handle_select = &p1s;
 	
 	if (wifi_status != WIFI_OK) return;
 	
 	netMessage.hud_x = 15;
+	if (code >= NETITEMSPEED && code <= NETITEMBOMB) netMessage.hud_x = 0;
 	if (game.selection == JOINNETGAME)
 	{
 		player = &player2;
 		otherPlayer = &player1;
 		state = &p2;
+		handle_select = &p2s;
 		netMessage.hud_x = 0;
+		if (code >= NETITEMSPEED && code <= NETITEMBOMB) netMessage.hud_x = 15;
 	}
 	netMessage.code = code;
-	netMessage.input = state->held;
+	netMessage.held = state->held;
+	netMessage.pressed = state->pressed;
 	netMessage.object_pos_x = object_pos_x;
 	netMessage.object_pos_y = object_pos_y;
 	netMessage.score = otherPlayer->score;
 	netMessage.level_score = otherPlayer->level_score;
 	netMessage.pos_x = player->shared.x;
 	netMessage.pos_y = player->shared.y;
+	netMessage.speed = player->shared.speed;
+	netMessage.direction = player->shared.direction;
+	netMessage.recoiled = player->shared.recoiled;
+	netMessage.handle_id = handle_select->handle_id;
+	netMessage.char_index = handle_select->char_index;
+	netMessage.select_state = handle_select->select_state;
+	memcpy(netMessage.handle, handle_select->handle, 3);
 	netMessage.zero = 0;
 	sendNetMessage(&netMessage);
 }
@@ -2674,13 +2699,17 @@ void get_net_message()
 {
 	Player* player = &player2;
 	Player* otherPlayer = &player1;
+	u8 otherPlayerHudx = 0;
+	HandleSelectState* handle_select = &p2s;
 	if (wifi_status != WIFI_OK) return;
 	
 	netMessage.code = NETNODATA;
 	if (game.selection == JOINNETGAME)
 	{
 		player = &player1;
+		handle_select = &p1s;
 		otherPlayer = &player2;
+		otherPlayerHudx = 15;
 	}
 	if (getNetMessage(&netMessage) != WIFI_NODATA)
 	{
@@ -2688,15 +2717,16 @@ void get_net_message()
 		otherPlayer->level_score = netMessage.score;
 		player->shared.x = netMessage.pos_x;
 		player->shared.y = netMessage.pos_y;
+		player->shared.speed = netMessage.speed;
+		player->shared.direction = netMessage.direction;
+		player->shared.recoiled = netMessage.recoiled;
+		handle_select->handle_id = netMessage.handle_id;
+		handle_select->char_index = netMessage.char_index;
+		handle_select->select_state = netMessage.select_state;
+		memcpy(handle_select->handle, netMessage.handle, 3);
 		
 		// Act on message code
-		if (netMessage.code == NETPAUSETOGGLE)
-		{
-			SFX_NAVIGATE;
-			game.paused = game.paused ^ 1;
-			load_level_tiles(false);
-		}
-		else if (netMessage.code == NETHIT)
+		if (netMessage.code == NETHIT)
 		{
 			render_score(otherPlayer, netMessage.hud_x);
 			init_shot_state(&otherPlayer->shot[0], otherPlayer->shot[0].shot_type);
@@ -2704,7 +2734,71 @@ void get_net_message()
 			kill_player(player, netMessage.hud_x);
 			SFX_TANK_EXPLODE;
 		}
+		else if (netMessage.code == NETTURRETHIT)
+		{
+			game.boss_fight_player_lives--;
+			if (game.boss_fight_player_lives <= 0)
+			{
+				game.boss_fight_status = BOSS_FIGHT_LOST;
+			}
+			kill_player(game.boss_fight_player, game.boss_fight_player_hud);
+			SFX_TANK_EXPLODE;
+		}
+		else if (netMessage.code == NETITEMSPEED)
+		{
+			level.level_map[netMessage.object_pos_y * 30 + netMessage.object_pos_x] = L_EMPTY;
+			player->max_speed = OVER_SPEED;
+			player->has_over_speed = true;
+			DrawMap2(netMessage.hud_x+10, 1, map_speed_itm);
+			SetTile(netMessage.object_pos_x, netMessage.object_pos_y, 0);
+			SFX_ITEM;
+		}
+		else if (netMessage.code == NETITEMROCKET)
+		{
+			level.level_map[netMessage.object_pos_y * 30 + netMessage.object_pos_x] = L_EMPTY;
+			player->has_rocket = true;
+			DrawMap2(netMessage.hud_x+11, 1, map_rocket_itm);
+			SetTile(netMessage.object_pos_x, netMessage.object_pos_y, 0);
+			SFX_ITEM;
+		}
+		else if (netMessage.code == NETITEMBOMB)
+		{
+			level.level_map[netMessage.object_pos_y * 30 + netMessage.object_pos_x] = L_EMPTY;
+			SetTile(netMessage.object_pos_x, netMessage.object_pos_y, 0);
+			if (!(otherPlayer->flags & EXPLODING_FLAG))
+			{
+				render_score(player, netMessage.hud_x);
+				kill_player(otherPlayer, otherPlayerHudx);
+			}
+			SFX_ITEM;
+		}
 	}
+	else
+	{
+		netMessage.pressed = 0;
+	}
+}
+
+u8 is_net_player(Player* player)
+{
+	if (game.selection == HOSTNETGAME && player == &player2) return 1;
+	if (game.selection == JOINNETGAME && player == &player1) return 1;
+	return 0;
+}
+
+void record_player_posture(Player* player)
+{
+	player->old_direction = player->shared.direction;
+	player->old_speed = player->shared.speed;
+	player->old_recoiled = player->shared.recoiled;
+}
+
+u8 player_posture_changed(Player* player)
+{
+	if (player->old_direction != player->shared.direction) return 1;
+	if (player->old_speed != player->shared.speed) return 1;
+	if (player->old_recoiled != player->shared.recoiled) return 1;
+	return 0;
 }
 
 int main()

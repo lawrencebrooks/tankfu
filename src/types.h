@@ -75,6 +75,9 @@ typedef struct sPlayer {
 	u16 deadlock_count_y;
 	char goal;
 	char goal_reached;
+	u8 old_direction;
+	u8 old_speed;
+	u8 old_recoiled;
 	float old_x;
 	float old_y;
 	Shot shot[MAX_SHOTS];

@@ -115,29 +115,21 @@ void LBGetJoyPadStateNet(JoyPadState* p, unsigned char index, NetMessage* netMes
  * Get the current joy pad button state for index controller
  */
 {
-	p->held = netMessage->input;
-
-	// Count held cycles
-	if (p->held == 0 || p->held != p_prev[index])
-	    p->held_cycles = 0;
-	else
-	    p->held_cycles += 1;
-
-	p->pressed = p->held & (p->held ^ p_prev[index]);
-	p->released = p_prev[index] & (p->held ^ p_prev[index]);
-	p_prev[index] = p->held;
+	p->held = netMessage->held;
+	p->pressed = netMessage->pressed;
+	p->held_cycles = 0;
+	p->released = 0;
 }
 
-void LBCopyChars(u8* dst, u8 *src, u8 count)
 /*
- * Custom string copy
- */
+void LBCopyChars(u8* dst, u8 *src, u8 count)
 {
 	for (u8 i = 0; i < count; i++)
 	{
 		dst[i] = src[i];
 	}
 }
+*/
 
 void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
 {

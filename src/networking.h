@@ -39,12 +39,20 @@
 
 typedef struct NetMessageStruct {
     u8 code;
-    u16 input;
+    u16 held;
+	u16 pressed;
 	u8 object_pos_x;
 	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
 	u8 hud_x;
+	char handle_id;
+	u8 handle[3];
+	char char_index;
+	u8 select_state;
+	u8 direction;
+	u8 speed;
+	u8 recoiled;
 	float pos_x;
 	float pos_y;
 	u8 zero;
