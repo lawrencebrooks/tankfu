@@ -79,7 +79,8 @@ Turret turret1;
 Turret turret2;
 NetMessage netMessage;
 u8 wifi_status;
-char gameId[9];
+char gameId[9] = "TFABCDEF";
+u8 gameIdIndex = 2;
 
 u16 global_frame_counter = 1;
 
@@ -1203,7 +1204,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		}
 		SFX_METAL;
 	}
-	else if (hit & HIT_BRICK)
+	else if ((hit & HIT_BRICK) && !is_net_player(player))
 	{
 		explode_tile(&tile_animations, tiles[brick_index]);
 		level.level_map[tiles[brick_index]] = L_EMPTY;
@@ -1213,6 +1214,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			init_shot_state(shot, shot->shot_type);
 			player->active_shots--;
 		}
+		send_net_message(NETBLOCKHIT, tiles[brick_index] % 30, tiles[brick_index] / 30);
 		SFX_BRICK_EXPLODE;
 	}
 	else if (hit & HIT_METAL)
@@ -2263,6 +2265,9 @@ void update_handle_select(JoyPadState* p1, JoyPadState* p2)
 	}
 }
 
+#if JAMMA
+#else
+
 void load_host_net_game()
 {
 	game.current_screen = HOST_NET_GAME;
@@ -2310,19 +2315,25 @@ void load_join_net_game()
 	Print(10, 10, gameId);
 	DrawMap2(8, 10, map_green_tank);
 	DrawMap2(18, 10, map_blue_tank);
-	
 	Print(5, 22, (char*) strConfirmHandle);
 	Print(5, 23, (char*) strCancelHandle);
+	gameIdIndex = 2;
 }
 
 void update_join_net_game(JoyPadState* p1)
 {
+	MapSprite2(0, map_down_arrow, 0);
+	MapSprite2(1, map_up_arrow, 0);
+	MoveSprite(0, gameIdIndex*8, 9*8, 1, 1);
+	MoveSprite(1, gameIdIndex*8, 11*8, 1, 1);
+		
 	if (p1->pressed & BTN_X)
 	{
 		SFX_NAVIGATE;
 		fade_through();
 		load_splash();
-	} else if (select_pressed(p1))
+	}
+	else if (select_pressed(p1))
 	{
 		Print(7, 21, (char*) strConnecting);
 		if (joinNetGame(gameId) == WIFI_OK)
@@ -2342,7 +2353,32 @@ void update_join_net_game(JoyPadState* p1)
 			Print(7, 21, (char*) strNetworkError);
 		}
 	}
+	else if ((p1->pressed & BTN_UP))
+	{
+		gameId[gameIdIndex]--;
+		if (gameId[gameIdIndex] < 'A') gameId[gameIdIndex] = 'A';
+		SFX_NAVIGATE;
+	}
+	else if ((p1->pressed & BTN_DOWN))
+	{
+		gameId[gameIdIndex]--;
+		if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = 'Z';
+		SFX_NAVIGATE;
+	}
+	else if ((p1->pressed & BTN_RIGHT))
+	{
+		gameIdIndex++;
+		if (gameIdIndex > 7) gameIdIndex = 7;
+		SFX_NAVIGATE;
+	}
+	else if ((p1->pressed & BTN_LEFT))
+	{
+		gameIdIndex--;
+		if (gameIdIndex < 2) gameIdIndex= 2;
+		SFX_NAVIGATE;
+	}
 }
+#endif
 
 u16 button_map(u16 number)
 {
@@ -2772,6 +2808,18 @@ void get_net_message()
 			}
 			SFX_ITEM;
 		}
+		else if (netMessage.code == NETBLOCKHIT)
+		{
+			explode_tile(&tile_animations, netMessage.object_pos_y * 30 + netMessage.object_pos_x);
+			level.level_map[netMessage.object_pos_y * 30 + netMessage.object_pos_x] = L_EMPTY;
+			player->shot[0].hit_count--;
+			if (player->shot[0].hit_count <= 0)
+			{
+				init_shot_state(&player->shot[0], player->shot[0].shot_type);
+				player->active_shots--;
+			}
+			SFX_BRICK_EXPLODE;
+		}
 	}
 	else
 	{
@@ -2853,6 +2901,8 @@ int main()
 				}
 				update_handle_select(&p1, &p2);
 				break;
+#if JAMMA
+#else
 			case HOST_NET_GAME:
 				LBGetJoyPadState(&p1, 0);
 				update_host_net_game(&p1);
@@ -2861,6 +2911,7 @@ int main()
 				LBGetJoyPadState(&p1, 0);
 				update_join_net_game(&p1);
 				break;
+#endif
 			case LEVEL:
 				if (game.selection == PVCPU)
 				{
