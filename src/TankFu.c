@@ -521,7 +521,7 @@ void update_player(JoyPadState* p, Player* player)
 	{
 #if JAMMA
 #else
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETPAUSETOGGLE);
 		game.paused = game.paused ^ 1;
 		load_level_tiles(false);
@@ -566,13 +566,13 @@ void update_player(JoyPadState* p, Player* player)
 					{
 						init_shot_state(shot, ROCKET_SHOT);
 						set_shot_animations(shot, ROCKET_SHOT);
-						SFX_ROCKET;
+						LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ROCKET);
 					}
 					else
 					{
 						init_shot_state(shot, BASIC_SHOT);
 						set_shot_animations(shot, BASIC_SHOT);
-						SFX_CANNONBALL;
+						LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_CANNONBALL);
 					}
 					player->active_shots++;
 					shot->shared.direction = player->shared.direction;
@@ -613,7 +613,7 @@ void update_player(JoyPadState* p, Player* player)
 	{
 		if (p->pressed & BTN_X)
 		{
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			exit_game();
 			send_smart_net_message(player, p, NETEXIT);
 		}
@@ -1151,14 +1151,14 @@ void collision_detect_shot(Player* player, Shot* shot)
 			turret1.lives--;
 			init_shot_state(shot, shot->shot_type);
 			game.boss_fight_player->active_shots--;
-			SFX_TANK_EXPLODE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		}
 		else if (turret_shot(&turret2, shot))
 		{
 			turret2.lives--;
 			init_shot_state(shot, shot->shot_type);
 			game.boss_fight_player->active_shots--;
-			SFX_TANK_EXPLODE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		}
 	}
 	if (p)
@@ -1166,7 +1166,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		init_shot_state(shot, shot->shot_type);
 		player->active_shots--;
 		kill_player(p, hud_x);
-		SFX_TANK_EXPLODE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		return;
 	}
 	
@@ -1202,7 +1202,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			init_shot_state(shot, shot->shot_type);
 			player->active_shots--;
 		}
-		SFX_METAL;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_METAL);
 	}
 	else if ((hit & HIT_BRICK) && !is_net_player(player))
 	{
@@ -1215,13 +1215,13 @@ void collision_detect_shot(Player* player, Shot* shot)
 			player->active_shots--;
 		}
 		send_net_message(NETBLOCKHIT, tiles[brick_index] % 30, tiles[brick_index] / 30);
-		SFX_BRICK_EXPLODE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_BRICK_EXPLODE);
 	}
 	else if (hit & HIT_METAL)
 	{
         init_shot_state(shot, shot->shot_type);
         player->active_shots--;
-        SFX_METAL;
+        LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_METAL);
 	}
 }
 
@@ -1342,7 +1342,7 @@ char collision_detect_player(Player* player, u8 hud_x)
 			player->has_over_speed = true;
 			DrawMap2(hud_x+10, 1, map_speed_itm);
 			SetTile(tile_x, tile_y, 0);
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 		}
 		else if (level.level_map[tiles[i]] == L_ROCKET && !(player->flags & EXPLODING_FLAG) && !is_net_player(player))
 		{
@@ -1351,14 +1351,14 @@ char collision_detect_player(Player* player, u8 hud_x)
 			player->has_rocket = true;
 			DrawMap2(hud_x+11, 1, map_rocket_itm);
 			SetTile(tile_x, tile_y, 0);
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 		}
 		else if (level.level_map[tiles[i]] == L_EXPLODE && !(player->flags & EXPLODING_FLAG) && !is_net_player(player))
 		{
 			send_net_message(NETITEMBOMB, tile_x, tile_y);
 			level.level_map[tiles[i]] = L_EMPTY;
 			SetTile(tile_x, tile_y, 0);
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 			explode = 1;
 		}
 		
@@ -1468,7 +1468,7 @@ void render_boss_fight_scope_load()
 	if (render_scope(&scope_animation))
 	{
 		game.boss_fight_status = BOSS_FIGHT_SUB_LOADING;
-		SFX_ALARM;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ALARM);
 	}
 }
 
@@ -1555,7 +1555,7 @@ void update_turret_shot(Turret* t, Shot* s)
 		s->active = 1;
 		s->shared.x = t->shared.x+3;
 		s->shared.y = t->shared.y+3;
-		SFX_CANNONBALL;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_CANNONBALL);
 	}
 	s->shared.y += FRAME_TIME*BOSS_TURRET_SHOT_SPEED;
 	
@@ -1575,7 +1575,7 @@ void update_turret_shot(Turret* t, Shot* s)
 			game.boss_fight_status = BOSS_FIGHT_LOST;
 		}
 		kill_player(game.boss_fight_player, game.boss_fight_player_hud);
-		SFX_TANK_EXPLODE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		send_net_message(NETTURRETHIT, 0, 0);
 	}
 }
@@ -1850,7 +1850,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_eeprom(&handles);
 		load_handle_select();
@@ -1864,7 +1864,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_eeprom(&handles);
 		load_handle_select();
@@ -1879,14 +1879,14 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			memcpy(player1.handle, &handles.data[9*3], 3);
 			player2.handle_id = 9;
 			memcpy(player2.handle, &handles.data[9*3], 3);
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			clear_sprites();
 			fade_through();
 			level_transition(LBRandom(0, 10));
 		}
 		else
 		{
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			fade_through();
 			load_eeprom(&scores);
 			load_tank_rank();
@@ -1925,21 +1925,21 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 		game.selection--;
 		if (game.selection == JOINNETGAME && wifi_status != WIFI_OK) game.selection -= 2;
 		if (game.selection < PVCPU) game.selection = PVCPU;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
 		if (game.selection == HOSTNETGAME && wifi_status != WIFI_OK) game.selection += 2;
 		if (game.selection > TR) game.selection = TR;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if (select_pressed(p1) && ((game.selection == PVCPU) || (game.selection == PVP)))
 	{
 		game.demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_eeprom(&handles);
 		load_handle_select();
@@ -1948,7 +1948,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	else if (select_pressed(p1) && (game.selection == HOSTNETGAME))
 	{
 		game.demo_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_host_net_game();
 		return;
@@ -1956,7 +1956,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	else if (select_pressed(p1) && (game.selection == JOINNETGAME))
 	{
 		game.demo_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_join_net_game();
 		return;
@@ -1964,7 +1964,7 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	else if (select_pressed(p1) && (game.selection == TR))
 	{
 		game.demo_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_eeprom(&scores);
 		load_tank_rank();
@@ -1980,14 +1980,14 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 			memcpy(player1.handle, &handles.data[9*3], 3);
 			player2.handle_id = 9;
 			memcpy(player2.handle, &handles.data[9*3], 3);
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			clear_sprites();
 			fade_through();
 			level_transition(LBRandom(0, 10));
 		}
 		else
 		{
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			fade_through();
 			load_eeprom(&scores);
 			load_tank_rank();
@@ -2042,14 +2042,14 @@ void update_tank_rank(JoyPadState* p1)
 	if (ReadJoypad(0) ||ReadJoypad(1))
 	{
 		game.tank_rank_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	}
 	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
 	{
 		game.tank_rank_counter = 0;
-	    SFX_NAVIGATE;
+	    LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	    init_scores(&scores);
 	    init_handles(&handles);
 	    save_eeprom(&scores);
@@ -2060,7 +2060,7 @@ void update_tank_rank(JoyPadState* p1)
 	if (game.tank_rank_counter > TANK_RANK_LENGTH)
 	{
 		game.tank_rank_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	}
@@ -2070,14 +2070,14 @@ void update_tank_rank(JoyPadState* p1)
 	if (p1->pressed & BTN_X)
 	{
 		game.tank_rank_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	}
 	if ((p1->held & BTN_SL) && (p1->held_cycles == 255))
 	{
 		game.tank_rank_counter = 0;
-	    SFX_NAVIGATE;
+	    LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	    init_scores(&scores);
 	    init_handles(&handles);
 	    save_eeprom(&scores);
@@ -2088,7 +2088,7 @@ void update_tank_rank(JoyPadState* p1)
 	if (game.tank_rank_counter > TANK_RANK_LENGTH)
 	{
 		game.tank_rank_counter = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	}
@@ -2103,49 +2103,49 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	{
 		ps->handle_id--;
 		if (ps->handle_id < 0) ps->handle_id = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->handle_id++;
 		if (ps->handle_id > 8) ps->handle_id = 8;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if (select_pressed(p) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->select_state = EDITING;
 		memcpy(ps->handle, &handles.data[ps->handle_id*3], 3);
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->char_index++;
 		if (ps->char_index > 2) ps->char_index = 2;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->char_index--;
 		if (ps->char_index < 0) ps->char_index = 0;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->handle[(u8) ps->char_index]--;
 		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->handle[(u8) ps->char_index]++;
 		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if (select_pressed(p) && (ps->select_state == EDITING))
@@ -2153,7 +2153,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		player->handle_id = ps->handle_id;
 		memcpy(player->handle, ps->handle, 3);
 		memcpy(&handles.data[ps->handle_id*3], ps->handle, 3);
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
 		send_smart_net_message(player, p, NETHANDLESELECT);
@@ -2163,18 +2163,18 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING))
 	{
 		ps->select_state = SELECTING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED))
 	{
 		ps->select_state = EDITING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 	else if ((p->pressed & BTN_X))
 	{
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 		send_smart_net_message(player, p, NETHANDLESELECT);
@@ -2291,7 +2291,7 @@ void update_host_net_game(JoyPadState* p1)
 {
 	if (p1->pressed & BTN_X)
 	{
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	} 
@@ -2300,7 +2300,7 @@ void update_host_net_game(JoyPadState* p1)
 		game.demo_counter = 0;
 		p1s.select_state = SELECTING;
 		p2s.select_state = SELECTING;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_eeprom(&handles);
 		load_handle_select();
@@ -2330,7 +2330,7 @@ void update_join_net_game(JoyPadState* p1)
 		
 	if (p1->pressed & BTN_X)
 	{
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
 	}
@@ -2344,7 +2344,7 @@ void update_join_net_game(JoyPadState* p1)
 			game.demo_counter = 0;
 			p1s.select_state = SELECTING;
 			p2s.select_state = SELECTING;
-			SFX_NAVIGATE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			fade_through();
 			load_eeprom(&handles);
 			load_handle_select();
@@ -2359,26 +2359,26 @@ void update_join_net_game(JoyPadState* p1)
 		gameId[gameIdIndex]--;
 		if ((gameId[gameIdIndex] < 'A') && (gameId[gameIdIndex] > '9')) gameId[gameIdIndex] = '9';
 		if (gameId[gameIdIndex] < '0') gameId[gameIdIndex] = 'Z';
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if ((p1->pressed & BTN_DOWN))
 	{
 		gameId[gameIdIndex]++;
 		if ((gameId[gameIdIndex] > '9') && (gameId[gameIdIndex] < 'A')) gameId[gameIdIndex] = 'A';
 		if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = '0';
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if ((p1->pressed & BTN_RIGHT))
 	{
 		gameIdIndex++;
 		if (gameIdIndex > 7) gameIdIndex = 7;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if ((p1->pressed & BTN_LEFT))
 	{
 		gameIdIndex--;
 		if (gameIdIndex < 2) gameIdIndex= 2;
-		SFX_NAVIGATE;
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 }
 #endif
@@ -2701,7 +2701,7 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 	JoyPadState* state = &p1;
 	HandleSelectState* handle_select = &p1s;
 	
-	if (wifi_status != WIFI_OK) return;
+	if (game.selection != HOSTNETGAME && game.selection != JOINNETGAME) return;
 	
 	netMessage.hud_x = 15;
 	if (code >= NETITEMSPEED && code <= NETITEMBOMB) netMessage.hud_x = 0;
@@ -2740,7 +2740,7 @@ void get_net_message()
 	Player* otherPlayer = &player1;
 	u8 otherPlayerHudx = 0;
 	HandleSelectState* handle_select = &p2s;
-	if (wifi_status != WIFI_OK) return;
+	if (game.selection != HOSTNETGAME && game.selection != JOINNETGAME) return;
 	
 	netMessage.code = NETNODATA;
 	if (game.selection == JOINNETGAME)
@@ -2771,7 +2771,7 @@ void get_net_message()
 			init_shot_state(&otherPlayer->shot[0], otherPlayer->shot[0].shot_type);
 			otherPlayer->active_shots--;
 			kill_player(player, netMessage.hud_x);
-			SFX_TANK_EXPLODE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		}
 		else if (netMessage.code == NETTURRETHIT)
 		{
@@ -2781,7 +2781,7 @@ void get_net_message()
 				game.boss_fight_status = BOSS_FIGHT_LOST;
 			}
 			kill_player(game.boss_fight_player, game.boss_fight_player_hud);
-			SFX_TANK_EXPLODE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		}
 		else if (netMessage.code == NETITEMSPEED)
 		{
@@ -2790,7 +2790,7 @@ void get_net_message()
 			player->has_over_speed = true;
 			DrawMap2(netMessage.hud_x+10, 1, map_speed_itm);
 			SetTile(netMessage.object_pos_x, netMessage.object_pos_y, 0);
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 		}
 		else if (netMessage.code == NETITEMROCKET)
 		{
@@ -2798,7 +2798,7 @@ void get_net_message()
 			player->has_rocket = true;
 			DrawMap2(netMessage.hud_x+11, 1, map_rocket_itm);
 			SetTile(netMessage.object_pos_x, netMessage.object_pos_y, 0);
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 		}
 		else if (netMessage.code == NETITEMBOMB)
 		{
@@ -2809,7 +2809,7 @@ void get_net_message()
 				render_score(player, netMessage.hud_x);
 				kill_player(otherPlayer, otherPlayerHudx);
 			}
-			SFX_ITEM;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
 		}
 		else if (netMessage.code == NETBLOCKHIT)
 		{
@@ -2821,7 +2821,7 @@ void get_net_message()
 				init_shot_state(&player->shot[0], player->shot[0].shot_type);
 				player->active_shots--;
 			}
-			SFX_BRICK_EXPLODE;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_BRICK_EXPLODE);
 		}
 	}
 	else

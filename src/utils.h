@@ -22,6 +22,7 @@
 #endif
 
 #include "networking.h"
+#include "macros.h"
 
 u16 p_prev[2] = {0,0};
 
@@ -216,6 +217,17 @@ void LBHideAllSprites()
 	{
 		sprites[i].x = (SCREEN_TILES_H*TILE_WIDTH);
 	}
+}
+
+
+void LBPlaySound(u8 game_selection, u8 p1_flags, u8 p2_flags, u8 patch)
+{
+#if JAMMA
+	if(no_demo_sound() && game_selection == CPUVCPU) {} else if (!((p1_flags & EXPLODING_FLAG) || (p2_flags & EXPLODING_FLAG))) TriggerFx(patch,0xff,true);
+#else
+	if (patch == PATCH_TANK_EXPLODE) TriggerFx(patch,0xff,true);
+	else if (!((p1_flags & EXPLODING_FLAG) || (p2_flags & EXPLODING_FLAG))) TriggerFx(patch,0xff,true);
+#endif
 }
 
 #endif
