@@ -1799,7 +1799,7 @@ void load_splash()
 #else
 	if (wifi_status == WIFI_OK)
 	{
-		disablePassthroughMode();
+		cleanupWifi();
 	}
 	Print(7, 13, (char*) str1Player);
 	Print(7, 14, (char*) str2Player);
@@ -2337,7 +2337,7 @@ void update_join_net_game(JoyPadState* p1)
 	else if (select_pressed(p1))
 	{
 		Print(7, 18, (char*) strConnecting);
-		if (joinNetGame((const char*)gameId) == WIFI_OK)
+		if (joinNetGame((char*)gameId) == WIFI_OK)
 		{
 			netMessage.code = NETJOINED;
 			sendNetMessage(&netMessage);

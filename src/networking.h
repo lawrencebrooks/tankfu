@@ -58,30 +58,31 @@ typedef struct NetMessageStruct {
 	u8 zero;
 } NetMessage;
 
-u8 disablePassthroughMode() {
+u8 cleanupWifi() {
 	u8 counter = 0;
 	wifiSendP(PSTR("+++"));
 	while(counter++ < 5) WaitUs(65535);
 	InitUartTxBuffer();
 	InitUartRxBuffer();
-	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 2*60);
-	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 2*60);
+	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 1*60);
+	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 1*60);
+	wifiRequestPT(PSTR("AT+CWQAP\r\n"),PSTR("OK\r\n"), 1*60);
 	return WIFI_OK;
 }
 
 u8 activateNet() {
-	disablePassthroughMode();
+	cleanupWifi();
 	InitUartTxBuffer();
 	InitUartRxBuffer();
 	return initWifi();
 }
 
 u8 sendNetMessage(NetMessage* msg) {
-	return wifiSend((char *) msg);
+	return wifiSendBinary((char *) msg, sizeof(*msg));
 }
 
 u8 getNetMessage(NetMessage* msg) {
-	return wifiGetIfAvailable(msg, sizeof(msg));
+	return wifiGetIfAvailable(msg, sizeof(*msg));
 }
 
 u8 hostNetGame(char* ssid) {
@@ -89,8 +90,6 @@ u8 hostNetGame(char* ssid) {
 	
 	// Set SoftAP mode...
 	if (wifiRequestP(PSTR("AT+CWMODE_CUR=2\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	// Disable DHCP...
-	if (wifiRequestP(PSTR("AT+CWDHCP_CUR=0,0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	// Set SopftAP IP address
 	if (wifiRequestP(PSTR("AT+CIPAP_CUR=\"192.168.4.1\"\r\n"), PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	// Get SoftAP MAC address...
@@ -117,17 +116,13 @@ u8 hostNetGame(char* ssid) {
 	return WIFI_OK;
 }
 
-u8 joinNetGame(const char* ssid) {
+u8 joinNetGame(char* ssid) {
 	char buf[64];
 	
 	sprintf(buf, "AT+CWJAP_CUR=\"%s\",\"T4nkFuN3t\"\r\n", ssid);
 	
 	// Set Station mode...
 	if (wifiRequestP(PSTR("AT+CWMODE_CUR=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	// Disable DHCP...
-	if (wifiRequestP(PSTR("AT+CWDHCP_CUR=1,0\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	// List access points...
-	if (wifiRequestP(PSTR("AT+CWLAP\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	// Connect to access point...
 	if (wifiRequest(buf,PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	// Set station IP address

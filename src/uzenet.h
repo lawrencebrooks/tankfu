@@ -45,12 +45,23 @@ u8 wifiSend(char* str){
 	return WIFI_OK;
 }
 
+u8 wifiSendBinary(char* str, u8 sz){
+
+	char c;
+	while(sz--){
+		c=*str;
+		while(UartSendChar(c)==-1); //block if buffer full
+		str++;
+	};
+	return WIFI_OK;
+}
+
 u8 wifiGetIfAvailable(void* buffer, u8 expectedSize) {
 	if (UartUnreadCount() < expectedSize) {
 		return WIFI_NODATA;
 	}
 	while (expectedSize--) {
-		*(char*)buffer = UartReadChar() & 0xff;
+		*((char*)buffer) = UartReadChar() & 0xff;
 		buffer++;
 	}
 	return WIFI_OK;
