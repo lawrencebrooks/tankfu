@@ -67,13 +67,13 @@ u8 cleanupWifi() {
 	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 1*60);
 	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 1*60);
 	wifiRequestPT(PSTR("AT+CWQAP\r\n"),PSTR("OK\r\n"), 1*60);
+	InitUartTxBuffer();
+	InitUartRxBuffer();
 	return WIFI_OK;
 }
 
 u8 activateNet() {
 	cleanupWifi();
-	InitUartTxBuffer();
-	InitUartRxBuffer();
 	return initWifi();
 }
 
@@ -112,7 +112,7 @@ u8 hostNetGame(char* ssid) {
 	// Activate UDP Passthrough mode
 	if (wifiRequestP(PSTR("AT+CIPSTART=\"UDP\",\"192.168.4.2\",1001,2233,0\r\n"), PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	if (wifiRequestP(PSTR("AT+CIPMODE=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	wifiSendP(PSTR("AT+CIPSEND\r\n"));
+	if (wifiRequestP(PSTR("AT+CIPSEND\r\n"),PSTR("OK\r\n\r\n>")) != WIFI_OK) return WIFI_TIMEOUT;
 	return WIFI_OK;
 }
 
@@ -130,7 +130,7 @@ u8 joinNetGame(char* ssid) {
 	// Activate UDP Passthrough mode
 	if (wifiRequestP(PSTR("AT+CIPSTART=\"UDP\",\"192.168.4.1\",2233,1001\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
 	if (wifiRequestP(PSTR("AT+CIPMODE=1\r\n"),PSTR("OK\r\n")) != WIFI_OK) return WIFI_TIMEOUT;
-	wifiSendP(PSTR("AT+CIPSEND\r\n"));
+	if (wifiRequestP(PSTR("AT+CIPSEND\r\n"),PSTR("OK\r\n\r\n>")) != WIFI_OK) return WIFI_TIMEOUT;
 	return WIFI_OK;
 }
 

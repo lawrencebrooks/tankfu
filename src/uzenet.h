@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #include <uzebox.h>
+#include "utils.h"
 
 #define WIFI_OK 0
 #define WIFI_TIMEOUT 1

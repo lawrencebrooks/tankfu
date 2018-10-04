@@ -2174,10 +2174,10 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	}
 	else if ((p->pressed & BTN_X))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		fade_through();
 		load_splash();
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 #endif
 }
@@ -2750,6 +2750,7 @@ void get_net_message()
 		otherPlayer = &player2;
 		otherPlayerHudx = 15;
 	}
+	LBPrintByte(3, 25, UartUnreadCount(), true);
 	if (getNetMessage(&netMessage) != WIFI_NODATA)
 	{
 		otherPlayer->score = netMessage.score;
