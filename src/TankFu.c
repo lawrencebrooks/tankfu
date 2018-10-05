@@ -2750,9 +2750,9 @@ void get_net_message()
 		otherPlayer = &player2;
 		otherPlayerHudx = 15;
 	}
-	LBPrintByte(3, 25, UartUnreadCount(), true);
 	if (getNetMessage(&netMessage) != WIFI_NODATA)
 	{
+		LBPrintByte(3, 25, netMessage.code, true);
 		otherPlayer->score = netMessage.score;
 		otherPlayer->level_score = netMessage.score;
 		player->shared.x = netMessage.pos_x;

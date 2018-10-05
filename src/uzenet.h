@@ -57,13 +57,27 @@ u8 wifiSendBinary(char* str, u8 sz){
 	return WIFI_OK;
 }
 
-u8 wifiGetIfAvailable(void* buffer, u8 expectedSize) {
-	if (UartUnreadCount() < expectedSize) {
+u8 wifiGetIfAvailable(char* buffer, u8 expectedSize) {
+	/*if (UartUnreadCount() < expectedSize) {
 		return WIFI_NODATA;
 	}
 	while (expectedSize--) {
-		*((char*)buffer) = UartReadChar() & 0xff;
+		*buffer = UartReadChar();
 		buffer++;
+	}
+	return WIFI_OK;*/
+	char c = -1;
+	if (UartUnreadCount() > 0) {
+		while (expectedSize--) {
+			while(c == -1) {
+				c = UartReadChar();
+			}
+			*buffer = c;
+			buffer++;
+			c = -1;
+		}
+	} else {
+		return WIFI_NODATA;
 	}
 	return WIFI_OK;
 }

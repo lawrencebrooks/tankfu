@@ -82,7 +82,7 @@ u8 sendNetMessage(NetMessage* msg) {
 }
 
 u8 getNetMessage(NetMessage* msg) {
-	return wifiGetIfAvailable(msg, sizeof(*msg));
+	return wifiGetIfAvailable((char*)msg, sizeof(*msg));
 }
 
 u8 hostNetGame(char* ssid) {
