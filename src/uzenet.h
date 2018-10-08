@@ -69,9 +69,7 @@ u8 wifiGetIfAvailable(char* buffer, u8 expectedSize) {
 	char c = -1;
 	if (UartUnreadCount() > 0) {
 		while (expectedSize--) {
-			while(c == -1) {
-				c = UartReadChar();
-			}
+			while(c == -1) c = UartReadChar();
 			*buffer = c;
 			buffer++;
 			c = -1;
@@ -193,7 +191,21 @@ u8 wifiRequestPT(const char* strToSend, const char* strToWait, u16 wifi_timeout)
     return WIFI_OK;
 }
 
-const u16 bauds[] PROGMEM = {370,246,184,92,60,44,30};
+u8 cleanupWifi() {
+	u8 counter = 0;
+	wifiSendP(PSTR("+++"));
+	while(counter++ < 61) WaitVsync(1);
+	InitUartTxBuffer();
+	InitUartRxBuffer();
+	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 30);
+	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"),  30);
+	wifiRequestPT(PSTR("AT+CWQAP\r\n"),PSTR("OK\r\n"),  30);
+	InitUartTxBuffer();
+	InitUartRxBuffer();
+	return WIFI_OK;
+}
+
+const u16 bauds[] PROGMEM = {60,370,246,184,92,44,30};
 u8 initWifi(){
     s8 i = 0;
     u8 result;
@@ -204,14 +216,15 @@ u8 initWifi(){
         UBRR0L=pgm_read_byte(((u8*) &(bauds[i % 7])));
         UBRR0H=pgm_read_byte(((u8*) &(bauds[i % 7]))+1);
         WaitVsync(1);
+		cleanupWifi();
         result = wifiRequestPT(PSTR("AT\r\n"),PSTR("OK\r\n"), 30); 
         i++;
     } while ((result != WIFI_OK) && (i < 14));
     if (result == WIFI_OK) {
-        result = wifiRequestPT(PSTR("AT+UART_CUR=14400,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
+        result = wifiRequestPT(PSTR("AT+UART_CUR=57600,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
         if (result == WIFI_OK) {
-            UBRR0L=pgm_read_byte(((u8*) &(bauds[1])));
-            UBRR0H=pgm_read_byte(((u8*) &(bauds[1]))+1); 
+            UBRR0L=pgm_read_byte(((u8*) &(bauds[0])));
+            UBRR0H=pgm_read_byte(((u8*) &(bauds[0]))+1); 
             WaitVsync(1);
         }
     }

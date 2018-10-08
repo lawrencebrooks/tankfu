@@ -46,10 +46,6 @@ typedef struct NetMessageStruct {
 	u8 score;
 	u8 level_score;
 	u8 hud_x;
-	char handle_id;
-	u8 handle[3];
-	char char_index;
-	u8 select_state;
 	u8 direction;
 	u8 speed;
 	u8 recoiled;
@@ -57,20 +53,6 @@ typedef struct NetMessageStruct {
 	float pos_y;
 	u8 zero;
 } NetMessage;
-
-u8 cleanupWifi() {
-	u8 counter = 0;
-	wifiSendP(PSTR("+++"));
-	while(counter++ < 5) WaitUs(65535);
-	InitUartTxBuffer();
-	InitUartRxBuffer();
-	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 1*60);
-	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"), 1*60);
-	wifiRequestPT(PSTR("AT+CWQAP\r\n"),PSTR("OK\r\n"), 1*60);
-	InitUartTxBuffer();
-	InitUartRxBuffer();
-	return WIFI_OK;
-}
 
 u8 activateNet() {
 	cleanupWifi();

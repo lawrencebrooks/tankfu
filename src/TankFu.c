@@ -66,6 +66,7 @@ void load_level_tiles(u8 blank);
 void kill_player(Player* player, u8 hud_x);
 
 // Globals
+NetMessage netMessage;
 Game game;
 Player player1;
 Player player2;
@@ -77,7 +78,6 @@ TileAnimation scope_animation;
 TileAnimation sub_animation;
 Turret turret1;
 Turret turret2;
-NetMessage netMessage;
 u8 wifi_status;
 u8 gameId[9] = "TFABCDEF";
 u8 gameIdIndex = 2;
@@ -522,8 +522,8 @@ void update_player(JoyPadState* p, Player* player)
 #if JAMMA
 #else
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETPAUSETOGGLE);
 		game.paused = game.paused ^ 1;
+		send_smart_net_message(player, p, NETPAUSETOGGLE);
 		load_level_tiles(false);
 #endif
 	}
@@ -1778,6 +1778,8 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 #endif
 		}
 	}
+	LBPrintByte(9, 25, (u8) player1.shared.x, true);
+	LBPrintByte(15, 25, (u8) player1.shared.y, true);
 }
 
 void load_splash()
@@ -2099,64 +2101,64 @@ void update_tank_rank(JoyPadState* p1)
 
 void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player)
 {	
-	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING) && !is_net_player(player))
+	if ((p->pressed & BTN_UP) && (ps->select_state == SELECTING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->handle_id--;
 		if (ps->handle_id < 0) ps->handle_id = 0;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING) && !is_net_player(player))
+	else if ((p->pressed & BTN_DOWN) && (ps->select_state == SELECTING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->handle_id++;
 		if (ps->handle_id > 8) ps->handle_id = 8;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if (select_pressed(p) && (ps->select_state == SELECTING) && !is_net_player(player))
+	else if (select_pressed(p) && (ps->select_state == SELECTING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->select_state = EDITING;
 		memcpy(ps->handle, &handles.data[ps->handle_id*3], 3);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING) && !is_net_player(player))
+	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->char_index++;
 		if (ps->char_index > 2) ps->char_index = 2;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING) && !is_net_player(player))
+	else if ((p->pressed & BTN_LEFT) && (ps->select_state == EDITING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->char_index--;
 		if (ps->char_index < 0) ps->char_index = 0;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING) && !is_net_player(player))
+	else if ((p->pressed & BTN_UP) && (ps->select_state == EDITING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->handle[(u8) ps->char_index]--;
-		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'A';
+		if (ps->handle[(u8) ps->char_index] < 'A') ps->handle[(u8) ps->char_index] = 'Z';
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
-	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING) && !is_net_player(player))
+	else if ((p->pressed & BTN_DOWN) && (ps->select_state == EDITING))
 	{
-		ps->handle[(u8) ps->char_index]++;
-		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'Z';
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT);
+		ps->handle[(u8) ps->char_index]++;
+		if (ps->handle[(u8) ps->char_index] > 'Z') ps->handle[(u8) ps->char_index] = 'A';
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if (select_pressed(p) && (ps->select_state == EDITING))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT);
 		player->handle_id = ps->handle_id;
 		memcpy(player->handle, ps->handle, 3);
 		memcpy(&handles.data[ps->handle_id*3], ps->handle, 3);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		save_eeprom(&handles);
 		ps->select_state = CONFIRMED;
-		send_smart_net_message(player, p, NETHANDLESELECT);
 	}
 #if JAMMA
 #else
@@ -2699,7 +2701,6 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 	Player* player = &player1;
 	Player* otherPlayer = &player2;
 	JoyPadState* state = &p1;
-	HandleSelectState* handle_select = &p1s;
 	
 	if (game.selection != HOSTNETGAME && game.selection != JOINNETGAME) return;
 	
@@ -2710,7 +2711,6 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 		player = &player2;
 		otherPlayer = &player1;
 		state = &p2;
-		handle_select = &p2s;
 		netMessage.hud_x = 0;
 		if (code >= NETITEMSPEED && code <= NETITEMBOMB) netMessage.hud_x = 15;
 	}
@@ -2726,10 +2726,6 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 	netMessage.speed = player->shared.speed;
 	netMessage.direction = player->shared.direction;
 	netMessage.recoiled = player->shared.recoiled;
-	netMessage.handle_id = handle_select->handle_id;
-	netMessage.char_index = handle_select->char_index;
-	netMessage.select_state = handle_select->select_state;
-	memcpy(netMessage.handle, handle_select->handle, 3);
 	netMessage.zero = 0;
 	sendNetMessage(&netMessage);
 }
@@ -2737,16 +2733,16 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
 void get_net_message()
 {
 	Player* player = &player2;
+	JoyPadState* state = &p2;
 	Player* otherPlayer = &player1;
 	u8 otherPlayerHudx = 0;
-	HandleSelectState* handle_select = &p2s;
 	if (game.selection != HOSTNETGAME && game.selection != JOINNETGAME) return;
 	
 	netMessage.code = NETNODATA;
 	if (game.selection == JOINNETGAME)
 	{
 		player = &player1;
-		handle_select = &p1s;
+		state = &p1;
 		otherPlayer = &player2;
 		otherPlayerHudx = 15;
 	}
@@ -2760,10 +2756,8 @@ void get_net_message()
 		player->shared.speed = netMessage.speed;
 		player->shared.direction = netMessage.direction;
 		player->shared.recoiled = netMessage.recoiled;
-		handle_select->handle_id = netMessage.handle_id;
-		handle_select->char_index = netMessage.char_index;
-		handle_select->select_state = netMessage.select_state;
-		memcpy(handle_select->handle, netMessage.handle, 3);
+		state->held = netMessage.held;
+		state->pressed = netMessage.pressed;
 		
 		// Act on message code
 		if (netMessage.code == NETHIT)
@@ -2827,7 +2821,7 @@ void get_net_message()
 	}
 	else
 	{
-		netMessage.pressed = 0;
+		state->pressed = 0;
 	}
 }
 
@@ -2891,11 +2885,9 @@ int main()
 				if (game.selection == HOSTNETGAME)
 				{
 					LBGetJoyPadState(&p1, 0);
-					LBGetJoyPadStateNet(&p2, 1, &netMessage);
 				}
 				else if (game.selection == JOINNETGAME)
 				{
-					LBGetJoyPadStateNet(&p1, 1, &netMessage);
 					LBGetJoyPadState(&p2, 0);
 				}
 				else
@@ -2930,11 +2922,9 @@ int main()
 				else if (game.selection == HOSTNETGAME)
 				{
 					LBGetJoyPadState(&p1, 0);
-					LBGetJoyPadStateNet(&p2, 1, &netMessage);
 				}
 				else if (game.selection == JOINNETGAME)
 				{
-					LBGetJoyPadStateNet(&p1, 1, &netMessage);
 					LBGetJoyPadState(&p2, 0);
 				}
 				else
