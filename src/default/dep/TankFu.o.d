@@ -12,10 +12,10 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
  ../kernel/videoMode3/videoMode3.h /usr/local/avr/include/avr/pgmspace.h \
  /usr/local/lib/gcc/avr/4.9.2/include/stddef.h \
  /usr/local/avr/include/string.h ../data/tiles.h ../data/sprites.h \
- ../data/levels.h ../data/patches.h ../types.h ../utils.h ../networking.h \
- ../strings.h ../uzenet.h /usr/local/avr/include/stdlib.h \
+ ../data/levels.h ../data/patches.h ../types.h ../utils.h ../macros.h \
+ ../strings.h ../networking.h ../uzenet.h /usr/local/avr/include/stdlib.h \
  /usr/local/avr/include/stdio.h \
- /usr/local/lib/gcc/avr/4.9.2/include/stdarg.h ../macros.h
+ /usr/local/lib/gcc/avr/4.9.2/include/stdarg.h
 
 ../kernel/uzebox.h:
 
@@ -71,9 +71,11 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
 
 ../utils.h:
 
-../networking.h:
+../macros.h:
 
 ../strings.h:
+
+../networking.h:
 
 ../uzenet.h:
 
@@ -82,5 +84,3 @@ TankFu.o: ../TankFu.c ../kernel/uzebox.h \
 /usr/local/avr/include/stdio.h:
 
 /usr/local/lib/gcc/avr/4.9.2/include/stdarg.h:
-
-../macros.h:

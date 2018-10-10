@@ -21,16 +21,15 @@
 #include "jamma.h"
 #endif
 
-#include "networking.h"
 #include "macros.h"
 
 u16 p_prev[2] = {0,0};
 
 typedef struct sJoyPadState {
-	unsigned int pressed;
-	unsigned int released;
-	unsigned int held;
-	unsigned char held_cycles;
+	u16 pressed;
+	u16 released;
+	u16 held;
+	u8 held_cycles;
 } JoyPadState;
 
 typedef struct sAnimation {

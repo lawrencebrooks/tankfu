@@ -22,6 +22,7 @@
 
 #include "strings.h"
 #include "uzenet.h"
+#include "types.h"
 
 #define NETHIT 0
 #define NETTURRETHIT 1
@@ -36,23 +37,6 @@
 #define NETHANDLESELECT 10
 #define NETJOINED 11
 #define NETNODATA 12
-
-typedef struct NetMessageStruct {
-    u8 code;
-    u16 held;
-	u16 pressed;
-	u8 object_pos_x;
-	u8 object_pos_y;
-	u8 score;
-	u8 level_score;
-	u8 hud_x;
-	u8 direction;
-	u8 speed;
-	u8 recoiled;
-	float pos_x;
-	float pos_y;
-	u8 zero;
-} NetMessage;
 
 u8 activateNet() {
 	cleanupWifi();
@@ -99,7 +83,7 @@ u8 hostNetGame(char* ssid) {
 }
 
 u8 joinNetGame(char* ssid) {
-	char buf[64];
+	char buf[38];
 	
 	sprintf(buf, "AT+CWJAP_CUR=\"%s\",\"T4nkFuN3t\"\r\n", ssid);
 	

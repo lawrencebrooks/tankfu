@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #include <uzebox.h>
-#include "utils.h"
 
 #define WIFI_OK 0
 #define WIFI_TIMEOUT 1
@@ -66,13 +65,13 @@ u8 wifiGetIfAvailable(char* buffer, u8 expectedSize) {
 		buffer++;
 	}
 	return WIFI_OK;*/
-	char c = -1;
+	s16 r = -1;
 	if (UartUnreadCount() > 0) {
 		while (expectedSize--) {
-			while(c == -1) c = UartReadChar();
-			*buffer = c;
+			while(r == -1) r = UartReadChar();
+			*buffer = r&0xff;
 			buffer++;
-			c = -1;
+			r = -1;
 		}
 	} else {
 		return WIFI_NODATA;
@@ -221,10 +220,10 @@ u8 initWifi(){
         i++;
     } while ((result != WIFI_OK) && (i < 14));
     if (result == WIFI_OK) {
-        result = wifiRequestPT(PSTR("AT+UART_CUR=57600,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
+        result = wifiRequestPT(PSTR("AT+UART_CUR=38400,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
         if (result == WIFI_OK) {
-            UBRR0L=pgm_read_byte(((u8*) &(bauds[0])));
-            UBRR0H=pgm_read_byte(((u8*) &(bauds[0]))+1); 
+            UBRR0L=pgm_read_byte(((u8*) &(bauds[4])));
+            UBRR0H=pgm_read_byte(((u8*) &(bauds[4]))+1); 
             WaitVsync(1);
         }
     }

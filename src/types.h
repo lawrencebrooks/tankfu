@@ -52,12 +52,19 @@ typedef struct sTurret {
 	Shot shot[MAX_SHOTS];
 } Turret;
 
-typedef struct sPlayer {
-	SpriteShared shared;
-	char handle_id;
-	u8 handle[3];
+typedef struct NetMessageStruct {
+    u8 code;
+	u8 object_pos_x;
+	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
+	SpriteShared shared;
+	JoyPadState joyPadState;
+} NetMessage;
+
+typedef struct sPlayer {
+	char handle_id;
+	u8 handle[3];
 	u8 active_shots;
 	u8 old_active_shots;
 	u8 spawn_x;
@@ -75,15 +82,17 @@ typedef struct sPlayer {
 	u16 deadlock_count_y;
 	char goal;
 	char goal_reached;
-	u8 old_direction;
-	u8 old_speed;
-	u8 old_recoiled;
+	//u8 old_direction;
+	//u8 old_speed;
+	//u8 old_recoiled;
+	u16 old_held;
 	float old_x;
 	float old_y;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;
 	Animation exp_anim;
+	NetMessage netMessage;
 } Player;
 
 typedef struct sGameState {
