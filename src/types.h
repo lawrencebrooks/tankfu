@@ -28,10 +28,10 @@ typedef struct sLevelState {
 
 typedef struct sSpriteShared {
 	u8 direction;
-	u8 speed;
+	u16 speed;
 	u8 recoiled;
-	float x;
-	float y;
+	u16 x;
+	u16 y;
 } SpriteShared;
 
 typedef struct sShot {
@@ -40,7 +40,7 @@ typedef struct sShot {
 	u8 hit_count;
 	u8 rebounds;
 	u8 active;
-	u8 distance;
+	u16 distance;
 	Animation up_anim;
 	Animation right_anim;
 
@@ -67,11 +67,11 @@ typedef struct sPlayer {
 	u8 handle[3];
 	u8 active_shots;
 	u8 old_active_shots;
-	u8 spawn_x;
-	u8 spawn_y;
+	u16 spawn_x;
+	u16 spawn_y;
 	u8 flags;
 	u8 grace_frame;
-	u8 max_speed;
+	u16 max_speed;
 	u8 has_rocket;
 	u8 has_over_speed;
 	u8 feeling_my_way;
@@ -82,12 +82,9 @@ typedef struct sPlayer {
 	u16 deadlock_count_y;
 	char goal;
 	char goal_reached;
-	//u8 old_direction;
-	//u8 old_speed;
-	//u8 old_recoiled;
 	u16 old_held;
-	float old_x;
-	float old_y;
+	u16 old_x;
+	u16 old_y;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;

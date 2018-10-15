@@ -80,6 +80,7 @@ u8 wifi_status;
 u16 global_frame_counter = 1;
 u8 gameId[9] = "TFABCDEF";
 u8 gameIdIndex = 2;
+u8 frames = 0;
 
 struct EepromBlockStruct handles;
 struct EepromBlockStruct scores;
@@ -155,7 +156,7 @@ void init_shot_state(Shot* s, u8 shot_type)
 	s->shot_type = shot_type;
 	s->rebounds = SHOT_REBOUNDS;
 	s->hit_count = (shot_type == BASIC_SHOT) ? BASIC_SHOT_HIT_COUNT : ROCKET_SHOT_HIT_COUNT;
-	s->shared.x = OFF_SCREEN;
+	s->shared.x = OFF_SCREEN*100;
 	s->shared.y = 0;
 }
 
@@ -196,7 +197,7 @@ void set_shot_animations(Shot* s, u8 shot_type)
 	s->right_anim.reversing = 0;
 }
 
-void init_turret(Turret* t, float x, float y)
+void init_turret(Turret* t, u16 x, u16 y)
 {
 	t->lives = BOSS_TURRET_LIVES;
 	t->shared.direction = D_LEFT;
@@ -210,10 +211,10 @@ void init_turret(Turret* t, float x, float y)
 		t->shot[i].shared.speed = BOSS_TURRET_SHOT_SPEED;
 		t->shot[i].shared.direction = D_DOWN;
 		t->shot[i].shared.recoiled = 0;
-		t->shot[i].shared.x = OFF_SCREEN;
+		t->shot[i].shared.x = OFF_SCREEN*100;
 		t->shot[i].shared.y = 0;
 		t->shot[i].active = 0;
-		t->shot[i].distance = 100;
+		t->shot[i].distance = 10000;
 		t->shot[i].shot_type = BOSS_TURRET_SHOT;
 		t->shot[i].rebounds = SHOT_REBOUNDS;
 		t->shot[i].hit_count = BOSS_TURRET_SHOT_HIT_COUNT;
@@ -452,20 +453,20 @@ void position_shot(Player* player, Shot* shot)
 	switch (shot->shared.direction)
 	{
 		case D_UP:
-			shot->shared.x = player->netMessage.shared.x + 4;
+			shot->shared.x = player->netMessage.shared.x + 400;
 			shot->shared.y = player->netMessage.shared.y;
 			break;
 		case D_RIGHT:
-			shot->shared.x = player->netMessage.shared.x + 8;
-			shot->shared.y = player->netMessage.shared.y + 4;
+			shot->shared.x = player->netMessage.shared.x + 800;
+			shot->shared.y = player->netMessage.shared.y + 400;
 			break;
 		case D_DOWN:
-			shot->shared.x = player->netMessage.shared.x + 4;
-			shot->shared.y = player->netMessage.shared.y + 8;
+			shot->shared.x = player->netMessage.shared.x + 400;
+			shot->shared.y = player->netMessage.shared.y + 800;
 			break;
 		case D_LEFT:
 			shot->shared.x = player->netMessage.shared.x;
-			shot->shared.y = player->netMessage.shared.y + 4;
+			shot->shared.y = player->netMessage.shared.y + 400;
 			break;
 	}
 }
@@ -502,11 +503,11 @@ char shoot_pressed(JoyPadState* p)
 	return (p->pressed & BTN_A) || (p->pressed & BTN_B);
 }
 
-float get_delta(Player* p, SpriteShared* s)
+u16 get_delta(Player* p, SpriteShared* s)
 {
 	if (p->goal == 0)
-		return FRAME_TIME * s->speed;
-	return FRAME_TIME * s->speed * AI_SPEED_FACTOR;
+		return s->speed / FRAME_TIME_INVERTED;
+	return (s->speed + (s->speed / AI_SPEED_FACTOR_INVERTED)) / FRAME_TIME_INVERTED;
 }
 
 void update_player(JoyPadState* p, Player* player)
@@ -718,7 +719,7 @@ void render_score(Player* player, u8 x)
 
 void render_player(Player* player, u8 sprite_index)
 {
-	MoveSprite(sprite_index, player->netMessage.shared.x, player->netMessage.shared.y, 2, 2);
+	MoveSprite(sprite_index, player->netMessage.shared.x / 100, player->netMessage.shared.y / 100, 2, 2);
 }
 
 void render_shot(Player* player, u8 sprite_index)
@@ -727,7 +728,7 @@ void render_shot(Player* player, u8 sprite_index)
 	{
 		for (u8 i = 0; i < MAX_SHOTS; i++)
 		{
-			MoveSprite(sprite_index, player->shot[i].shared.x, player->shot[i].shared.y, 1, 1);
+			MoveSprite(sprite_index, player->shot[i].shared.x / 100, player->shot[i].shared.y / 100, 1, 1);
 			sprite_index++;
 		}
 	}
@@ -857,30 +858,30 @@ void recoil_sprite(SpriteShared* sprite)
 	
 	if (sprite->direction == D_UP)
 	{
-		tile = ((u8) sprite->y / 8) + 1;
-		sprite->y = tile * 8;
+		tile = (sprite->y / 800) + 1;
+		sprite->y = tile * 800;
 	}
 	else if (sprite->direction == D_RIGHT)
 	{
-		tile = sprite->x / 8;
-		sprite->x = tile * 8;
+		tile = sprite->x / 800;
+		sprite->x = tile * 800;
 	}
 	else if (sprite->direction == D_DOWN)
 	{
-		tile = sprite->y / 8;
-		sprite->y = tile * 8;
+		tile = sprite->y / 800;
+		sprite->y = tile * 800;
 	}
 	else
 	{
-		tile = ((u8) sprite->x / 8) + 1;
-		sprite->x = tile * 8;
+		tile = (sprite->x / 800) + 1;
+		sprite->x = tile * 800;
 	}
 	sprite->recoiled = 1;
 }
 
 void recoil_sprite_fine(Player* p, SpriteShared* sprite)
 {	
-	float speed = get_delta(p, sprite);
+	u16 speed = get_delta(p, sprite);
 	
 	if (sprite->direction == D_UP)
 	{
@@ -934,46 +935,118 @@ u8 solid_tile(int tile_index)
 	return solid_directional_tile(tile_index);
 }
 
-u8 collides_directional_tile(int tile_index, u8 x, u8 y, u8 width, u8 height)
+u8 collides_directional_tile(int tile_index, u16 x, u16 y, u16 width, u16 height)
 {
 	u8 tile = level.level_map[tile_index];
-	u8 tile_x = (tile_index % 30) * 8;
-	u8 tile_y = (tile_index / 30 + 3) * 8;
+	u16 tile_x = (tile_index % 30) * 800;
+	u16 tile_y = (tile_index / 30 + 3) * 800;
 
-	if ((tile == L_TL) || (tile == L_BR))
+	/*if ((tile == L_TL) || (tile == L_BR))
 	{
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x, y+height-1)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y, x+width-1, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x+width-1, y, x+width-1, y+height-1)) return tile;
-		if (LBLineIntersect(tile_x, tile_y+7, tile_x+7, tile_y, x, y+height-1, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+799, tile_x+799, tile_y, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+799, tile_x+799, tile_y, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+799, tile_x+799, tile_y, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y+799, tile_x+799, tile_y, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	else if ((tile == L_TR) || (tile == L_BL))
 	{
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x, y+height-1)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y, x+width-1, y)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x+width-1, y, x+width-1, y+height-1)) return tile;
-		if (LBLineIntersect(tile_x, tile_y, tile_x+7, tile_y+7, x, y+height-1, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+799, tile_y+799, x, y, x, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+799, tile_y+799, x, y, x+width-1, y)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+799, tile_y+799, x+width-1, y, x+width-1, y+height-1)) return tile;
+		if (LBLineIntersect(tile_x, tile_y, tile_x+799, tile_y+799, x, y+height-1, x+width-1, y+height-1)) return tile;
 	}
 	
+	return 0;*/
+	if (tile == L_TR)
+	{
+		if (x+width-1 < tile_x+800 && x+width-1 >= tile_x && y >= tile_y && y < tile_y+800)
+		{
+			if (y <= tile_y+(x+width-1-tile_x)) return 1;
+		}
+		else if (x >= tile_x && x < tile_x+800 && y >= tile_y && y < tile_y+800)
+		{
+			if (x+width >= tile_x+800) return 1;
+			else if (y <= tile_y+(x+width-1-tile_x)) return 1;
+		}
+		else if (x+width-1 < tile_x+800 && x+width-1 >= tile_x && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (y <= tile_y) return 1;
+			else if (y <= tile_y+(x+width-1-tile_x)) return 1;
+		}
+	}
+	
+	else if (tile == L_TL)
+	{
+		if (x >= tile_x && x < tile_x+800 && y >= tile_y && y < tile_y+800)
+		{
+			if (y < tile_y+(tile_x+800-x)) return 1;
+		}
+		else if (x+width-1 < tile_x+800 && x+width-1 >= tile_x && y >= tile_y && y < tile_y+800)
+		{
+			if (x <= tile_x) return 1;
+			else if (y < tile_y+(tile_x+800-x)) return 1;
+		}
+		else if (x >= tile_x && x < tile_x+800 && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (y <= tile_y) return 1;
+			else if (y < tile_y+(tile_x+800-x)) return 1;
+		}
+	}
+	
+	else if (tile == L_BL)
+	{
+		if (x >= tile_x && x < tile_x+800 && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (y+height-1 >= tile_y+(x-tile_x)) return 1;
+		}
+		else if (x >= tile_x && x < tile_x+800 && y >= tile_y && y < tile_y+800)
+		{
+			if (y+height >= tile_y+800) return 1;
+			else if (y+height-1 >= tile_y+(x-tile_x)) return 1;
+		}
+		else if (x+width-1 >= tile_x && x+width-1 < tile_x+800 && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (x < tile_x) return 1;
+			else if (y+height-1 >= tile_y+(x-tile_x)) return 1;
+		}
+	}
+	
+	else if (tile == L_BR)
+	{
+		if (x+width-1 >= tile_x && x+width-1 < tile_x+800 && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (y+height-1 >= tile_y+(tile_x+800-(x+width))) return 1;
+		}
+		else if (x >= tile_x && x < tile_x+800 && y+height-1 >= tile_y && y+height-1 < tile_y+800)
+		{
+			if (x+width >= tile_x+800) return 1;
+			else if (y+height-1 >= tile_y+(tile_x+800-(x+width))) return 1;
+		}
+		else if (x+width-1 >= tile_x && x+width-1 < tile_x+800 && y >= tile_y && y < tile_y+800)
+		{
+			if (y+height >= tile_y+800) return 1;
+			else if (y+height-1 >= tile_y+(tile_x+800-(x+width))) return 1;
+		}
+	}
 	return 0;
 }
 
 u8 player_shot(Player* p, Shot* shot)
 {
-	return LBCollides(p->netMessage.shared.x+1,p->netMessage.shared.y+1,14,14,shot->shared.x+2,shot->shared.y+2,4,4) &&
+	return LBCollides(p->netMessage.shared.x+100,p->netMessage.shared.y+100,1400,1400,shot->shared.x+200,shot->shared.y+200,400,400) &&
 		   p->grace_frame == FRAMES_PER_GRACE &&
 		   shot->distance > DISTANCE_TO_ARM;
 }
 
 u8 turret_shot(Turret* t, Shot* shot)
 {
-	return LBCollides(t->shared.x,t->shared.y,8,8,shot->shared.x+2,shot->shared.y+2,4,4) && t->lives > 0;
+	return LBCollides(t->shared.x,t->shared.y,800,800,shot->shared.x+200,shot->shared.y+200,400,400) && t->lives > 0;
 }
 
 u8 collision_detect_boundries(SpriteShared* sprite)
 {
-	if (sprite->x < 0  || sprite->x + 8 > 240 ||
-	    sprite->y < 24 || sprite->y + 8 > 224)
+	if (sprite->x < 0  || sprite->x + 800 > 24000 ||
+	    sprite->y < 2400 || sprite->y + 800 > 22400)
 	{
 		return 1;
 	}
@@ -1009,8 +1082,8 @@ void drop_item(int tile_index, const char* map, u8 item_type)
 
 void kill_player(Player* player, u8 hud_x)
 {
-	u8 x = player->netMessage.shared.x / 8;
-	u8 y = player->netMessage.shared.y / 8 - 3;
+	u8 x = player->netMessage.shared.x / 800;
+	u8 y = player->netMessage.shared.y / 800 - 3;
 	int tile_index = (y * 30) + x;
 
 	if (player->has_over_speed)
@@ -1104,8 +1177,8 @@ void richochet(u8 tile_type, SpriteShared* sprite)
 void collision_detect_shot(Player* player, Shot* shot)
 {	 
 	int tiles[2] = {0, 0};
-	u8 x = shot->shared.x / 8;
-	u8 y = shot->shared.y / 8 - 3;
+	u8 x = shot->shared.x / 800;
+	u8 y = shot->shared.y / 800 - 3;
 	u8 tile;
 	u8 hud_x;
 	Player* p = 0;
@@ -1174,17 +1247,17 @@ void collision_detect_shot(Player* player, Shot* shot)
 		tile = level.level_map[tiles[i]];
 		if (tile == L_EMPTY) continue;
 		
-		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+2, shot->shared.y+2,4,4))
+		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], shot->shared.x+200, shot->shared.y+200,400,400))
 		{
 			hit = hit | HIT_ANGLE;
 			angle_tile = tile;
 		}
-		else if (tile == L_BRICK && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		else if (tile == L_BRICK && LBCollides(shot->shared.x+200,shot->shared.y+200,400,400,(tiles[i]%30)*800,(tiles[i]/30)*800+2400,800,800))
 		{
 			hit = hit | HIT_BRICK;
 			brick_index = i;
 		}
-		else if (tile == L_METAL && LBCollides(shot->shared.x+2,shot->shared.y+2,4,4,(tiles[i]%30)*8,(tiles[i]/30)*8+24,8,8))
+		else if (tile == L_METAL && LBCollides(shot->shared.x+200,shot->shared.y+200,400,400,(tiles[i]%30)*800,(tiles[i]/30)*800+2400,800,800))
         {
 		    hit = hit | HIT_METAL;
         }
@@ -1201,6 +1274,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 			player->active_shots = 0;
 		}
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_METAL);
+		//shot->shared.speed = 0;
 	}
 	else if ((hit & HIT_BRICK) /*&& !is_net_player(player)*/)
 	{
@@ -1214,6 +1288,7 @@ void collision_detect_shot(Player* player, Shot* shot)
 		}
 		//send_net_message(NETBLOCKHIT, tiles[brick_index] % 30, tiles[brick_index] / 30);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_BRICK_EXPLODE);
+		//shot->shared.speed = 0;
 	}
 	else if (hit & HIT_METAL)
 	{
@@ -1266,29 +1341,29 @@ void explode_player(Player* player, Player* other_player, u8 hud_x, u8 other_pla
 
 void slide(Player* player, u8 collision_tile, int tile)
 {
-	u8 tile_x = (tile % 30 * 8);
-	u8 tile_y = (tile / 30 + 3) * 8;
+	u16 tile_x = (tile % 30 * 800);
+	u16 tile_y = (tile / 30 + 3) * 800;
 	if (player->netMessage.shared.direction == D_UP || player->netMessage.shared.direction == D_DOWN)
 	{
-		if (collision_tile == 0 && ((player->netMessage.shared.x - tile_x) > 4))
-			player->netMessage.shared.x++; 
-		else if (collision_tile == 2 && ((player->netMessage.shared.x - tile_x) < -12))
-			player->netMessage.shared.x--;
+		if (collision_tile == 0 && ((player->netMessage.shared.x - tile_x) > 400))
+			player->netMessage.shared.x = player->netMessage.shared.x / 100 * 100 + 100;
+		else if (collision_tile == 2 && ((tile_x - player->netMessage.shared.x) > 1200))
+			player->netMessage.shared.x = player->netMessage.shared.x / 100 * 100 - 100;
 	}
 	else
 	{
-		if (collision_tile == 0 && ((player->netMessage.shared.y - tile_y) > 4))
-			player->netMessage.shared.y++;
-		else if (collision_tile == 2 && ((player->netMessage.shared.y - tile_y) < -12))
-			player->netMessage.shared.y--;
+		if (collision_tile == 0 && ((player->netMessage.shared.y - tile_y) > 400))
+			player->netMessage.shared.y = player->netMessage.shared.y / 100 * 100 + 100;
+		else if (collision_tile == 2 && ((tile_y - player->netMessage.shared.y) > 1200))
+			player->netMessage.shared.y = player->netMessage.shared.y / 100 * 100 - 100;
 	}
 }
 
 char collision_detect_player(Player* player, u8 hud_x)
 {
 	int tiles[3] = {0,0,0};
-	u8 x = player->netMessage.shared.x / 8;
-	u8 y = player->netMessage.shared.y / 8 - 3;
+	u8 x = player->netMessage.shared.x / 800;
+	u8 y = player->netMessage.shared.y / 800 - 3;
 	u8 hit_water = 0;
 	char explode = 0;
 	u8 collision_tile = 0;
@@ -1312,23 +1387,23 @@ char collision_detect_player(Player* player, u8 hud_x)
 		tile_x = tiles[i] % 30;
 		tile_y = 3 + tiles[i] / 30;
 		
-		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->netMessage.shared.x, player->netMessage.shared.y, 16, 16))
+		if (solid_directional_tile(tiles[i]) && collides_directional_tile(tiles[i], player->netMessage.shared.x, player->netMessage.shared.y, 1600, 1600))
 		{
 			(player->handle_id == 9) ? recoil_sprite(&player->netMessage.shared) : recoil_sprite_fine(player, &player->netMessage.shared);
 			player->netMessage.shared.speed = 0;
 		}
-		else if (solid_square_tile(tiles[i]) && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,16,16,tile_x*8,tile_y*8,8,8))
+		else if (solid_square_tile(tiles[i]) && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,1600,1600,tile_x*800,tile_y*800,800,800))
 		{
 			collision_count++;
 			collision_tile = i;
 			player->netMessage.shared.speed = 0;
 		}
-		else if (level.level_map[tiles[i]] == L_WATER && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,16,16,tile_x*8,tile_y*8,8,8))
+		else if (level.level_map[tiles[i]] == L_WATER && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,1600,1600,tile_x*800,tile_y*800,800,800))
 		{
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
 		}
-		else if (level.level_map[tiles[i]] == L_SCOPE && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,16,16,tile_x*8,tile_y*8,8,8))
+		else if (level.level_map[tiles[i]] == L_SCOPE && LBCollides(player->netMessage.shared.x,player->netMessage.shared.y,1600,1600,tile_x*800,tile_y*800,800,800))
 		{
 			player->max_speed = WATER_SPEED;
 			hit_water = 1;
@@ -1413,7 +1488,7 @@ void load_level_tiles(u8 blank)
 	}
 }
 
-void prep_player(Player* p, u8 x, u8 y)
+void prep_player(Player* p, u16 x, u16 y)
 {
 	p->spawn_x = x;
 	p->spawn_y = y;
@@ -1427,9 +1502,9 @@ void prep_player(Player* p, u8 x, u8 y)
 
 void load_level(int level_number)
 {
-    int level_start = level_number*30*25;
-	u8 x;
-	u8 y;
+    u16 level_start = level_number*30*25;
+	u16 x;
+	u16 y;
 
 	game.scope_counter = 0;
 	init_tile_animations(&tile_animations);
@@ -1438,10 +1513,10 @@ void load_level(int level_number)
 	game.current_screen = LEVEL;
 	clear_sprites();
 	game.current_level = level_number;
-	for (int i = 0; i < 30*25; i++)
+	for (u16 i = 0; i < 30*25; i++)
 	{
-		x = (i % 30) * 8;
-		y = (i / 30 + 3) * 8;
+		x = (i % 30) * 800;
+		y = (i / 30 + 3) * 800;
 		level.level_map[i] = pgm_read_byte(&level_data[level_start+i]);
 		if (level.level_map[i] == L_P1_SPAWN)
 		{
@@ -1479,8 +1554,8 @@ void render_boss_fight_sub_load()
 	if (sub_animation.anim.reversing)
 	{
 		game.boss_fight_status = BOSS_FIGHT;
-		init_turret(&turret1, BOSS_TURRET_1_RIGHT_LIMIT, 72);
-		init_turret(&turret2, BOSS_TURRET_2_RIGHT_LIMIT, 72);
+		init_turret(&turret1, BOSS_TURRET_1_RIGHT_LIMIT, 7200);
+		init_turret(&turret2, BOSS_TURRET_2_RIGHT_LIMIT, 7200);
 	}
 }
 
@@ -1497,18 +1572,18 @@ void render_boss_fight_sub_sinking()
 
 void render_boss_turret(Turret* t, char sprite_index)
 {
-	MoveSprite(sprite_index, t->shared.x, t->shared.y, 1, 1);
+	MoveSprite(sprite_index, t->shared.x / 100, t->shared.y / 100, 1, 1);
 }
 
 void render_boss_turret_shot(Turret* t, char sprite_index)
 {
-	MoveSprite(sprite_index, t->shot[0].shared.x, t->shot[0].shared.y, 1, 1);
+	MoveSprite(sprite_index, t->shot[0].shared.x / 100, t->shot[0].shared.y / 100, 1, 1);
 }
 
-void update_turret(Turret *t, u8 left_limit, u8 right_limit)
+void update_turret(Turret *t, u16 left_limit, u16 right_limit)
 {
-	u8 x = t->shared.x / 8;
-	u8 y = t->shared.y / 8 - 3;
+	u8 x = t->shared.x / 800;
+	u8 y = t->shared.y / 800 - 3;
 	int tile_index = (y * 30) + x;
 	
 	if (t->lives <= 0)
@@ -1525,7 +1600,7 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		}
 		else
 		{
-			t->shared.x -= FRAME_TIME*t->shared.speed;
+			t->shared.x -= t->shared.speed / FRAME_TIME_INVERTED;
 		}
 	}
 	else if (t->shared.direction == D_RIGHT)
@@ -1537,7 +1612,7 @@ void update_turret(Turret *t, u8 left_limit, u8 right_limit)
 		}
 		else
 		{
-			t->shared.x += FRAME_TIME*t->shared.speed;
+			t->shared.x += t->shared.speed / FRAME_TIME_INVERTED;
 		}
 	}
 }
@@ -1552,14 +1627,14 @@ void update_turret_shot(Turret* t, Shot* s)
 	if (!s->active)
 	{
 		s->active = 1;
-		s->shared.x = t->shared.x+3;
-		s->shared.y = t->shared.y+3;
+		s->shared.x = t->shared.x+300;
+		s->shared.y = t->shared.y+300;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_CANNONBALL);
 	}
-	s->shared.y += FRAME_TIME*BOSS_TURRET_SHOT_SPEED;
+	s->shared.y += BOSS_TURRET_SHOT_SPEED / FRAME_TIME_INVERTED;
 	
 	/* Level boundries first */
-	if (s->shared.y + 8 > 216)
+	if (s->shared.y + 800 > 21600)
 	{
 		s->active = 0;
 		return;
@@ -1618,7 +1693,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	else if (game.boss_fight_status == BOSS_FIGHT_SCOPE_LOADING)
 	{
 		// Render
-		//record_player_posture(game.boss_fight_player);
 		render_boss_fight_scope_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1634,13 +1708,11 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Update
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
-		//if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 		
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_LOADING)
 	{
 		// Render
-		//record_player_posture(game.boss_fight_player);
 		render_boss_fight_sub_load();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1656,7 +1728,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		// Update
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
-		//if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT)
 	{
@@ -1667,7 +1738,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		
 		
 		// Render
-		//record_player_posture(game.boss_fight_player);
 		p1_shot_index = tank_map(game.boss_fight_player, p1_index);
 		t1_index = shot_map(game.boss_fight_player, p1_shot_index);
 		t1_shot_index = t1_index+1;
@@ -1693,12 +1763,10 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		update_turret_shot(&turret2, &turret2.shot[0]);
 		update_player(game.boss_fight_joypad, game.boss_fight_player);
 		collision_detect_player(game.boss_fight_player, game.boss_fight_player_hud);
-		//if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_SUB_SINKING)
 	{
 		// Render
-		//record_player_posture(game.boss_fight_player);
 		render_boss_fight_sub_sinking();
 		p2_index = tank_map(game.boss_fight_player, p1_index);
 		MapSprite2(p2_index, map_tank_blank, 0);
@@ -1718,7 +1786,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		{
 			resolve_scoring();
 		}
-		//if (player_posture_changed(game.boss_fight_player)) send_smart_net_message(game.boss_fight_player, game.boss_fight_joypad, NETPOSCHANGE);
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT_LOST)
 	{
@@ -1726,8 +1793,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 	}
 	else if (game.boss_fight_status == 0)
 	{
-		//record_player_posture(&player1);
-		//record_player_posture(&player2);
 		p2_index = tank_map(&player1, p1_index);
 		p1_shot_index = tank_map(&player2, p2_index);
 		p2_shot_index = shot_map(&player1, p1_shot_index);
@@ -1749,8 +1814,6 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 		resolve_scoring();
 		if (collision_detect_player(&player1, 0)) explode_player(&player1, &player2, 0, 15);
 		if (collision_detect_player(&player2, 15)) explode_player(&player2, &player1, 15, 0);
-		//if (player_posture_changed(&player1)) send_smart_net_message(&player1, p1, NETPOSCHANGE);
-		//if (player_posture_changed(&player2)) send_smart_net_message(&player2, p2, NETPOSCHANGE);
 	}
 	
 	if (game.selection == CPUVCPU) 
@@ -2504,10 +2567,10 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 	char player_x;
 	char player_y;
 	
-	goal_x = other_player->netMessage.shared.x / 8;
-	goal_y = other_player->netMessage.shared.y / 8 - 3;
-	player_x = player->netMessage.shared.x / 8;
-	player_y =  player->netMessage.shared.y / 8 - 3;
+	goal_x = other_player->netMessage.shared.x / 800;
+	goal_y = other_player->netMessage.shared.y / 800 - 3;
+	player_x = player->netMessage.shared.x / 800;
+	player_y =  player->netMessage.shared.y / 800 - 3;
 	distance_x = goal_x - player_x;
 	distance_y = goal_y - player_y;
 	
@@ -2571,7 +2634,7 @@ void get_cpu_joypad_state(Player* player, Player* other_player, JoyPadState* p)
 		p->held = button_map(LBRandom(0, 2));
 		player->deadlock_count_y = 0;
 	}
-	else player->goal_reached = crash_and_turn(player->netMessage.shared.x / 8, player->netMessage.shared.y / 8 - 3, player->netMessage.shared.recoiled, player, p);
+	else player->goal_reached = crash_and_turn(player->netMessage.shared.x / 800, player->netMessage.shared.y / 800 - 3, player->netMessage.shared.recoiled, player, p);
 	
 	// Re-act to player shot
 	if (player->shot_tactic == TACTIC_SHOT_EVADE && other_player->old_active_shots < other_player->active_shots)
@@ -2817,6 +2880,11 @@ void clearNetBuffers()
 	}
 }
 
+void count_frames()
+{
+	frames++;
+}
+
 int main()
 {
 	// Initialize
@@ -2837,9 +2905,12 @@ int main()
 	load_credits();
 	load_splash();
 	
+	SetUserPreVsyncCallback(&count_frames);
+	
 	while (1)
 	{
 		waitForVSync();
+		frames = 0;
 		get_net_message();
 		switch (game.current_screen)
 		{

@@ -130,8 +130,8 @@ void LBPrintByte(u8 x, u8 y, u8 value, char pad)
 	}
 }
 
-u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
-						 u8 x2, u8 y2, u8 width2, u8 height2)
+u8 LBCollides(u16 x1, u16 y1, u16 width1, u16 height1,
+						 u16 x2, u16 y2, u16 width2, u16 height2)
 {
 	if (y1 + height1 <= y2) return 0;
 	if (y1 >= y2 + height2) return 0;
@@ -140,8 +140,8 @@ u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
 	return 1;
 }
 
-u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
-							  u8 line2x1, u8 line2y1, u8 line2x2, u8 line2y2)
+/*u8 LBLineIntersect(u16 line1x1, u16 line1y1, u16 line1x2, u16 line1y2,
+							  u16 line2x1, u16 line2y1, u16 line2x2, u16 line2y2)
 {
 	float ua, ub;
 	float denom;
@@ -157,7 +157,7 @@ u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
 	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
 
 	return 1;
-}
+}*/
 
 u8 LBRandom(u8 from, u8 to)
 /*
@@ -193,7 +193,7 @@ void LBHideAllSprites()
 {
 	for(int i = 0; i < MAX_SPRITES; i++)
 	{
-		sprites[i].x = (SCREEN_TILES_H*TILE_WIDTH);
+		sprites[i].x = OFF_SCREEN;
 	}
 }
 
