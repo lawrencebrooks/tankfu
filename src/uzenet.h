@@ -230,7 +230,7 @@ u8 initWifi(){
         i++;
     } while ((result != WIFI_OK) && (i < 14));
     if (result == WIFI_OK) {
-        result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 60); 
+        result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
         if (result == WIFI_OK) {
             UBRR0L=pgm_read_byte(((u8*) &(bauds[3])));
             UBRR0H=pgm_read_byte(((u8*) &(bauds[3]))+1); 

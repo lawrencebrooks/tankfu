@@ -11047,8 +11047,8 @@ u8 initWifi(){
     98a2:	f1 f6       	brne	.-68     	; 0x9860 <initWifi+0x20>
     98a4:	19 c0       	rjmp	.+50     	; 0x98d8 <initWifi+0x98>
     if (result == WIFI_OK) {
-        result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 60); 
-    98a6:	4c e3       	ldi	r20, 0x3C	; 60
+        result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
+    98a6:	48 e7       	ldi	r20, 0x78	; 120
     98a8:	50 e0       	ldi	r21, 0x00	; 0
     98aa:	6f e4       	ldi	r22, 0x4F	; 79
     98ac:	72 e0       	ldi	r23, 0x02	; 2
