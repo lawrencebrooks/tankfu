@@ -52,6 +52,13 @@ typedef struct sTurret {
 	Shot shot[MAX_SHOTS];
 } Turret;
 
+typedef struct sHandleSelectState {
+	char handle_id;
+	u8 handle[3];
+	char char_index;
+	u8 select_state;
+} HandleSelectState;
+
 typedef struct NetMessageStruct {
     u8 code;
 	u8 object_pos_x;
@@ -60,6 +67,7 @@ typedef struct NetMessageStruct {
 	u8 level_score;
 	SpriteShared shared;
 	JoyPadState joyPadState;
+	u8 handle[3];
 } NetMessage;
 
 typedef struct sPlayer {
@@ -109,13 +117,6 @@ typedef struct sGameState {
 	JoyPadState* boss_fight_joypad;
 	char selection;
 } Game;
-
-typedef struct sHandleSelectState {
-	char handle_id;
-	u8 handle[3];
-	char char_index;
-	u8 select_state;
-} HandleSelectState;
 
 typedef struct sTileAnimations {
 	u8 next_available;

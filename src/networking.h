@@ -25,21 +25,21 @@
 #include "types.h"
 
 #define NETHIT 0
-#define NETTURRETHIT 1
+#define NETHITBYTURRET 1
 #define NETSHOOT 2
 #define NETITEMSPEED 3
 #define NETITEMROCKET 4
 #define NETITEMBOMB 5
 #define NETPOSCHANGE 6
-#define NETBLOCKHIT 7
-#define NETPAUSETOGGLE 8
-#define NETEXIT 9
-#define NETHANDLESELECT 10
-#define NETJOINED 11
-#define NETNODATA 12
+#define NETPAUSE 7
+#define NETEXIT 8
+#define NETHANDLESELECT 9
+#define NETJOINED 10
+#define NETNODATA 11
+#define NETTURRETHIT 12
+#define NETRESUME 13
 
 u8 activateNet() {
-	cleanupWifi();
 	return initWifi();
 }
 

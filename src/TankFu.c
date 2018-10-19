@@ -40,13 +40,12 @@ void clear_sprites();
 void save_eeprom(struct EepromBlockStruct* block);
 void exit_game();
 void print_level_score(Player* winner, Player* loser);
-void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y);
+void send_net_message(u16 code, u8 object_pos_x, u8 object_pos_y);
 void get_net_message();
-void send_smart_net_message(Player* player, JoyPadState* p, u8 code);
+void send_smart_net_message(Player* player, JoyPadState* p, u16 code);
 u8 is_net_player(Player* player);
 void record_player_posture(Player* player);
 u8 player_posture_changed(Player* player);
-void clearNetBuffers();
 
 /* Initializers */
 void init_player(Player* p, const char* map_tank_up_0, const char* map_tank_right_0);
@@ -80,7 +79,6 @@ u8 wifi_status;
 u16 global_frame_counter = 1;
 u8 gameId[9] = "TFABCDEF";
 u8 gameIdIndex = 2;
-u8 frames = 0;
 
 struct EepromBlockStruct handles;
 struct EepromBlockStruct scores;
@@ -330,9 +328,9 @@ void player_spawn(Player* player)
 
 void waitForVSync()
 {
-    ProcessSprites();
+    //ProcessSprites();
     WaitVsync(1);
-    RestoreBackground();
+    //RestoreBackground();
 #if JAMMA
     handle_coin_insert();
 #endif
@@ -376,7 +374,6 @@ void level_transition(u8 index)
 	ClearVram();
 	FadeIn(FRAMES_PER_FADE, false);
 	load_level(index);
-	clearNetBuffers();
 }
 
 void clear_sprites()
@@ -516,13 +513,20 @@ void update_player(JoyPadState* p, Player* player)
 	
 	player->netMessage.shared.recoiled = 0;
 	player->old_active_shots = player->active_shots;
-	if ((p->pressed & BTN_START) && (game.boss_fight_status == 0))
+	if ((p->pressed & BTN_START) && (game.boss_fight_status == 0) && !is_net_player(player))
 	{
 #if JAMMA
 #else
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		game.paused = game.paused ^ 1;
-		send_smart_net_message(player, p, NETPAUSETOGGLE);
+		if (game.paused)
+		{
+			send_smart_net_message(player, p, NETPAUSE);
+		}
+		else
+		{
+			send_smart_net_message(player, p, NETRESUME);
+		}
 		load_level_tiles(false);
 #endif
 	}
@@ -1217,19 +1221,21 @@ void collision_detect_shot(Player* player, Shot* shot)
 	}
 	else if (game.boss_fight_status == BOSS_FIGHT)
 	{
-		if (turret_shot(&turret1, shot))
+		if (turret_shot(&turret1, shot) && !is_net_player(game.boss_fight_player))
 		{
 			turret1.lives--;
 			init_shot_state(shot, shot->shot_type);
 			game.boss_fight_player->active_shots = 0;
 			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
+			send_net_message(NETTURRETHIT, 1, turret1.lives);
 		}
-		else if (turret_shot(&turret2, shot))
+		else if (turret_shot(&turret2, shot) && !is_net_player(game.boss_fight_player))
 		{
 			turret2.lives--;
 			init_shot_state(shot, shot->shot_type);
 			game.boss_fight_player->active_shots = 0;
 			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
+			send_net_message(NETTURRETHIT, 2, turret2.lives);
 		}
 	}
 	if (p)
@@ -1650,7 +1656,7 @@ void update_turret_shot(Turret* t, Shot* s)
 		}
 		kill_player(game.boss_fight_player, game.boss_fight_player_hud);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
-		send_net_message(NETTURRETHIT, 0, 0);
+		send_net_message(NETHITBYTURRET, 0, 0);
 	}
 }
 
@@ -1846,6 +1852,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 void load_splash()
 {
 	game.current_screen = SPLASH;
+	game.selection = PVCPU;
 	clear_sprites();
 #if JAMMA
     if (credits_available() == 1) {
@@ -2170,11 +2177,17 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		if (ps->handle_id > 8) ps->handle_id = 8;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
-	else if (select_pressed(p) && (ps->select_state == SELECTING))
+	else if (select_pressed(p) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
-		send_smart_net_message(player, p, NETHANDLESELECT);
 		ps->select_state = EDITING;
 		memcpy(ps->handle, &handles.data[ps->handle_id*3], 3);
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		send_smart_net_message(player, p, NETHANDLESELECT);
+	}
+	else if (select_pressed(p) && (ps->select_state == SELECTING))
+	{
+		ps->select_state = EDITING;
+		memcpy(ps->handle, player->netMessage.handle, 3);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if ((p->pressed & BTN_RIGHT) && (ps->select_state == EDITING))
@@ -2296,7 +2309,6 @@ void load_handle_select()
 	Print(5, 23, (char*) strCancelHandle);
 	Print(5, 24, (char*) strChangeHandle);
 #endif
-	clearNetBuffers();
 }
 
 void update_handle_select(JoyPadState* p1, JoyPadState* p2)
@@ -2742,7 +2754,7 @@ void read_dip_switches() {
 #endif
 
 
-void send_smart_net_message(Player* player, JoyPadState* p, u8 code)
+void send_smart_net_message(Player* player, JoyPadState* p, u16 code)
 {
 	if (game.selection == HOSTNETGAME && player == &player1)
 	{
@@ -2754,18 +2766,21 @@ void send_smart_net_message(Player* player, JoyPadState* p, u8 code)
 	}
 }
 
-void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y)
+void send_net_message(u16 code, u8 object_pos_x, u8 object_pos_y)
 {	
 	NetMessage* netMessage = &player1.netMessage;
+	HandleSelectState* handle = &p1s;
 	
 	if (game.selection != HOSTNETGAME && game.selection != JOINNETGAME) return;
 	if (game.selection == JOINNETGAME)
 	{
 		netMessage = &player2.netMessage;
+		handle = &p2s;
 	}
 	netMessage->code = code;
 	netMessage->object_pos_x = object_pos_x;
 	netMessage->object_pos_y = object_pos_y;
+	memcpy(netMessage->handle, handle->handle, 3);
 	sendNetMessage(netMessage);
 }
 
@@ -2792,27 +2807,7 @@ void get_net_message()
 	if (getNetMessage(netMessage) != WIFI_NODATA)
 	{
 		// Act on message code
-		if (netMessage->code == NETHIT)
-		{
-			init_shot_state(&otherPlayer->shot[0], otherPlayer->shot[0].shot_type);
-			otherPlayer->active_shots = 0;
-			otherPlayer->netMessage.level_score++;
-			otherPlayer->netMessage.score++;
-			render_score(otherPlayer, otherPlayerHudX);
-			kill_player(player, playerHudX);
-			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
-		}
-		else if (netMessage->code == NETTURRETHIT)
-		{
-			game.boss_fight_player_lives--;
-			if (game.boss_fight_player_lives <= 0)
-			{
-				game.boss_fight_status = BOSS_FIGHT_LOST;
-			}
-			kill_player(game.boss_fight_player, game.boss_fight_player_hud);
-			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
-		}
-		else if (netMessage->code == NETITEMSPEED)
+		if (netMessage->code == NETITEMSPEED)
 		{
 			level.level_map[netMessage->object_pos_y * 30 + netMessage->object_pos_x] = L_EMPTY;
 			player->max_speed = OVER_SPEED;
@@ -2828,6 +2823,53 @@ void get_net_message()
 			DrawMap2(playerHudX+11, 1, map_rocket_itm);
 			SetTile(netMessage->object_pos_x, netMessage->object_pos_y, 0);
 			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_ITEM);
+		}
+		else if (netMessage->code == NETTURRETHIT)
+		{
+			if (netMessage->object_pos_x == 1)
+			{
+				turret1.lives = netMessage->object_pos_y;
+				
+			}
+			else
+			{
+				turret2.lives = netMessage->object_pos_y;
+			}
+			init_shot_state(&game.boss_fight_player->shot[0], game.boss_fight_player->shot[0].shot_type);
+			game.boss_fight_player->active_shots = 0;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
+		}
+		else if (netMessage->code == NETPAUSE)
+		{
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+			game.paused = 1;
+			load_level_tiles(false);
+		}
+		else if (netMessage->code == NETRESUME)
+		{
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+			game.paused = 0;
+			load_level_tiles(false);
+		}
+		else if (netMessage->code == NETHIT)
+		{
+			init_shot_state(&otherPlayer->shot[0], otherPlayer->shot[0].shot_type);
+			otherPlayer->active_shots = 0;
+			otherPlayer->netMessage.level_score++;
+			otherPlayer->netMessage.score++;
+			render_score(otherPlayer, otherPlayerHudX);
+			kill_player(player, playerHudX);
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
+		}
+		else if (netMessage->code == NETHITBYTURRET)
+		{
+			game.boss_fight_player_lives--;
+			if (game.boss_fight_player_lives <= 0)
+			{
+				game.boss_fight_status = BOSS_FIGHT_LOST;
+			}
+			kill_player(game.boss_fight_player, game.boss_fight_player_hud);
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_TANK_EXPLODE);
 		}
 		else if (netMessage->code == NETITEMBOMB)
 		{
@@ -2871,20 +2913,6 @@ u8 player_posture_changed(Player* player)
 	return 0;
 }
 
-void clearNetBuffers()
-{
-	if (game.selection == HOSTNETGAME || game.selection == JOINNETGAME)
-	{
-		InitUartTxBuffer();
-		InitUartRxBuffer();
-	}
-}
-
-void count_frames()
-{
-	frames++;
-}
-
 int main()
 {
 	// Initialize
@@ -2905,12 +2933,9 @@ int main()
 	load_credits();
 	load_splash();
 	
-	SetUserPreVsyncCallback(&count_frames);
-	
 	while (1)
 	{
 		waitForVSync();
-		frames = 0;
 		get_net_message();
 		switch (game.current_screen)
 		{
