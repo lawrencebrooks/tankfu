@@ -223,12 +223,12 @@ u8 initWifi(){
     UCSR0C=(1<<UCSZ01)+(1<<UCSZ00)+(0<<USBS0); //8-bit frame, no parity, 1 stop bit
     UCSR0B=(1<<RXEN0)+(1<<TXEN0); //Enable UART TX & RX
     do {
-        UBRR0L=pgm_read_byte(((u8*) &(bauds[i % 7])));
-        UBRR0H=pgm_read_byte(((u8*) &(bauds[i % 7]))+1);
+        UBRR0L=pgm_read_byte(((u8*) &(bauds[i])));
+        UBRR0H=pgm_read_byte(((u8*) &(bauds[i]))+1);
         WaitVsync(1);
         result = wifiRequestPT(PSTR("AT\r\n"),PSTR("OK\r\n"), 30); 
         i++;
-    } while ((result != WIFI_OK) && (i < 14));
+    } while ((result != WIFI_OK) && (i < 7));
     if (result == WIFI_OK) {
         result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
         if (result == WIFI_OK) {

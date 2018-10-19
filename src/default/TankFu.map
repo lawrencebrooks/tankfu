@@ -2,8 +2,6 @@ Archive member included to satisfy reference by file (symbol)
 
 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
                               uzeboxVideoEngine.o (__udivmodqi4)
-/usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
-                              TankFu.o (__divmodqi4)
 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
                               uzeboxVideoEngine.o (__udivmodhi4)
 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
@@ -202,20 +200,6 @@ Discarded input sections
                 0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
  .text.libgcc.fixed
                 0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
- .text          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .data          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .bss           0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc.mul
-                0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc   0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc.prologue
-                0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc.builtins
-                0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc.fmul
-                0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
- .text.libgcc.fixed
-                0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
  .text          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
  .data          0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
  .bss           0x0000000000000000        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
@@ -480,7 +464,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0xe4fc
+.text           0x0000000000000000     0xe4d4
  *(.vectors)
  .vectors       0x0000000000000000       0x70 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
                 0x0000000000000000                __vectors
@@ -945,334 +929,331 @@ END GROUP
                 0x000000000000981c       0x24 TankFu.o
                 0x000000000000981c                wifiHWReset
  .text.initWifi
-                0x0000000000009840       0xa2 TankFu.o
+                0x0000000000009840       0x96 TankFu.o
                 0x0000000000009840                initWifi
  .text.sendNetMessage
-                0x00000000000098e2        0x6 TankFu.o
-                0x00000000000098e2                sendNetMessage
+                0x00000000000098d6        0x6 TankFu.o
+                0x00000000000098d6                sendNetMessage
  .text.getNetMessage
-                0x00000000000098e8        0x6 TankFu.o
-                0x00000000000098e8                getNetMessage
+                0x00000000000098dc        0x6 TankFu.o
+                0x00000000000098dc                getNetMessage
  .text.hostNetGame
-                0x00000000000098ee      0x10a TankFu.o
-                0x00000000000098ee                hostNetGame
+                0x00000000000098e2      0x10a TankFu.o
+                0x00000000000098e2                hostNetGame
  .text.joinNetGame
-                0x00000000000099f8       0xbc TankFu.o
-                0x00000000000099f8                joinNetGame
+                0x00000000000099ec       0xbc TankFu.o
+                0x00000000000099ec                joinNetGame
  .text.init_scores
-                0x0000000000009ab4       0x18 TankFu.o
-                0x0000000000009ab4                init_scores
+                0x0000000000009aa8       0x18 TankFu.o
+                0x0000000000009aa8                init_scores
  .text.init_handles
-                0x0000000000009acc       0x18 TankFu.o
-                0x0000000000009acc                init_handles
+                0x0000000000009ac0       0x18 TankFu.o
+                0x0000000000009ac0                init_handles
  .text.init_tile_animations
-                0x0000000000009ae4       0x4e TankFu.o
-                0x0000000000009ae4                init_tile_animations
+                0x0000000000009ad8       0x4e TankFu.o
+                0x0000000000009ad8                init_tile_animations
  .text.init_scope_animation
-                0x0000000000009b32       0x30 TankFu.o
-                0x0000000000009b32                init_scope_animation
+                0x0000000000009b26       0x30 TankFu.o
+                0x0000000000009b26                init_scope_animation
  .text.init_sub_animation
-                0x0000000000009b62       0x28 TankFu.o
-                0x0000000000009b62                init_sub_animation
+                0x0000000000009b56       0x28 TankFu.o
+                0x0000000000009b56                init_sub_animation
  .text.init_shot_state
-                0x0000000000009b8a       0x34 TankFu.o
-                0x0000000000009b8a                init_shot_state
+                0x0000000000009b7e       0x34 TankFu.o
+                0x0000000000009b7e                init_shot_state
  .text.set_shot_animations
-                0x0000000000009bbe       0x64 TankFu.o
-                0x0000000000009bbe                set_shot_animations
+                0x0000000000009bb2       0x64 TankFu.o
+                0x0000000000009bb2                set_shot_animations
  .text.init_turret
-                0x0000000000009c22       0x54 TankFu.o
-                0x0000000000009c22                init_turret
+                0x0000000000009c16       0x54 TankFu.o
+                0x0000000000009c16                init_turret
  .text.init_player
-                0x0000000000009c76       0xec TankFu.o
-                0x0000000000009c76                init_player
+                0x0000000000009c6a       0xec TankFu.o
+                0x0000000000009c6a                init_player
  .text.player_init_shot_state
-                0x0000000000009d62        0xe TankFu.o
-                0x0000000000009d62                player_init_shot_state
+                0x0000000000009d56        0xe TankFu.o
+                0x0000000000009d56                player_init_shot_state
  .text.init_game_state
-                0x0000000000009d70       0x4e TankFu.o
-                0x0000000000009d70                init_game_state
+                0x0000000000009d64       0x4e TankFu.o
+                0x0000000000009d64                init_game_state
  .text.player_spawn
-                0x0000000000009dbe       0x48 TankFu.o
-                0x0000000000009dbe                player_spawn
+                0x0000000000009db2       0x48 TankFu.o
+                0x0000000000009db2                player_spawn
  .text.waitForVSync
-                0x0000000000009e06        0x8 TankFu.o
-                0x0000000000009e06                waitForVSync
+                0x0000000000009dfa        0x8 TankFu.o
+                0x0000000000009dfa                waitForVSync
  .text.load_eeprom
-                0x0000000000009e0e       0x24 TankFu.o
-                0x0000000000009e0e                load_eeprom
+                0x0000000000009e02       0x24 TankFu.o
+                0x0000000000009e02                load_eeprom
  .text.fade_through
-                0x0000000000009e32       0x14 TankFu.o
-                0x0000000000009e32                fade_through
+                0x0000000000009e26       0x14 TankFu.o
+                0x0000000000009e26                fade_through
  .text.clear_sprites
-                0x0000000000009e46       0x1a TankFu.o
-                0x0000000000009e46                clear_sprites
+                0x0000000000009e3a       0x1a TankFu.o
+                0x0000000000009e3a                clear_sprites
  .text.save_score
-                0x0000000000009e60      0x104 TankFu.o
-                0x0000000000009e60                save_score
+                0x0000000000009e54      0x104 TankFu.o
+                0x0000000000009e54                save_score
  .text.position_shot
-                0x0000000000009f64       0x8a TankFu.o
-                0x0000000000009f64                position_shot
+                0x0000000000009f58       0x8a TankFu.o
+                0x0000000000009f58                position_shot
  .text.print_level_score
-                0x0000000000009fee       0x8c TankFu.o
-                0x0000000000009fee                print_level_score
+                0x0000000000009fe2       0x8c TankFu.o
+                0x0000000000009fe2                print_level_score
  .text.print_final_score
-                0x000000000000a07a       0xbc TankFu.o
-                0x000000000000a07a                print_final_score
+                0x000000000000a06e       0xbc TankFu.o
+                0x000000000000a06e                print_final_score
  .text.shoot_pressed
-                0x000000000000a136       0x14 TankFu.o
-                0x000000000000a136                shoot_pressed
+                0x000000000000a12a       0x14 TankFu.o
+                0x000000000000a12a                shoot_pressed
  .text.get_delta
-                0x000000000000a14a       0x24 TankFu.o
-                0x000000000000a14a                get_delta
+                0x000000000000a13e       0x24 TankFu.o
+                0x000000000000a13e                get_delta
  .text.render_hud
-                0x000000000000a16e       0x3a TankFu.o
-                0x000000000000a16e                render_hud
+                0x000000000000a162       0x3a TankFu.o
+                0x000000000000a162                render_hud
  .text.render_score
-                0x000000000000a1a8       0x40 TankFu.o
-                0x000000000000a1a8                render_score
+                0x000000000000a19c       0x40 TankFu.o
+                0x000000000000a19c                render_score
  .text.render_player
-                0x000000000000a1e8       0x40 TankFu.o
-                0x000000000000a1e8                render_player
+                0x000000000000a1dc       0x40 TankFu.o
+                0x000000000000a1dc                render_player
  .text.render_shot
-                0x000000000000a228       0x3c TankFu.o
-                0x000000000000a228                render_shot
+                0x000000000000a21c       0x3c TankFu.o
+                0x000000000000a21c                render_shot
  .text.render_tile_explosions
-                0x000000000000a264       0x6a TankFu.o
-                0x000000000000a264                render_tile_explosions
+                0x000000000000a258       0x6a TankFu.o
+                0x000000000000a258                render_tile_explosions
  .text.render_scope
-                0x000000000000a2ce       0x34 TankFu.o
-                0x000000000000a2ce                render_scope
+                0x000000000000a2c2       0x34 TankFu.o
+                0x000000000000a2c2                render_scope
  .text.tank_map
-                0x000000000000a302       0xd8 TankFu.o
-                0x000000000000a302                tank_map
+                0x000000000000a2f6       0xd8 TankFu.o
+                0x000000000000a2f6                tank_map
  .text.shot_map
-                0x000000000000a3da       0x54 TankFu.o
-                0x000000000000a3da                shot_map
+                0x000000000000a3ce       0x54 TankFu.o
+                0x000000000000a3ce                shot_map
  .text.recoil_sprite
-                0x000000000000a42e       0x9c TankFu.o
-                0x000000000000a42e                recoil_sprite
+                0x000000000000a422       0x9c TankFu.o
+                0x000000000000a422                recoil_sprite
  .text.recoil_sprite_fine
-                0x000000000000a4ca       0x58 TankFu.o
-                0x000000000000a4ca                recoil_sprite_fine
+                0x000000000000a4be       0x58 TankFu.o
+                0x000000000000a4be                recoil_sprite_fine
  .text.solid_square_tile
-                0x000000000000a522       0x24 TankFu.o
-                0x000000000000a522                solid_square_tile
+                0x000000000000a516       0x24 TankFu.o
+                0x000000000000a516                solid_square_tile
  .text.solid_directional_tile
-                0x000000000000a546       0x2c TankFu.o
-                0x000000000000a546                solid_directional_tile
+                0x000000000000a53a       0x2c TankFu.o
+                0x000000000000a53a                solid_directional_tile
  .text.solid_tile
-                0x000000000000a572       0x28 TankFu.o
-                0x000000000000a572                solid_tile
+                0x000000000000a566       0x28 TankFu.o
+                0x000000000000a566                solid_tile
  .text.collides_directional_tile
-                0x000000000000a59a      0x392 TankFu.o
-                0x000000000000a59a                collides_directional_tile
+                0x000000000000a58e      0x392 TankFu.o
+                0x000000000000a58e                collides_directional_tile
  .text.player_shot
-                0x000000000000a92c       0x96 TankFu.o
-                0x000000000000a92c                player_shot
+                0x000000000000a920       0x96 TankFu.o
+                0x000000000000a920                player_shot
  .text.turret_shot
-                0x000000000000a9c2       0x7a TankFu.o
-                0x000000000000a9c2                turret_shot
+                0x000000000000a9b6       0x7a TankFu.o
+                0x000000000000a9b6                turret_shot
  .text.collision_detect_boundries
-                0x000000000000aa3c       0x34 TankFu.o
-                0x000000000000aa3c                collision_detect_boundries
+                0x000000000000aa30       0x34 TankFu.o
+                0x000000000000aa30                collision_detect_boundries
  .text.drop_item
-                0x000000000000aa70       0x68 TankFu.o
-                0x000000000000aa70                drop_item
+                0x000000000000aa64       0x68 TankFu.o
+                0x000000000000aa64                drop_item
  .text.kill_player
-                0x000000000000aad8       0xb8 TankFu.o
-                0x000000000000aad8                kill_player
+                0x000000000000aacc       0xb8 TankFu.o
+                0x000000000000aacc                kill_player
  .text.get_interesting_tile_indexes_shot
-                0x000000000000ab90       0x44 TankFu.o
-                0x000000000000ab90                get_interesting_tile_indexes_shot
+                0x000000000000ab84       0x44 TankFu.o
+                0x000000000000ab84                get_interesting_tile_indexes_shot
  .text.explode_tile
-                0x000000000000abd4       0x7c TankFu.o
-                0x000000000000abd4                explode_tile
+                0x000000000000abc8       0x7c TankFu.o
+                0x000000000000abc8                explode_tile
  .text.richochet
-                0x000000000000ac50       0x42 TankFu.o
-                0x000000000000ac50                richochet
+                0x000000000000ac44       0x42 TankFu.o
+                0x000000000000ac44                richochet
  .text.get_interesting_tile_indexes
-                0x000000000000ac92       0x60 TankFu.o
-                0x000000000000ac92                get_interesting_tile_indexes
+                0x000000000000ac86       0x60 TankFu.o
+                0x000000000000ac86                get_interesting_tile_indexes
  .text.explode_player
-                0x000000000000acf2       0x48 TankFu.o
-                0x000000000000acf2                explode_player
- .text.slide    0x000000000000ad3a       0xd0 TankFu.o
-                0x000000000000ad3a                slide
+                0x000000000000ace6       0x48 TankFu.o
+                0x000000000000ace6                explode_player
+ .text.slide    0x000000000000ad2e       0xd0 TankFu.o
+                0x000000000000ad2e                slide
  .text.load_level_tiles
-                0x000000000000ae0a       0xe6 TankFu.o
-                0x000000000000ae0a                load_level_tiles
+                0x000000000000adfe       0xe6 TankFu.o
+                0x000000000000adfe                load_level_tiles
  .text.prep_player
-                0x000000000000aef0       0x32 TankFu.o
-                0x000000000000aef0                prep_player
+                0x000000000000aee4       0x32 TankFu.o
+                0x000000000000aee4                prep_player
  .text.load_level
-                0x000000000000af22      0x166 TankFu.o
-                0x000000000000af22                load_level
+                0x000000000000af16      0x166 TankFu.o
+                0x000000000000af16                load_level
  .text.level_transition
-                0x000000000000b088       0x60 TankFu.o
-                0x000000000000b088                level_transition
+                0x000000000000b07c       0x60 TankFu.o
+                0x000000000000b07c                level_transition
  .text.render_boss_fight_scope_load
-                0x000000000000b0e8       0x26 TankFu.o
-                0x000000000000b0e8                render_boss_fight_scope_load
+                0x000000000000b0dc       0x26 TankFu.o
+                0x000000000000b0dc                render_boss_fight_scope_load
  .text.render_boss_fight_sub_load
-                0x000000000000b10e       0x42 TankFu.o
-                0x000000000000b10e                render_boss_fight_sub_load
+                0x000000000000b102       0x42 TankFu.o
+                0x000000000000b102                render_boss_fight_sub_load
  .text.render_boss_fight_sub_sinking
-                0x000000000000b150       0x2a TankFu.o
-                0x000000000000b150                render_boss_fight_sub_sinking
+                0x000000000000b144       0x2a TankFu.o
+                0x000000000000b144                render_boss_fight_sub_sinking
  .text.render_boss_turret
-                0x000000000000b17a       0x32 TankFu.o
-                0x000000000000b17a                render_boss_turret
+                0x000000000000b16e       0x32 TankFu.o
+                0x000000000000b16e                render_boss_turret
  .text.render_boss_turret_shot
-                0x000000000000b1ac       0x32 TankFu.o
-                0x000000000000b1ac                render_boss_turret_shot
+                0x000000000000b1a0       0x32 TankFu.o
+                0x000000000000b1a0                render_boss_turret_shot
  .text.update_turret
-                0x000000000000b1de       0x9c TankFu.o
-                0x000000000000b1de                update_turret
+                0x000000000000b1d2       0x9c TankFu.o
+                0x000000000000b1d2                update_turret
  .text.load_splash
-                0x000000000000b27a       0x98 TankFu.o
-                0x000000000000b27a                load_splash
+                0x000000000000b26e       0x98 TankFu.o
+                0x000000000000b26e                load_splash
  .text.select_pressed
-                0x000000000000b312       0x14 TankFu.o
-                0x000000000000b312                select_pressed
+                0x000000000000b306       0x14 TankFu.o
+                0x000000000000b306                select_pressed
  .text.load_tank_rank
-                0x000000000000b326      0x136 TankFu.o
-                0x000000000000b326                load_tank_rank
+                0x000000000000b31a      0x136 TankFu.o
+                0x000000000000b31a                load_tank_rank
  .text.exit_game
-                0x000000000000b45c       0x10 TankFu.o
-                0x000000000000b45c                exit_game
+                0x000000000000b450       0x10 TankFu.o
+                0x000000000000b450                exit_game
  .text.resolve_scoring
-                0x000000000000b46c      0x18a TankFu.o
-                0x000000000000b46c                resolve_scoring
+                0x000000000000b460      0x18a TankFu.o
+                0x000000000000b460                resolve_scoring
  .text.update_tank_rank
-                0x000000000000b5f6       0xc4 TankFu.o
-                0x000000000000b5f6                update_tank_rank
+                0x000000000000b5ea       0xc4 TankFu.o
+                0x000000000000b5ea                update_tank_rank
  .text._handle_select_render_helper
-                0x000000000000b6ba      0x17a TankFu.o
-                0x000000000000b6ba                _handle_select_render_helper
+                0x000000000000b6ae      0x17a TankFu.o
+                0x000000000000b6ae                _handle_select_render_helper
  .text.load_handle_select
-                0x000000000000b834      0x122 TankFu.o
-                0x000000000000b834                load_handle_select
+                0x000000000000b828      0x122 TankFu.o
+                0x000000000000b828                load_handle_select
  .text.load_host_net_game
-                0x000000000000b956       0x7e TankFu.o
-                0x000000000000b956                load_host_net_game
+                0x000000000000b94a       0x7e TankFu.o
+                0x000000000000b94a                load_host_net_game
  .text.update_host_net_game
-                0x000000000000b9d4       0x58 TankFu.o
-                0x000000000000b9d4                update_host_net_game
+                0x000000000000b9c8       0x58 TankFu.o
+                0x000000000000b9c8                update_host_net_game
  .text.load_join_net_game
-                0x000000000000ba2c       0x68 TankFu.o
-                0x000000000000ba2c                load_join_net_game
+                0x000000000000ba20       0x68 TankFu.o
+                0x000000000000ba20                load_join_net_game
  .text.update_splash
-                0x000000000000ba94      0x268 TankFu.o
-                0x000000000000ba94                update_splash
+                0x000000000000ba88      0x268 TankFu.o
+                0x000000000000ba88                update_splash
  .text.update_join_net_game
-                0x000000000000bcfc      0x1b4 TankFu.o
-                0x000000000000bcfc                update_join_net_game
+                0x000000000000bcf0      0x1b4 TankFu.o
+                0x000000000000bcf0                update_join_net_game
  .text.button_map
-                0x000000000000beb0       0x2c TankFu.o
-                0x000000000000beb0                button_map
+                0x000000000000bea4       0x2c TankFu.o
+                0x000000000000bea4                button_map
  .text.crash_and_turn
-                0x000000000000bedc      0x200 TankFu.o
-                0x000000000000bedc                crash_and_turn
+                0x000000000000bed0      0x200 TankFu.o
+                0x000000000000bed0                crash_and_turn
  .text.get_cpu_goal_direction
-                0x000000000000c0dc       0x66 TankFu.o
-                0x000000000000c0dc                get_cpu_goal_direction
+                0x000000000000c0d0       0x66 TankFu.o
+                0x000000000000c0d0                get_cpu_goal_direction
  .text.get_cpu_joypad_state
-                0x000000000000c142      0x468 TankFu.o
-                0x000000000000c142                get_cpu_joypad_state
+                0x000000000000c136      0x468 TankFu.o
+                0x000000000000c136                get_cpu_joypad_state
  .text.stream_text_middle
-                0x000000000000c5aa       0x80 TankFu.o
-                0x000000000000c5aa                stream_text_middle
+                0x000000000000c59e       0x80 TankFu.o
+                0x000000000000c59e                stream_text_middle
  .text.load_credits
-                0x000000000000c62a       0x24 TankFu.o
-                0x000000000000c62a                load_credits
+                0x000000000000c61e       0x24 TankFu.o
+                0x000000000000c61e                load_credits
  .text.send_net_message
-                0x000000000000c64e       0x3e TankFu.o
-                0x000000000000c64e                send_net_message
+                0x000000000000c642       0x3e TankFu.o
+                0x000000000000c642                send_net_message
  .text.send_smart_net_message
-                0x000000000000c68c       0x26 TankFu.o
-                0x000000000000c68c                send_smart_net_message
+                0x000000000000c680       0x26 TankFu.o
+                0x000000000000c680                send_smart_net_message
  .text.get_net_message
-                0x000000000000c6b2      0x276 TankFu.o
-                0x000000000000c6b2                get_net_message
+                0x000000000000c6a6      0x276 TankFu.o
+                0x000000000000c6a6                get_net_message
  .text.is_net_player
-                0x000000000000c928       0x24 TankFu.o
-                0x000000000000c928                is_net_player
+                0x000000000000c91c       0x24 TankFu.o
+                0x000000000000c91c                is_net_player
  .text.collision_detect_shot
-                0x000000000000c94c      0x444 TankFu.o
-                0x000000000000c94c                collision_detect_shot
+                0x000000000000c940      0x444 TankFu.o
+                0x000000000000c940                collision_detect_shot
  .text.update_player
-                0x000000000000cd90      0x2b6 TankFu.o
-                0x000000000000cd90                update_player
+                0x000000000000cd84      0x2b6 TankFu.o
+                0x000000000000cd84                update_player
  .text.collision_detect_player
-                0x000000000000d046      0x3ca TankFu.o
-                0x000000000000d046                collision_detect_player
+                0x000000000000d03a      0x3ca TankFu.o
+                0x000000000000d03a                collision_detect_player
  .text.update_turret_shot
-                0x000000000000d410       0xca TankFu.o
-                0x000000000000d410                update_turret_shot
+                0x000000000000d404       0xca TankFu.o
+                0x000000000000d404                update_turret_shot
  .text.update_level
-                0x000000000000d4da      0x468 TankFu.o
-                0x000000000000d4da                update_level
+                0x000000000000d4ce      0x468 TankFu.o
+                0x000000000000d4ce                update_level
  .text._handle_select_helper
-                0x000000000000d942      0x298 TankFu.o
-                0x000000000000d942                _handle_select_helper
+                0x000000000000d936      0x298 TankFu.o
+                0x000000000000d936                _handle_select_helper
  .text.update_handle_select
-                0x000000000000dbda       0xbc TankFu.o
-                0x000000000000dbda                update_handle_select
+                0x000000000000dbce       0xbc TankFu.o
+                0x000000000000dbce                update_handle_select
  .text.player_posture_changed
-                0x000000000000dc96       0x22 TankFu.o
-                0x000000000000dc96                player_posture_changed
+                0x000000000000dc8a       0x22 TankFu.o
+                0x000000000000dc8a                player_posture_changed
  .text.startup.main
-                0x000000000000dcb8      0x1e6 TankFu.o
-                0x000000000000dcb8                main
+                0x000000000000dcac      0x1e6 TankFu.o
+                0x000000000000dcac                main
  .text.libgcc.div
-                0x000000000000de9e       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
-                0x000000000000de9e                __udivmodqi4
+                0x000000000000de92       0x18 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
+                0x000000000000de92                __udivmodqi4
  .text.libgcc.div
-                0x000000000000deb6       0x1c /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
-                0x000000000000deb6                __divmodqi4
+                0x000000000000deaa       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
+                0x000000000000deaa                __udivmodhi4
  .text.libgcc.div
-                0x000000000000ded2       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
-                0x000000000000ded2                __udivmodhi4
- .text.libgcc.div
-                0x000000000000defa       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
-                0x000000000000defa                __divmodhi4
-                0x000000000000defa                _div
+                0x000000000000ded2       0x28 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
+                0x000000000000ded2                __divmodhi4
+                0x000000000000ded2                _div
  .text.avr-libc
-                0x000000000000df22       0x12 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(memcpy_P.o)
-                0x000000000000df22                memcpy_P
+                0x000000000000defa       0x12 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(memcpy_P.o)
+                0x000000000000defa                memcpy_P
  .text.avr-libc
-                0x000000000000df34       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen_P.o)
-                0x000000000000df34                strnlen_P
+                0x000000000000df0c       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen_P.o)
+                0x000000000000df0c                strnlen_P
  .text.avr-libc
-                0x000000000000df4a       0x14 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strupr.o)
-                0x000000000000df4a                strupr
+                0x000000000000df22       0x14 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strupr.o)
+                0x000000000000df22                strupr
  .text.avr-libc
-                0x000000000000df5e       0x46 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(sprintf.o)
-                0x000000000000df5e                sprintf
+                0x000000000000df36       0x46 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(sprintf.o)
+                0x000000000000df36                sprintf
  .text.avr-libc
-                0x000000000000dfa4      0x3a4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(vfprintf_std.o)
-                0x000000000000dfa4                vfprintf
+                0x000000000000df7c      0x3a4 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(vfprintf_std.o)
+                0x000000000000df7c                vfprintf
  .text.avr-libc
-                0x000000000000e348       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen.o)
-                0x000000000000e348                strnlen
+                0x000000000000e320       0x16 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(strnlen.o)
+                0x000000000000e320                strnlen
  .text.avr-libc
-                0x000000000000e35e       0x70 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(fputc.o)
-                0x000000000000e35e                fputc
+                0x000000000000e336       0x70 /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(fputc.o)
+                0x000000000000e336                fputc
  .text.avr-libc
-                0x000000000000e3ce       0xbc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(ultoa_invert.o)
-                0x000000000000e3ce                __ultoa_invert
+                0x000000000000e3a6       0xbc /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/libc.a(ultoa_invert.o)
+                0x000000000000e3a6                __ultoa_invert
  .text.libgcc.prologue
-                0x000000000000e48a       0x38 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_prologue.o)
-                0x000000000000e48a                __prologue_saves__
+                0x000000000000e462       0x38 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_prologue.o)
+                0x000000000000e462                __prologue_saves__
  .text.libgcc.prologue
-                0x000000000000e4c2       0x36 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_epilogue.o)
-                0x000000000000e4c2                __epilogue_restores__
-                0x000000000000e4f8                . = ALIGN (0x2)
+                0x000000000000e49a       0x36 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_epilogue.o)
+                0x000000000000e49a                __epilogue_restores__
+                0x000000000000e4d0                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000000000000e4f8        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
-                0x000000000000e4f8                exit
-                0x000000000000e4f8                _exit
+ .fini9         0x000000000000e4d0        0x0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+                0x000000000000e4d0                exit
+                0x000000000000e4d0                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1291,11 +1272,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000000000000e4f8        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+ .fini0         0x000000000000e4d0        0x4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x000000000000e4fc                _etext = .
+                0x000000000000e4d4                _etext = .
 
-.data           0x0000000000800100       0x54 load address 0x000000000000e4fc
+.data           0x0000000000800100       0x54 load address 0x000000000000e4d4
                 0x0000000000800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800100        0x1 uzeboxVideoEngine.o
@@ -1393,8 +1374,8 @@ END GROUP
                 0x0000000000800fc3                turret2
                 0x0000000000800ff2                turret1
                 0x0000000000801021                PROVIDE (__bss_end, .)
-                0x000000000000e4fc                __data_load_start = LOADADDR (.data)
-                0x000000000000e550                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000000000000e4d4                __data_load_start = LOADADDR (.data)
+                0x000000000000e528                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0000000000801021        0x0
                 0x0000000000801021                PROVIDE (__noinit_start, .)
@@ -1419,29 +1400,27 @@ END GROUP
 .signature
  *(.signature*)
 
-.stab           0x0000000000000000      0x9b4
+.stab           0x0000000000000000      0x8c4
  *(.stab)
  .stab          0x0000000000000000       0xf0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
- .stab          0x00000000000000f0       0xf0 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodqi4.o)
-                                         0xfc (size before relaxing)
- .stab          0x00000000000001e0      0x15c /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
+ .stab          0x00000000000000f0      0x15c /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodhi4.o)
                                         0x168 (size before relaxing)
- .stab          0x000000000000033c      0x138 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
+ .stab          0x000000000000024c      0x138 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_divmodhi4.o)
                                         0x144 (size before relaxing)
- .stab          0x0000000000000474       0x6c /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
+ .stab          0x0000000000000384       0x6c /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_exit.o)
                                          0x78 (size before relaxing)
- .stab          0x00000000000004e0       0xd8 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_copy_data.o)
+ .stab          0x00000000000003f0       0xd8 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_copy_data.o)
                                          0xe4 (size before relaxing)
- .stab          0x00000000000005b8       0xb4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_clear_bss.o)
+ .stab          0x00000000000004c8       0xb4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_clear_bss.o)
                                          0xc0 (size before relaxing)
- .stab          0x000000000000066c      0x1a4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_prologue.o)
+ .stab          0x000000000000057c      0x1a4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_prologue.o)
                                         0x1b0 (size before relaxing)
- .stab          0x0000000000000810      0x1a4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_epilogue.o)
+ .stab          0x0000000000000720      0x1a4 /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_epilogue.o)
                                         0x1b0 (size before relaxing)
 
-.stabstr        0x0000000000000000      0x34b
+.stabstr        0x0000000000000000      0x2ff
  *(.stabstr)
- .stabstr       0x0000000000000000      0x34b /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
+ .stabstr       0x0000000000000000      0x2ff /usr/local/lib/gcc/avr/4.9.2/avr5/libgcc.a(_udivmodqi4.o)
 
 .stab.excl
  *(.stab.excl)
@@ -1519,7 +1498,7 @@ END GROUP
  .debug_abbrev  0x0000000000000d05      0x3c6 uzeboxVideoEngine.o
  .debug_abbrev  0x00000000000010cb      0x62e TankFu.o
 
-.debug_line     0x0000000000000000     0x2949
+.debug_line     0x0000000000000000     0x2945
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000       0x1d /usr/local/lib/gcc/avr/4.9.2/../../../../avr/lib/avr5/crtm644.o
  .debug_line    0x000000000000001d      0x52b uzeboxVideoEngineCore.o
@@ -1527,7 +1506,7 @@ END GROUP
  .debug_line    0x00000000000008b1      0x3e2 uzeboxSoundEngine.o
  .debug_line    0x0000000000000c93      0x1ae uzeboxSoundEngineCore.o
  .debug_line    0x0000000000000e41      0x449 uzeboxVideoEngine.o
- .debug_line    0x000000000000128a     0x16bf TankFu.o
+ .debug_line    0x000000000000128a     0x16bb TankFu.o
 
 .debug_frame    0x0000000000000000     0x1938
  *(.debug_frame)
@@ -1548,12 +1527,12 @@ END GROUP
  .debug_str     0x0000000000000ed8     0x1446 TankFu.o
                                        0x18e9 (size before relaxing)
 
-.debug_loc      0x0000000000000000     0xaa0d
+.debug_loc      0x0000000000000000     0xa971
  *(.debug_loc)
  .debug_loc     0x0000000000000000      0xa8c uzeboxCore.o
  .debug_loc     0x0000000000000a8c     0x1063 uzeboxSoundEngine.o
  .debug_loc     0x0000000000001aef     0x1b45 uzeboxVideoEngine.o
- .debug_loc     0x0000000000003634     0x73d9 TankFu.o
+ .debug_loc     0x0000000000003634     0x733d TankFu.o
 
 .debug_macinfo
  *(.debug_macinfo)
