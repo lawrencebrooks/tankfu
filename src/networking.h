@@ -38,8 +38,11 @@
 #define NETNODATA 11
 #define NETTURRETHIT 12
 #define NETRESUME 13
+#define NETBLOCKHIT 14
+#define NETACK 15
 
 u8 activateNet() {
+	cleanupWifi();
 	return initWifi();
 }
 

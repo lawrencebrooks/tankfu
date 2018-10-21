@@ -61,13 +61,14 @@ typedef struct sHandleSelectState {
 
 typedef struct NetMessageStruct {
     u8 code;
+	u8 send_ack;
 	u8 object_pos_x;
 	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
 	SpriteShared shared;
 	JoyPadState joyPadState;
-	u8 handle[3];
+	HandleSelectState ps;
 } NetMessage;
 
 typedef struct sPlayer {
@@ -85,6 +86,7 @@ typedef struct sPlayer {
 	u8 feeling_my_way;
 	u8 tank_tactic;
 	u8 shot_tactic;
+	u8 old_level_score;
 	u16 goal_direction;
 	u16 deadlock_count_x;
 	u16 deadlock_count_y;
