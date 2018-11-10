@@ -23,10 +23,15 @@
 u8 wifiSendP(const char* str){
 
 	char c;
+	u8 counter = 0;
 	while(str!=NULL){
 		c=pgm_read_byte(str);
 		if(c==0)break;
-		while(UartSendChar(c)==-1); //block if buffer full
+		while(UartSendChar(c)==-1) {
+			WaitVsync(1);
+			if (++counter == 60) return WIFI_OK;
+		}
+		counter = 0;
 		str++;
 	};
 
@@ -36,10 +41,15 @@ u8 wifiSendP(const char* str){
 u8 wifiSend(char* str){
 
 	char c;
+	u8 counter = 0;
 	while(str!=NULL){
 		c=*str;
 		if(c==0)break;
-		while(UartSendChar(c)==-1); //block if buffer full
+		while(UartSendChar(c)==-1) {
+			WaitVsync(1);
+			if (++counter == 60) return WIFI_OK;
+		}
+		counter = 0;
 		str++;
 	};
 	return WIFI_OK;
@@ -48,9 +58,14 @@ u8 wifiSend(char* str){
 u8 wifiSendBinary(char* str, u8 sz){
 
 	char c;
+	u8 counter = 0;
 	while(sz--){
 		c=*str;
-		while(UartSendChar(c)==-1); //block if buffer full
+		while(UartSendChar(c)==-1) {
+			WaitVsync(1);
+			if (++counter == 60) return WIFI_OK;
+		}
+		counter = 0;
 		str++;
 	};
 	return WIFI_OK;
@@ -192,56 +207,72 @@ u8 wifiRequestPT(const char* strToSend, const char* strToWait, u16 wifi_timeout)
     return WIFI_OK;
 }
 
-u8 cleanupWifi() {
+u8 cleanupWifi()
+{
 	u8 counter = 0;
 	wifiSendP(PSTR("+++"));
-	while(counter++ < 61) WaitVsync(1);
-	InitUartTxBuffer();
-	InitUartRxBuffer();
+	WaitVsync(60);
 	wifiRequestPT(PSTR("AT+CIPMODE=0\r\n"),PSTR("OK\r\n"), 30);
 	wifiRequestPT(PSTR("AT+CIPCLOSE\r\n"),PSTR("OK\r\n"),  30);
-	wifiRequestPT(PSTR("AT+CWQAP\r\n"),PSTR("OK\r\n"),  30);
-	InitUartTxBuffer();
 	InitUartRxBuffer();
+	InitUartTxBuffer();
 	return WIFI_OK;
 }
 
-/*void wifiHWReset(){
+void wifiHWReset()
+{
     //reset module
-    u8 counter = 0;
+	
+	// Set Direction of port D to output
 	DDRD|=(1<<PD3);
+	
+	// SET Pin PD3 low on port D and wait 3 seconds
     PORTD&=~(1<<PD3);
-    WaitVsync(1);
+	WaitVsync(180);
+	
+	// SET Pin PD3 high on port D and wait 3 seconds
     PORTD|=(1<<PD3);
-	while(counter++ < 61) WaitVsync(1);
-}*/
+}
 
-const u16 bauds[] PROGMEM = {60,370,246,184,92,44,30};
+/*  Double values for double speed
+    
+	Baud  UBRR0L  Error%
+    9600   185     0.2
+    14400  123     0.2
+    19200  92      0.2
+    28800  61      0.2
+    38400  46      0.8
+    57600  30      0.2
+    76800  22      1.3
+    115200 15      3.0
+*/
+
+const u16 bauds[] PROGMEM = {185,123,92,61,46,30,22,15};
 u8 initWifi(){
     s8 i = 0;
     u8 result;
-	//wifiHWReset();
-    UCSR0A=(1<<U2X0); // double speed mode
+	wifiHWReset();
+    //UCSR0A=(1<<U2X0); // double speed mode
     UCSR0C=(1<<UCSZ01)+(1<<UCSZ00)+(0<<USBS0); //8-bit frame, no parity, 1 stop bit
     UCSR0B=(1<<RXEN0)+(1<<TXEN0); //Enable UART TX & RX
     do {
-        UBRR0L=pgm_read_byte(((u8*) &(bauds[i % 7])));
-        UBRR0H=pgm_read_byte(((u8*) &(bauds[i % 7]))+1);
+        UBRR0L=pgm_read_byte(((u8*) &(bauds[i])));
+        UBRR0H=pgm_read_byte(((u8*) &(bauds[i]))+1);
         WaitVsync(1);
-		cleanupWifi();
         result = wifiRequestPT(PSTR("AT\r\n"),PSTR("OK\r\n"), 30); 
         i++;
-    } while ((result != WIFI_OK) && (i < 14));
+    } while ((result != WIFI_OK) && (i < 8));
     if (result == WIFI_OK) {
         result = wifiRequestPT(PSTR("AT+UART_CUR=19200,8,1,0,0\r\n"),PSTR("OK\r\n"), 2*60); 
         if (result == WIFI_OK) {
-            UBRR0L=pgm_read_byte(((u8*) &(bauds[3])));
-            UBRR0H=pgm_read_byte(((u8*) &(bauds[3]))+1); 
+            UBRR0L=pgm_read_byte(((u8*) &(bauds[2])));
+            UBRR0H=pgm_read_byte(((u8*) &(bauds[2]))+1); 
             WaitVsync(1);
         }
     }
     return result;
 }
+
 
 #endif
 

@@ -2177,7 +2177,7 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	else if (select_pressed(p) && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		ps->select_state = EDITING;
-		LBCopyChars(ps->handle, &handles.data[ps->handle_id*3], 3);
+		memcpy(ps->handle, &handles.data[ps->handle_id*3], 3);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		p->pressed = 0;
 		send_smart_net_message(player, p, NETHANDLESELECT, 1);
@@ -2210,14 +2210,21 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT, 0);
 	}
-	else if (select_pressed(p) && (ps->select_state == EDITING))
+	else if (select_pressed(p) && (ps->select_state == EDITING) && !is_net_player(player))
 	{
 		ps->select_state = CONFIRMED;
-		send_smart_net_message(player, p, NETHANDLESELECT, 1);
 		player->handle_id = ps->handle_id;
-		LBCopyChars(player->handle, ps->handle, 3);
-		LBCopyChars(&handles.data[ps->handle_id*3], ps->handle, 3);
+		memcpy(player->handle, ps->handle, 3);
+		memcpy(&handles.data[ps->handle_id*3], ps->handle, 3);
 		if (!is_net_player(player)) LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		save_eeprom(&handles);
+		send_smart_net_message(player, p, NETHANDLESELECT, 1);
+	}
+	else if (select_pressed(p) && (ps->select_state == CONFIRMED) && is_net_player(player))
+	{
+		player->handle_id = ps->handle_id;
+		memcpy(player->handle, ps->handle, 3);
+		memcpy(&handles.data[ps->handle_id*3], ps->handle, 3);
 		save_eeprom(&handles);
 	}
 #if JAMMA
@@ -2234,10 +2241,15 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT, 1);
 	}
-	else if (p->pressed & BTN_X)
+	else if (p->pressed & BTN_X && (ps->select_state == SELECTING) && !is_net_player(player))
 	{
 		send_smart_net_message(player, p, NETHANDLESELECT, 1);
-		if (!is_net_player(player)) LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		fade_through();
+		load_splash();
+	}
+	else if (p->pressed & BTN_X && (ps->select_state == SELECTING) && is_net_player(player))
+	{
 		fade_through();
 		load_splash();
 	}
@@ -2762,7 +2774,6 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y, u8 acknowledge)
 {	
 	NetMessage* netMessage = &player1.netMessage;
 	NetMessage* otherNetMessage = &player2.netMessage;
-	HandleSelectState* ps = &player1.netMessage.ps;
 	u8 counter = 0;
 	u8 result = 0;
 	
@@ -2771,13 +2782,11 @@ void send_net_message(u8 code, u8 object_pos_x, u8 object_pos_y, u8 acknowledge)
 	{
 		netMessage = &player2.netMessage;
 		otherNetMessage = &player1.netMessage;
-		ps = &player2.netMessage.ps;
 	}
 	netMessage->code = code;
 	netMessage->send_ack = acknowledge;
 	netMessage->object_pos_x = object_pos_x;
 	netMessage->object_pos_y = object_pos_y;
-	memcpy(&netMessage->ps, ps, sizeof(*ps));
 	sendNetMessage(netMessage);
 	/*if (acknowledge)
 	{
@@ -2829,11 +2838,11 @@ void get_net_message(u8 use_current_message)
 	
 	if (use_current_message || getNetMessage(netMessage) != WIFI_NODATA)
 	{
-		if (netMessage->send_ack)
+		/*if (netMessage->send_ack)
 		{
 			otherNetMessage->code = NETACK;
 			sendNetMessage(otherNetMessage);
-		}
+		}*/
 		// Act on message code
 		if (netMessage->code == NETITEMSPEED)
 		{

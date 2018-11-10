@@ -130,17 +130,6 @@ void LBPrintByte(u8 x, u8 y, u8 value, char pad)
 	}
 }
 
-void LBCopyChars(u8* dst, u8 *src, u8 count)
-/*
- * Custom string copy
- */
-{
-	for (u8 i = 0; i < count; i++)
-	{
-		dst[i] = src[i];
-	}
-}
-
 u8 LBCollides(u16 x1, u16 y1, u16 width1, u16 height1,
 						 u16 x2, u16 y2, u16 width2, u16 height2)
 {

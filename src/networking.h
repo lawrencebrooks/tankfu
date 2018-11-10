@@ -42,7 +42,6 @@
 #define NETACK 15
 
 u8 activateNet() {
-	cleanupWifi();
 	return initWifi();
 }
 
