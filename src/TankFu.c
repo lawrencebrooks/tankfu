@@ -1848,6 +1848,7 @@ void update_level(JoyPadState* p1, JoyPadState* p2)
 
 void load_splash()
 {
+	wifiHWResetLow();
 	game.current_screen = SPLASH;
 	game.selection = PVCPU;
 	clear_sprites();
@@ -1864,16 +1865,10 @@ void load_splash()
 	Print(18, 25, (char*) strCreditCount);
     LBPrintByte(27, 25, credits_available(), false);
 #else
-	if (wifi_status == WIFI_OK)
-	{
-		cleanupWifi();
-	}
 	Print(7, 13, (char*) str1Player);
 	Print(7, 14, (char*) str2Player);
-	if (wifi_status == WIFI_OK) {
-		Print(7, 15, (char*) strHostNetGame);
-		Print(7, 16, (char*) strJoinNetGame);
-	}
+	Print(7, 15, (char*) strHostNetGame);
+	Print(7, 16, (char*) strJoinNetGame);
 	Print(7, 17, (char*) strHighscores);
 	Print(5, 26, (char*) strCopyright);
 	MapSprite2(0, map_right_arrow, 0);
@@ -1986,14 +1981,12 @@ void update_splash(JoyPadState* p1, JoyPadState* p2)
 	if (p1->pressed & BTN_UP)
 	{
 		game.selection--;
-		if (game.selection == JOINNETGAME && wifi_status != WIFI_OK) game.selection -= 2;
 		if (game.selection < PVCPU) game.selection = PVCPU;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
 	else if (p1->pressed & BTN_DOWN)
 	{
 		game.selection++;
-		if (game.selection == HOSTNETGAME && wifi_status != WIFI_OK) game.selection += 2;
 		if (game.selection > TR) game.selection = TR;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 	}
@@ -2229,27 +2222,22 @@ void _handle_select_helper(HandleSelectState* ps, JoyPadState* p, Player* player
 	}
 #if JAMMA
 #else
-	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING) && !is_net_player(player))
+	else if ((p->pressed & BTN_X) && (ps->select_state == EDITING))
 	{
-		ps->select_state = SELECTING;
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 		send_smart_net_message(player, p, NETHANDLESELECT, 1);
+		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		ps->select_state = SELECTING;
 	}
-	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED) && !is_net_player(player))
+	else if ((p->pressed & BTN_X) && (ps->select_state == CONFIRMED))
 	{
+		send_smart_net_message(player, p, NETHANDLESELECT, 1);
 		ps->select_state = EDITING;
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		send_smart_net_message(player, p, NETHANDLESELECT, 1);
 	}
-	else if (p->pressed & BTN_X && (ps->select_state == SELECTING) && !is_net_player(player))
+	else if (p->pressed & BTN_X && (ps->select_state == SELECTING))
 	{
 		send_smart_net_message(player, p, NETHANDLESELECT, 1);
 		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		fade_through();
-		load_splash();
-	}
-	else if (p->pressed & BTN_X && (ps->select_state == SELECTING) && is_net_player(player))
-	{
 		fade_through();
 		load_splash();
 	}
@@ -2352,7 +2340,14 @@ void load_host_net_game()
 {
 	game.current_screen = HOST_NET_GAME;
 	clear_sprites();
-	if (hostNetGame((char*)gameId) == WIFI_OK)
+	Print(2, 10, (char*) strLookingForWifi);
+	wifi_status = activateNet();
+	fade_through();
+	if (wifi_status != WIFI_OK)
+	{
+		Print(7, 10, (char*) strNetworkError);
+	}
+	else if (hostNetGame((char*)gameId) == WIFI_OK)
 	{
 		Print(5, 1, (char*) strShareGameId);
 		LBPrintStr(10, 10, gameId, 8);
@@ -2389,72 +2384,93 @@ void load_join_net_game()
 {
 	game.current_screen = JOIN_NET_GAME;
 	clear_sprites();
-	Print(5, 1, (char*) strEnterGameId);
-	LBPrintStr(10, 10, gameId, 8);
-	DrawMap2(7, 10, map_green_tank);
-	DrawMap2(19, 10, map_blue_tank);
-	Print(5, 22, (char*) strConfirmHandle);
+	Print(2, 10, (char*) strLookingForWifi);
+	wifi_status = activateNet();
+	fade_through();
+	if (wifi_status != WIFI_OK)
+	{
+		Print(7, 10, (char*) strNetworkError);
+	}
+	else
+	{
+		Print(5, 1, (char*) strEnterGameId);
+		LBPrintStr(10, 10, gameId, 8);
+		DrawMap2(7, 10, map_green_tank);
+		DrawMap2(19, 10, map_blue_tank);
+		Print(5, 22, (char*) strConfirmHandle);
+		gameIdIndex = 2;
+	}
 	Print(9, 23, (char*) strCancelHandle);
-	gameIdIndex = 2;
 }
 
 void update_join_net_game(JoyPadState* p1)
 {
-	MapSprite2(0, map_down_arrow, 0);
-	MapSprite2(1, map_up_arrow, 0);
-	MoveSprite(0, 8*10 + gameIdIndex*8, 9*8, 1, 1);
-	MoveSprite(1, 8*10 + gameIdIndex*8, 11*8, 1, 1);
-	LBPrintStr(10, 10, (u8*) gameId, 8);
-		
-	if (p1->pressed & BTN_X)
+	if (wifi_status != WIFI_OK)
 	{
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-		fade_through();
-		load_splash();
-	}
-	else if (select_pressed(p1))
-	{
-		Print(7, 18, (char*) strConnecting);
-		if (joinNetGame((char*)gameId) == WIFI_OK)
+		if (p1->pressed & BTN_X)
 		{
-			player2.netMessage.code = NETJOINED;
-			sendNetMessage(&player2.netMessage);
-			game.demo_counter = 0;
 			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
 			fade_through();
-			load_eeprom(&handles);
-			load_handle_select();
+			load_splash();
 		}
-		else
+	}
+	else
+	{
+		MapSprite2(0, map_down_arrow, 0);
+		MapSprite2(1, map_up_arrow, 0);
+		MoveSprite(0, 8*10 + gameIdIndex*8, 9*8, 1, 1);
+		MoveSprite(1, 8*10 + gameIdIndex*8, 11*8, 1, 1);
+		LBPrintStr(10, 10, (u8*) gameId, 8);
+		if (p1->pressed & BTN_X)
 		{
-			Print(7, 18, (char*) strNetworkError);
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+			fade_through();
+			load_splash();
 		}
-	}
-	else if ((p1->pressed & BTN_UP))
-	{
-		gameId[gameIdIndex]--;
-		if ((gameId[gameIdIndex] < 'A') && (gameId[gameIdIndex] > '9')) gameId[gameIdIndex] = '9';
-		if (gameId[gameIdIndex] < '0') gameId[gameIdIndex] = 'Z';
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-	}
-	else if ((p1->pressed & BTN_DOWN))
-	{
-		gameId[gameIdIndex]++;
-		if ((gameId[gameIdIndex] > '9') && (gameId[gameIdIndex] < 'A')) gameId[gameIdIndex] = 'A';
-		if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = '0';
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-	}
-	else if ((p1->pressed & BTN_RIGHT))
-	{
-		gameIdIndex++;
-		if (gameIdIndex > 7) gameIdIndex = 7;
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
-	}
-	else if ((p1->pressed & BTN_LEFT))
-	{
-		gameIdIndex--;
-		if (gameIdIndex < 2) gameIdIndex= 2;
-		LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		else if (select_pressed(p1))
+		{
+			Print(7, 18, (char*) strConnecting);
+			if (joinNetGame((char*)gameId) == WIFI_OK)
+			{
+				player2.netMessage.code = NETJOINED;
+				sendNetMessage(&player2.netMessage);
+				game.demo_counter = 0;
+				LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+				fade_through();
+				load_eeprom(&handles);
+				load_handle_select();
+			}
+			else
+			{
+				Print(7, 18, (char*) strNetworkError);
+			}
+		}
+		else if ((p1->pressed & BTN_UP))
+		{
+			gameId[gameIdIndex]--;
+			if ((gameId[gameIdIndex] < 'A') && (gameId[gameIdIndex] > '9')) gameId[gameIdIndex] = '9';
+			if (gameId[gameIdIndex] < '0') gameId[gameIdIndex] = 'Z';
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		}
+		else if ((p1->pressed & BTN_DOWN))
+		{
+			gameId[gameIdIndex]++;
+			if ((gameId[gameIdIndex] > '9') && (gameId[gameIdIndex] < 'A')) gameId[gameIdIndex] = 'A';
+			if (gameId[gameIdIndex] > 'Z') gameId[gameIdIndex] = '0';
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		}
+		else if ((p1->pressed & BTN_RIGHT))
+		{
+			gameIdIndex++;
+			if (gameIdIndex > 7) gameIdIndex = 7;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		}
+		else if ((p1->pressed & BTN_LEFT))
+		{
+			gameIdIndex--;
+			if (gameIdIndex < 2) gameIdIndex= 2;
+			LBPlaySound(game.selection, player1.flags, player2.flags, PATCH_NAVIGATE);
+		}
 	}
 }
 #endif
@@ -2740,11 +2756,6 @@ void load_credits()
 {
 	fade_through();
 	stream_text_middle((const char*) strCredits, 5, 100);
-#if JAMMA
-	wifi_status = WIFI_TIMEOUT;
-#else
-	wifi_status = activateNet();
-#endif
 	LBWaitSeconds(4);
 	fade_through();
 }

@@ -219,7 +219,7 @@ u8 cleanupWifi()
 	return WIFI_OK;
 }
 
-void wifiHWReset()
+void wifiHWResetLow()
 {
     //reset module
 	
@@ -228,9 +228,17 @@ void wifiHWReset()
 	
 	// SET Pin PD3 low on port D and wait 3 seconds
     PORTD&=~(1<<PD3);
-	WaitVsync(180);
+}
+
+void wifiHWResetHigh()
+{
+    //reset module
 	
-	// SET Pin PD3 high on port D and wait 3 seconds
+	// Set Direction of port D to output
+	DDRD|=(1<<PD3);
+	
+	// SET Pin PD3 high on port D
+	WaitVsync(180);
     PORTD|=(1<<PD3);
 }
 
@@ -251,7 +259,8 @@ const u16 bauds[] PROGMEM = {185,123,92,61,46,30,22,15};
 u8 initWifi(){
     s8 i = 0;
     u8 result;
-	wifiHWReset();
+	wifiHWResetLow();
+	wifiHWResetHigh();
     //UCSR0A=(1<<U2X0); // double speed mode
     UCSR0C=(1<<UCSZ01)+(1<<UCSZ00)+(0<<USBS0); //8-bit frame, no parity, 1 stop bit
     UCSR0B=(1<<RXEN0)+(1<<TXEN0); //Enable UART TX & RX

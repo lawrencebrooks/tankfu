@@ -32,6 +32,7 @@ const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
 const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
 const unsigned char strHostNetGame [] PROGMEM="HOST LAN GAME";
 const unsigned char strJoinNetGame [] PROGMEM="JOIN LAN GAME";
+const unsigned char strLookingForWifi [] PROGMEM="LOOKING FOR WIFI DEVICE...";
 const unsigned char strShareGameId [] PROGMEM="SHARE YOUR GAME ID";
 const unsigned char strWaitingForNetOppenent [] PROGMEM="WAITING ON LAN OPPONENT...";
 const unsigned char strConnecting [] PROGMEM="CONNECTING...";
@@ -115,8 +116,7 @@ const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX JAM.\0\0\0\0
 #else
 const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
-"LAWRENCE BROOKS\0\0\0\0\0"
-"LOOKING FOR WIFI DEVICE...\0#";
+"LAWRENCE BROOKS\0#";
 #endif
 
 #endif
