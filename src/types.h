@@ -66,6 +66,7 @@ typedef struct NetMessageStruct {
 	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
+	u8 flags;
 	SpriteShared shared;
 	JoyPadState joyPadState;
 	HandleSelectState ps;
@@ -78,7 +79,6 @@ typedef struct sPlayer {
 	u8 old_active_shots;
 	u16 spawn_x;
 	u16 spawn_y;
-	u8 flags;
 	u8 grace_frame;
 	u16 max_speed;
 	u8 has_rocket;

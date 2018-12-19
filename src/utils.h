@@ -22,6 +22,7 @@
 #endif
 
 #include "macros.h"
+#include "uzenet.h"
 
 u16 p_prev[2] = {0,0};
 
@@ -149,24 +150,16 @@ u8 LBRandom(u8 from, u8 to)
     return ((tmp) % (to - from + 1)) + from;
 }
 
-void LBWaitUs(u16 micro_seconds)
+void LBWaitSeconds(u16 seconds, u8 netMessageSize)
 {
-#if JAMMA
-	micro_seconds = micro_seconds / 1500;
-	for (;micro_seconds > 0; micro_seconds--) {
-		WaitVsync(1);
-		handle_coin_insert();
-	}
-#else
-	WaitUs(micro_seconds);
-#endif
-}
-
-void LBWaitSeconds(u8 seconds)
-{
+	seconds *= 60;
 	for(u8 i = 0; i < seconds; i++)
 	{
-		LBWaitUs(65535);
+		WaitVsync(1);
+		wifiGetAndDiscard(netMessageSize);
+#if JAMMA
+		handle_coin_insert();
+#endif
 	}
 }
 

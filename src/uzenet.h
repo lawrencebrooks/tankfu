@@ -72,16 +72,6 @@ u8 wifiSendBinary(char* str, u8 sz){
 }
 
 u8 wifiGetIfAvailable(char* buffer, u8 expectedSize) {
-	/*s16 r = -1;
-	if (UartUnreadCount() < expectedSize) {
-		return WIFI_NODATA;
-	}
-	while (expectedSize--) {
-		r = UartReadChar();
-		*buffer = r&0xff;
-		buffer++;
-	}
-	return WIFI_OK;*/
 	s16 r = -1;
 	if (UartUnreadCount() > 0) {
 		while (expectedSize--) {
@@ -94,6 +84,16 @@ u8 wifiGetIfAvailable(char* buffer, u8 expectedSize) {
 		return WIFI_NODATA;
 	}
 	return WIFI_OK;
+}
+
+void wifiGetAndDiscard(u8 expectedSize) {
+	s16 r = -1;
+	if (UartUnreadCount() > 0) {
+		while (expectedSize--) {
+			while(r == -1) r = UartReadChar();
+			r = -1;
+		}
+	}
 }
 
 u8 wifiGetPB(const char* str, char* rxbuf){

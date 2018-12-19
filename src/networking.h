@@ -40,6 +40,7 @@
 #define NETRESUME 13
 #define NETBLOCKHIT 14
 #define NETACK 15
+#define NETNEXTLEVEL 16
 
 u8 activateNet() {
 	return initWifi();
