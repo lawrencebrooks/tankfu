@@ -28,10 +28,10 @@ typedef struct sLevelState {
 
 typedef struct sSpriteShared {
 	u8 direction;
-	u8 speed;
+	u16 speed;
 	u8 recoiled;
-	float x;
-	float y;
+	u16 x;
+	u16 y;
 } SpriteShared;
 
 typedef struct sShot {
@@ -40,7 +40,7 @@ typedef struct sShot {
 	u8 hit_count;
 	u8 rebounds;
 	u8 active;
-	u8 distance;
+	u16 distance;
 	Animation up_anim;
 	Animation right_anim;
 
@@ -52,37 +52,54 @@ typedef struct sTurret {
 	Shot shot[MAX_SHOTS];
 } Turret;
 
-typedef struct sPlayer {
-	SpriteShared shared;
+typedef struct sHandleSelectState {
 	char handle_id;
 	u8 handle[3];
+	char char_index;
+	u8 select_state;
+} HandleSelectState;
+
+typedef struct NetMessageStruct {
+    u8 code;
+	u8 send_ack;
+	u8 object_pos_x;
+	u8 object_pos_y;
 	u8 score;
 	u8 level_score;
+	u8 flags;
+	SpriteShared shared;
+	JoyPadState joyPadState;
+	HandleSelectState ps;
+} NetMessage;
+
+typedef struct sPlayer {
+	char handle_id;
+	u8 handle[3];
 	u8 active_shots;
 	u8 old_active_shots;
-	u8 spawn_x;
-	u8 spawn_y;
-	u8 flags;
-	u8 banter_frame;
-	u8 banter_index;
+	u16 spawn_x;
+	u16 spawn_y;
 	u8 grace_frame;
-	u8 max_speed;
+	u16 max_speed;
 	u8 has_rocket;
 	u8 has_over_speed;
 	u8 feeling_my_way;
 	u8 tank_tactic;
 	u8 shot_tactic;
+	u8 old_level_score;
 	u16 goal_direction;
 	u16 deadlock_count_x;
 	u16 deadlock_count_y;
 	char goal;
 	char goal_reached;
-	float old_x;
-	float old_y;
+	u16 old_held;
+	u16 old_x;
+	u16 old_y;
 	Shot shot[MAX_SHOTS];
 	Animation up_anim;
 	Animation right_anim;
 	Animation exp_anim;
+	NetMessage netMessage;
 } Player;
 
 typedef struct sGameState {
@@ -94,8 +111,6 @@ typedef struct sGameState {
 	u8 boss_fight_player_lives;
 	u8 toggle_counter;
 	u8 toggle_blank;
-	u8 clear_banter_1;
-	u8 clear_banter_2;
 	u8 demo_choice;
 	u16 demo_counter;
 	u16 scope_counter;
@@ -104,13 +119,6 @@ typedef struct sGameState {
 	JoyPadState* boss_fight_joypad;
 	char selection;
 } Game;
-
-typedef struct sHandleSelectState {
-	char handle_id;
-	u8 handle[3];
-	char char_index;
-	u8 select_state;
-} HandleSelectState;
 
 typedef struct sTileAnimations {
 	u8 next_available;

@@ -28,12 +28,16 @@
 #define TANK_RANK 1
 #define HANDLE_SELECT 2
 #define LEVEL 3
+#define HOST_NET_GAME 4
+#define JOIN_NET_GAME 5
 
 // Selections
 #define PVCPU 0
 #define PVP 1
-#define TR 2
-#define CPUVCPU 3
+#define HOSTNETGAME 2
+#define JOINNETGAME 3
+#define TR 4
+#define CPUVCPU 6
 
 // Frame counts
 #if JAMMA
@@ -41,7 +45,6 @@
 #else
 #define FRAMES_PER_FADE 3
 #endif
-#define FRAMES_PER_BANTER 90
 #define FRAMES_PER_GRACE 120
 #define FRAMES_PER_BLANK 20
 #define FRAMES_PER_ANIM 5
@@ -58,9 +61,9 @@
 #define D_RIGHT 1
 #define D_DOWN 2
 #define D_LEFT 3
-#define MAX_SPEED 50
-#define OVER_SPEED 65
-#define WATER_SPEED 25
+#define MAX_SPEED 5000
+#define OVER_SPEED 6500
+#define WATER_SPEED 2500
 
 // Shot
 #define BASIC_SHOT 0
@@ -68,16 +71,17 @@
 #define BASIC_SHOT_HIT_COUNT 1
 #define ROCKET_SHOT_HIT_COUNT 5
 #define SHOT_REBOUNDS 4
-#define SHOT_SPEED 120
-#define SHOT_OVER_SPEED 170
+#define SHOT_SPEED 12000
+#define SHOT_OVER_SPEED 17000
 #define MAX_SHOTS 1
-#define DISTANCE_TO_ARM 8
+#define DISTANCE_TO_ARM 800
 #define HIT_METAL 1
 #define HIT_BRICK 2
 #define HIT_ANGLE 4
 
 // General macros
 #define FRAME_TIME 0.0166666
+#define FRAME_TIME_INVERTED 60
 #define TEXT_LINGER 4 // seconds
 #define MAX_LEVEL_SCORE 10 
 #define TILE_ANIMATIONS_LENGTH 2
@@ -95,48 +99,26 @@
 #define BOSS_FIGHT_SUB_SINKING 32
 #define BOSS_FIGHT_PLAYER_LIVES 2
 #define BOSS_TURRET_LIVES 5
-#define BOSS_TURRET_SPEED 90
-#define BOSS_TURRET_SHOT_SPEED 250
+#define BOSS_TURRET_SPEED 9000
+#define BOSS_TURRET_SHOT_SPEED 25000
 #define BOSS_TURRET_SHOT 2
 #define BOSS_TURRET_SHOT_HIT_COUNT 1
-#define BOSS_TURRET_1_LEFT_LIMIT 40
-#define BOSS_TURRET_1_RIGHT_LIMIT 96
-#define BOSS_TURRET_2_LEFT_LIMIT 136
-#define BOSS_TURRET_2_RIGHT_LIMIT 192
+#define BOSS_TURRET_1_LEFT_LIMIT 4000
+#define BOSS_TURRET_1_RIGHT_LIMIT 9600
+#define BOSS_TURRET_2_LEFT_LIMIT 13600
+#define BOSS_TURRET_2_RIGHT_LIMIT 19200
 
 // Flags
 #define EXPLODING_FLAG 1
 #define ROCKET_FLAG 2
 #define OVER_SPEED_FLAG 4
 
-// Sound Effects
-#if JAMMA
-#define SFX_BANTER if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
-#define SFX_BRICK_EXPLODE if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
-#define SFX_CANNONBALL if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
-#define SFX_ITEM if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ITEM,23,0xff)
-#define SFX_METAL if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
-#define SFX_NAVIGATE if(no_demo_sound() && game.selection == CPUVCPU) {} else TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
-#define SFX_ROCKET if(no_demo_sound() && game.selection == CPUVCPU) {} else if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
-#define SFX_TANK_EXPLODE if(no_demo_sound() && game.selection == CPUVCPU) {} else TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
-#define SFX_ALARM if(no_demo_sound() && game.selection == CPUVCPU) {} else TriggerFx(PATCH_ALARM,0xff,true);
-#else
-#define SFX_BANTER if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BANTER,30,0x5f)
-#define SFX_BRICK_EXPLODE if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_BRICK_EXPLODE,23,0xdf)
-#define SFX_CANNONBALL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_CANNONBALL,23,0xff)
-#define SFX_ITEM if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ITEM,23,0xff)
-#define SFX_METAL if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_METAL,23,0xff)
-#define SFX_NAVIGATE TriggerNote(PCM_CHANNEL,PATCH_NAVIGATE,23,0xff)
-#define SFX_ROCKET if (!((player1.flags & EXPLODING_FLAG) || (player2.flags & EXPLODING_FLAG))) TriggerNote(PCM_CHANNEL,PATCH_ROCKET,23,0xff)
-#define SFX_TANK_EXPLODE TriggerNote(PCM_CHANNEL,PATCH_TANK_EXPLODE,16,0xff)
-#define SFX_ALARM TriggerFx(PATCH_ALARM,0xff,true);
-#endif
-
 // AI Macros
 #define DEFAULT_FRAMES_PER_GOAL 180
 #define DEFAULT_FRAMES_PER_SHOT 10
 #define FRAMES_PER_DEADLOCK 320
 #define AI_SPEED_FACTOR 1.4
+#define AI_SPEED_FACTOR_INVERTED 2
 #define TACTIC_TANK_ATTACK 0
 #define TACTIC_TANK_EVADE 1
 #define TACTIC_SHOT_IGNORE 0

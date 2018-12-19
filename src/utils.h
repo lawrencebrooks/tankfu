@@ -21,11 +21,16 @@
 #include "jamma.h"
 #endif
 
+#include "macros.h"
+#include "uzenet.h"
+
+u16 p_prev[2] = {0,0};
+
 typedef struct sJoyPadState {
-	unsigned int pressed;
-	unsigned int released;
-	unsigned int held;
-	unsigned char held_cycles;
+	u16 pressed;
+	u16 released;
+	u16 held;
+	u8 held_cycles;
 } JoyPadState;
 
 typedef struct sAnimation {
@@ -93,8 +98,6 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
  * Get the current joy pad button state for index controller
  */
 {
-	static unsigned int p_prev[2] = {0,0};
-
 	p->held = ReadJoypad(index);
 
 	// Count held cycles
@@ -106,17 +109,6 @@ void LBGetJoyPadState(JoyPadState* p, unsigned char index)
 	p->pressed = p->held & (p->held ^ p_prev[index]);
 	p->released = p_prev[index] & (p->held ^ p_prev[index]);
 	p_prev[index] = p->held;
-}
-
-void LBCopyChars(u8* dst, u8 *src, u8 count)
-/*
- * Custom string copy
- */
-{
-	for (u8 i = 0; i < count; i++)
-	{
-		dst[i] = src[i];
-	}
 }
 
 void LBPrintStr(u8 x, u8 y, u8* txt, u8 count)
@@ -139,32 +131,13 @@ void LBPrintByte(u8 x, u8 y, u8 value, char pad)
 	}
 }
 
-u8 LBCollides(u8 x1, u8 y1, u8 width1, u8 height1,
-						 u8 x2, u8 y2, u8 width2, u8 height2)
+u8 LBCollides(u16 x1, u16 y1, u16 width1, u16 height1,
+						 u16 x2, u16 y2, u16 width2, u16 height2)
 {
 	if (y1 + height1 <= y2) return 0;
 	if (y1 >= y2 + height2) return 0;
 	if (x1 + width1 <= x2) return 0;
 	if (x1 >= x2 + width2) return 0;
-	return 1;
-}
-
-u8 LBLineIntersect(u8 line1x1, u8 line1y1, u8 line1x2, u8 line1y2,
-							  u8 line2x1, u8 line2y1, u8 line2x2, u8 line2y2)
-{
-	float ua, ub;
-	float denom;
-
-	denom = ((line2y2 - line2y1) * (line1x2 - line1x1)) -
-			 ((line2x2 - line2x1) * (line1y2 - line1y1));
-	if (denom == 0) return 0;
-
-	ua = (((line2x2 - line2x1) * (line1y1 - line2y1)) -
-		 ((line2y2 - line2y1) * (line1x1 - line2x1))) / denom;
-	ub = (((line1x2 - line1x1) * (line1y1 - line2y1)) -
-		 ((line1y2 - line1y1) * (line1x1 - line2x1))) / denom;
-	if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) return 0;
-
 	return 1;
 }
 
@@ -177,24 +150,16 @@ u8 LBRandom(u8 from, u8 to)
     return ((tmp) % (to - from + 1)) + from;
 }
 
-void LBWaitUs(u16 micro_seconds)
+void LBWaitSeconds(u16 seconds, u8 netMessageSize)
 {
-#if JAMMA
-	micro_seconds = micro_seconds / 1500;
-	for (;micro_seconds > 0; micro_seconds--) {
-		WaitVsync(1);
-		handle_coin_insert();
-	}
-#else
-	WaitUs(micro_seconds);
-#endif
-}
-
-void LBWaitSeconds(u8 seconds)
-{
+	seconds *= 60;
 	for(u8 i = 0; i < seconds; i++)
 	{
-		LBWaitUs(65535);
+		WaitVsync(1);
+		wifiGetAndDiscard(netMessageSize);
+#if JAMMA
+		handle_coin_insert();
+#endif
 	}
 }
 
@@ -202,8 +167,19 @@ void LBHideAllSprites()
 {
 	for(int i = 0; i < MAX_SPRITES; i++)
 	{
-		sprites[i].x = (SCREEN_TILES_H*TILE_WIDTH);
+		sprites[i].x = OFF_SCREEN;
 	}
+}
+
+
+void LBPlaySound(u8 game_selection, u8 p1_flags, u8 p2_flags, u8 patch)
+{
+#if JAMMA
+	if(no_demo_sound() && game_selection == CPUVCPU) {} else if (!((p1_flags & EXPLODING_FLAG) || (p2_flags & EXPLODING_FLAG))) TriggerFx(patch,0xff,true);
+#else
+	if (patch == PATCH_TANK_EXPLODE) TriggerFx(patch,0xff,true);
+	else if (!((p1_flags & EXPLODING_FLAG) || (p2_flags & EXPLODING_FLAG))) TriggerFx(patch,0xff,true);
+#endif
 }
 
 #endif

@@ -30,6 +30,14 @@ const unsigned char strSelectHandle [] PROGMEM="SELECT - START";
 #else
 const unsigned char str1Player [] PROGMEM="PLAYER VS CPU";
 const unsigned char str2Player [] PROGMEM="PLAYER VS PLAYER";
+const unsigned char strHostNetGame [] PROGMEM="HOST LAN GAME";
+const unsigned char strJoinNetGame [] PROGMEM="JOIN LAN GAME";
+const unsigned char strLookingForWifi [] PROGMEM="LOOKING FOR WIFI DEVICE...";
+const unsigned char strShareGameId [] PROGMEM="SHARE YOUR GAME ID";
+const unsigned char strWaitingForNetOppenent [] PROGMEM="WAITING ON LAN OPPONENT...";
+const unsigned char strConnecting [] PROGMEM="CONNECTING...";
+const unsigned char strEnterGameId [] PROGMEM="ENTER HOST GAME ID";
+const unsigned char strNetworkError [] PROGMEM="NETWORK ERROR";
 const unsigned char strConfirmHandle [] PROGMEM="CONFIRM - A/START";
 const unsigned char strReset [] PROGMEM="RESET DEFAULTS - SL (5S)";
 const unsigned char strCancelHandle [] PROGMEM="CANCEL - X";
@@ -46,17 +54,6 @@ const unsigned char strChangeHandle [] PROGMEM="EDIT - UP/DOWN";
 const unsigned char strOwns [] PROGMEM="OWNS";
 const unsigned char strBy [] PROGMEM="BY";
 const unsigned char strFinalScore [] PROGMEM="FINAL SCORE";
-const unsigned char banter_map [] PROGMEM="SUCH FAIL     \0"
-"LOL           \0"
-"BROKEN BUTTON?\0"
-"TRY AT LEAST  \0"
-"TOO EASY      \0"
-"YAWN          \0"
-"NOOB          \0"
-"THAT'S IT?    \0"
-"NEED HELP?    \0"
-"PFFT          ";
-const unsigned char strBanterClear [] PROGMEM="              ";
 const unsigned char strScore [] PROGMEM="SCORE:";
 const unsigned char strTotal [] PROGMEM="TOTAL:";
 const unsigned char strExit [] PROGMEM="BAIL - X";
@@ -113,11 +110,11 @@ const unsigned char default_scores[] PROGMEM = {
 };
 
 #if JAMMA
-const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX JAM.\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX JAM.\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0#";
 #else
-const unsigned char strCredits [] PROGMEM ="TANK FU V2.0 FOR UZEBOX\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0#";
 #endif
