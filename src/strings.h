@@ -110,11 +110,11 @@ const unsigned char default_scores[] PROGMEM = {
 };
 
 #if JAMMA
-const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX JAM.\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.1 FOR UZEBOX JAM.\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0#";
 #else
-const unsigned char strCredits [] PROGMEM ="TANK FU V3.0 FOR UZEBOX\0\0\0\0\0"
+const unsigned char strCredits [] PROGMEM ="TANK FU V3.1 FOR UZEBOX\0\0\0\0\0"
 "PROGRAMMING AND DESIGN\0\0"
 "LAWRENCE BROOKS\0#";
 #endif

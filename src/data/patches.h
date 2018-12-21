@@ -113,7 +113,7 @@ const char ad_brick_explode[] PROGMEM={
 	0,PC_WAVE,3,
 	0,PC_ENV_SPEED,-1, 
 	//1,PC_NOTE_DOWN,4,
-	0,PC_ENV_VOL,100,
+	0,PC_ENV_VOL,127,
 	0,PC_PITCH,50,
 	1,PC_NOTE_DOWN,4,
 	1,PC_NOTE_DOWN,4,
@@ -149,26 +149,68 @@ const char ad_brick_explode[] PROGMEM={
 	1,PC_NOTE_DOWN,4,
 	1,PC_NOTE_DOWN,4,
 	//1,PC_NOTE_DOWN,4,
+	3,PC_ENV_VOL,40,
+	0,PC_PITCH,35,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	1,PC_NOTE_DOWN,4,
+	//1,PC_NOTE_DOWN,4,
 	1,PC_NOTE_CUT,0,
 	0,PATCH_END
 };
 
 const char ad_cannonball[] PROGMEM={
-	0,PC_ENV_VOL,127,
-	0,PC_PITCH,50,
 	0,PC_WAVE,3,
-	0,PC_ENV_SPEED,-16,
-	0,PC_SLIDE_SPEED,12,
-	0,PC_SLIDE,-24,
-	8,PC_ENV_SPEED,-32,
-	0,PATCH_END
+	0,PC_ENV_VOL,80,
+	0,PC_PITCH,50,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_ENV_VOL,0,
+	3,PC_ENV_VOL,127,
+	0,PC_PITCH,50,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_ENV_VOL,0,
+	3,PC_PITCH,50,
+	0,PC_ENV_VOL,32,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_ENV_VOL,0,
+	3,PC_PITCH,50,
+	0,PC_ENV_VOL,15,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_NOTE_DOWN,6,
+	1,PC_ENV_VOL,0,
+	1,PC_NOTE_CUT,0,
+	0,PATCH_END 
 };
 
 const char ad_navigate[] PROGMEM={
 	0,PC_WAVE,4,
-	0,PC_ENV_VOL,0x70,
+	0,PC_ENV_VOL,0x50,
 	0,PC_ENV_SPEED,-40,
 	0,PC_PITCH,60,
+	1,PC_NOTE_CUT,0,
+	0,PATCH_END
+};
+
+const char ad_item[] PROGMEM ={
+	0,PC_WAVE,4,
+	0,PC_ENV_VOL,0x60,
+	0,PC_ENV_SPEED,-40,
+	0,PC_PITCH,100,
 	1,PC_NOTE_CUT,0,
 	0,PATCH_END
 };
@@ -230,7 +272,7 @@ const char ad_alarm[] PROGMEM ={
 const struct PatchStruct my_patches[] PROGMEM = {
   {0,NULL,ad_brick_explode,0,0},
   {0,NULL,ad_cannonball,0,0},
-  {0,NULL,ad_navigate,0,0},
+  {0,NULL,ad_item,0,0},
   {0,NULL,ad_navigate,0,0},
   {0,NULL,ad_navigate,0,0},
   {0,NULL,ad_cannonball,0,0},
