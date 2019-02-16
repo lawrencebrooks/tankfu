@@ -319,6 +319,7 @@ void player_spawn(Player* player)
 	player->netMessage.shared.direction = D_UP;
 	player->netMessage.shared.speed = 0;
 	player->netMessage.shared.recoiled = 0;
+	player->netMessage.flags = 0;
 	player->tank_tactic = LBRandom(0, 2);
 	player->shot_tactic = LBRandom(0, 2);
 	
@@ -2443,6 +2444,10 @@ void update_join_net_game(JoyPadState* p1)
 			else
 			{
 				Print(7, 18, (char*) strNetworkError);
+				WaitVsync(2*60);
+				LBPlaySound(game.selection, player1.netMessage.flags, player2.netMessage.flags, PATCH_NAVIGATE);
+				fade_through();
+				load_splash();
 			}
 		}
 		else if ((p1->pressed & BTN_UP))
